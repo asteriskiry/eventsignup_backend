@@ -1,8 +1,13 @@
+/*
+Copyright Juhani Vähä-Mäkilä (juhani@fmail.co.uk) 2022.
+Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
+ */
 package fi.asteriski.eventsignup.domain;
 
 import lombok.Data;
 import lombok.NonNull;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
 
 import java.time.Instant;
 import java.util.Map;
@@ -11,7 +16,6 @@ import java.util.Map;
 public class Event {
 
     @Id
-    @NonNull
     private String id;
     @NonNull
     private String name;
@@ -23,6 +27,8 @@ public class Event {
     private String description;
     @NonNull
     private Form form;
+    @Indexed
+    private String owner;
     private Instant endDate;
     private Integer minParticipants;
     private Integer maxParticipants;
@@ -33,20 +39,4 @@ public class Event {
     private Map<String, Object> otherData;
     private Map<String, Object> metaData;
 
-//    Event(Event eventToCopy) {
-//        this.name = eventToCopy.name;
-//        this.startDate = eventToCopy.startDate;
-//        this.place = eventToCopy.place;
-//        this.description = eventToCopy.description;
-//        this.form = eventToCopy.form; // FIXME do i need this?
-//        this.endDate = eventToCopy.endDate;
-//        this.minParticipants = eventToCopy.minParticipants;
-//        this.maxParticipants = eventToCopy.maxParticipants;
-//        this.signupStarts = eventToCopy.signupStarts;
-//        this.signupEnds = eventToCopy.signupEnds;
-//        this.quotas = eventToCopy.quotas;
-//        this.bannerImg = eventToCopy.bannerImg;
-//        this.otherData = eventToCopy.otherData;
-//        this.metaData = eventToCopy.metaData;
-//    }
 }
