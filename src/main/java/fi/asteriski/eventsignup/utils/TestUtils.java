@@ -28,9 +28,6 @@ import java.util.Random;
  */
 public final class TestUtils {
 
-    @Value("${root.path.bannerimg}")
-    private static String rootPath;
-
     // To prevent instantiation of the class.
     private TestUtils(){}
 
@@ -75,13 +72,17 @@ public final class TestUtils {
     }
 
     /**
-     * <p>Copies test file to location expected by the application and returns it as byte[].<br>
+     * <p>Copies test file to a location expected by the application and returns it as byte[].<br>
      * Copied file is set to delete on exit.</p>
      * @return Byte[] of the test file.
      * @throws IOException If I/O error occurs when copying the file.
      */
-    public static byte[] getImageDataAsBytes() throws IOException {
-        byte[] file = new byte[0];
+    public static byte[] getImageDataAsBytes(String rootPath) throws IOException {
+        byte[] file = new byte[20];
+        if (rootPath == null) {
+            new Random().nextBytes(file);
+            return file;
+        }
         Files.copy(Path.of("./testData/testFile.jpg"), Path.of(rootPath + "/testFile.jpg"), StandardCopyOption.REPLACE_EXISTING);
         var finalFile = new File(rootPath+"/testFile.jpg");
         try (InputStream inputStream = new FileInputStream(finalFile.toString())) {

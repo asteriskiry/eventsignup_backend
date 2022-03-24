@@ -94,9 +94,9 @@ class EventControllerIntegrationTest {
     @Test
     @DisplayName("Create an event.")
     void createEvent() throws Exception {
-        var eventAsJsonString = mapper.writeValueAsString(createRandomEvent());
+        var eventAsJsonString = mapper.writeValueAsString(event);
         var valueCapture = ArgumentCaptor.forClass(String.class);
-        doNothing().when(eventService).createNewEvent(any(Event.class), valueCapture.capture());
+        when(eventService.createNewEvent(any(Event.class), valueCapture.capture())).thenReturn(event);
         mockMvc.perform(post("/event/create")
             .content(eventAsJsonString).contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(status().isOk());
@@ -114,8 +114,8 @@ class EventControllerIntegrationTest {
     @Test
     @DisplayName("Edit an existing event.")
     void editEvent() throws Exception {
-        var eventAsJsonString = mapper.writeValueAsString(createRandomEvent());
-        doNothing().when(eventService).editExistingEvent(any(Event.class));
+        var eventAsJsonString = mapper.writeValueAsString(event);
+       when(eventService.editExistingEvent(any(Event.class))).thenReturn(event);
         mockMvc.perform(put("/event/edit")
                 .content(eventAsJsonString).contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(status().isOk());

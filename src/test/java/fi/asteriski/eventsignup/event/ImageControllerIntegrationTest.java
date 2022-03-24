@@ -5,6 +5,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
@@ -22,6 +23,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(controllers = ImageController.class)
 class ImageControllerIntegrationTest {
 
+    @Value("${root.path.bannerimg}")
+    private String rootPath;
     @Autowired
     private MockMvc mockMvc;
     @MockBean
@@ -46,7 +49,7 @@ class ImageControllerIntegrationTest {
     @Test
     @DisplayName("Get existing banner image file as byte[].")
     void getBannerImage() throws Exception {
-        byte[] file = getImageDataAsBytes();
+        byte[] file = getImageDataAsBytes(rootPath);
         when(imageService.getBannerImage("testFile.jpg")).thenReturn(file);
         mockMvc.perform(get("/event/banner/get/testFile.jpg")).andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.IMAGE_PNG_VALUE))
@@ -56,7 +59,7 @@ class ImageControllerIntegrationTest {
     @Test
     @DisplayName("Send a POST to add a banner image. Except 3xx redirect.")
     void addBannerImg() throws Exception {
-        byte[] file = getImageDataAsBytes();
+        byte[] file = getImageDataAsBytes(rootPath);
         when(imageService.addBannerImage(file, "user")).thenReturn("fileName");
         mockMvc.perform(post("/event/banner/add").content(file)).andExpect(status().is3xxRedirection());
     }

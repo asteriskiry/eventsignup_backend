@@ -4,6 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.servlet.view.RedirectView;
 
 import java.io.IOException;
@@ -17,6 +18,8 @@ import static org.mockito.Mockito.when;
 
 class ImageControllerUnitTest {
 
+    @Value("${root.path.bannerimg}")
+    private String rootPath;
     private ImageService imageService;
     private ImageController imageController;
 
@@ -50,7 +53,7 @@ class ImageControllerUnitTest {
     @Test
     @DisplayName("Add an image (i.e. a byte array).")
     void addBannerImg() throws IOException {
-        byte[] bytes = getImageDataAsBytes();
+        byte[] bytes = getImageDataAsBytes(rootPath);
         when(imageService.addBannerImage(bytes, "user")).thenReturn("value");
         assertInstanceOf(RedirectView.class, imageController.addBannerImg(bytes, null));
         verify(imageService).addBannerImage(bytes, "user");
