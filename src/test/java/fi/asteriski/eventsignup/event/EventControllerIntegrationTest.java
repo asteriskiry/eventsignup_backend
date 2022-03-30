@@ -3,6 +3,7 @@ package fi.asteriski.eventsignup.event;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import fi.asteriski.eventsignup.domain.ArchivedEvent;
 import fi.asteriski.eventsignup.domain.Event;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -13,6 +14,8 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+
+import java.time.Instant;
 
 import static fi.asteriski.eventsignup.utils.TestUtils.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -122,9 +125,25 @@ class EventControllerIntegrationTest {
         verify(eventService).editExistingEvent(any(Event.class));
     }
 
-//    @Test
-//    void archiveEvent() {
-//    }
+    @Test
+    @DisplayName("Archive an existing event.")
+    void archiveExistingEvent() throws Exception {
+        var valueCapture = ArgumentCaptor.forClass(String.class);
+        var archivedEvent = new ArchivedEvent(event, Instant.now(), 10L);
+        when(eventService.archiveEvent(valueCapture.capture())).thenReturn(archivedEvent);
+        mockMvc.perform(put("/event/archive/123")).andExpect(status().isOk());
+        verify(eventService).archiveEvent(anyString());
+        assertEquals("123", valueCapture.getValue());
+    }
+    @Test
+    @DisplayName("Archive an non-existing event.")
+    void archiveNonExistentEvent() throws Exception {
+        var valueCapture = ArgumentCaptor.forClass(String.class);
+        when(eventService.archiveEvent(valueCapture.capture())).thenThrow(new EventNotFoundException("not found"));
+        mockMvc.perform(put("/event/archive/123")).andExpect(status().isNotFound());
+        verify(eventService).archiveEvent(anyString());
+        assertEquals("123", valueCapture.getValue());
+    }
 
     @Test
     @DisplayName("Remove an event.")
