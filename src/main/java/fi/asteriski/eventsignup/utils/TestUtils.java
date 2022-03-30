@@ -91,4 +91,8 @@ public final class TestUtils {
         finalFile.deleteOnExit();
         return file;
     }
+
+    public static String generateRandomString(int targetStringLength) {
+        return Utils.generateRandomString(targetStringLength);
+    }
 }

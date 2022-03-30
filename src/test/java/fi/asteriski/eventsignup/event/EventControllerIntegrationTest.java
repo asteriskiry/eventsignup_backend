@@ -7,6 +7,7 @@ import fi.asteriski.eventsignup.domain.ArchivedEvent;
 import fi.asteriski.eventsignup.domain.Event;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.Instant;
+import java.util.Random;
 
 import static fi.asteriski.eventsignup.utils.TestUtils.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -155,4 +157,28 @@ class EventControllerIntegrationTest {
         assertEquals("123", valueCapture.getValue());
     }
 
+    @RepeatedTest(100)
+    @DisplayName("Try to get events with random ids.")
+    void testRandomEventIds() throws Exception {
+        var rnd = new Random();
+        var randomString = generateRandomString(rnd.nextInt(5, 31));
+        when(eventService.getEvent(anyString())).thenThrow(new EventNotFoundException("not found"));
+        mockMvc.perform(get(String.format("/event/get/%s", randomString))).andExpect(status().isNotFound());
+    }
+
+    @RepeatedTest(100)
+    @DisplayName("Try to get events with random ids.")
+    void testRandomUrls() throws Exception {
+        var rnd = new Random();
+        var randomString = generateRandomString(rnd.nextInt(5, 31));
+        mockMvc.perform(get(String.format("/%s", randomString))).andExpect(status().isNotFound());
+    }
+
+    @RepeatedTest(100)
+    @DisplayName("Try to get /event/<randomString>")
+    void testRandomEventUrls() throws Exception {
+        var rnd = new Random();
+        var randomString = generateRandomString(rnd.nextInt(5, 31));
+        mockMvc.perform(get(String.format("/event/%s", randomString))).andExpect(status().isNotFound());
+    }
 }
