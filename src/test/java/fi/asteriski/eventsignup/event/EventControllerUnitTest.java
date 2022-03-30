@@ -1,0 +1,86 @@
+package fi.asteriski.eventsignup.event;
+
+import fi.asteriski.eventsignup.utils.TestUtils;
+import fi.asteriski.eventsignup.domain.Event;
+import fi.asteriski.eventsignup.domain.Participant;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+
+import java.util.LinkedList;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.when;
+
+class EventControllerUnitTest {
+
+    private EventService eventService;
+    private EventController eventController;
+    private Event event;
+
+    @BeforeEach
+    void setUp() {
+        eventService = Mockito.mock(EventService.class);
+        eventController = new EventController(eventService);
+        event = TestUtils.createRandomEvent();
+    }
+
+    @Test
+    @DisplayName("Get an existing event.")
+    void getExistingEvent() {
+        when(eventService.getEvent("123")).thenReturn(this.event);
+        assertInstanceOf(Event.class, eventController.getEvent("123"));
+    }
+
+    @Test
+    @DisplayName("Getting an existing event doesn't throw an exception")
+    void getExistingEventWithNoExceptionThrown() {
+        when(eventService.getEvent("123")).thenReturn(this.event);
+        assertDoesNotThrow(() -> eventController.getEvent("123"));
+    }
+
+    @Test
+    @DisplayName("Try to get non-existent event.")
+    void tryToGetNonExistentEvent() {
+        when(eventService.getEvent("not-exist")).thenThrow(new EventNotFoundException("not-exist"));
+        assertThrows(EventNotFoundException.class, () -> eventController.getEvent("not-exist"));
+    }
+
+    @Test
+    @DisplayName("Get an empty list of event to user with no events.")
+    void getAllEventsForUserWithNoEvents() {
+        var user = "user";
+        when(eventService.getAllEventsForUser(user)).thenReturn(new LinkedList<>());
+        assertTrue(eventController.getAllEventsForUser(user).isEmpty());
+    }
+
+    @Test
+    @DisplayName("Get a non-empty list of events for user with events.")
+    void getAllEventsForUserWithEvents() {
+        var user = "user";
+        List<Event> events = new LinkedList<>();
+        events.add(this.event);
+        when(eventService.getAllEventsForUser(user)).thenReturn(events);
+        assertFalse(eventController.getAllEventsForUser(user).isEmpty());
+    }
+
+    @Test
+    @DisplayName("Get a non-empty list of participants for an event.")
+    void getParticipantsForEventWithParticipants() {
+        List<Participant> participants = new LinkedList<>();
+        participants.add(new Participant("John Doe", "john@example.com", "123"));
+        when(eventService.getParticipants("123")).thenReturn(participants);
+        assertInstanceOf(List.class, eventController.getParticipants("123"));
+        assertFalse(eventController.getParticipants("123").isEmpty());
+    }
+
+    @Test
+    @DisplayName("Get an empty list of participants for an event.")
+    void getParticipantsForEventWithNoParticipants() {
+        when(eventService.getParticipants("123")).thenReturn(new LinkedList<>());
+        assertInstanceOf(List.class, eventController.getParticipants("123"));
+        assertTrue(eventController.getParticipants("123").isEmpty());
+    }
+}

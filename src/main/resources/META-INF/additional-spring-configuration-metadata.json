@@ -1,0 +1,8 @@
+{
+  "properties": [
+    {
+      "name": "root.path.bannerimg",
+      "type": "java.lang.String",
+      "description": "Root path for all banner images."
+  }
+] }
