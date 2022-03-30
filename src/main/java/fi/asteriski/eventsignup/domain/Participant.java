@@ -1,9 +1,13 @@
+/*
+Copyright Juhani Vähä-Mäkilä (juhani@fmail.co.uk) 2022.
+Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
+ */
 package fi.asteriski.eventsignup.domain;
 
 import lombok.Data;
 import lombok.NonNull;
-import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
 
 import java.time.Instant;
 import java.util.Map;
@@ -12,14 +16,14 @@ import java.util.Map;
 public class Participant {
 
     @Id
-    @NonNull
     private String id;
     @NonNull
     private final String name;
     @NonNull
     private String email;
     @NonNull
-    private final ObjectId event;
+    @Indexed
+    private final String event;
     private Gender gender;
     private MealChoice mealChoice;
     private Map<String, String> drinkChoice;

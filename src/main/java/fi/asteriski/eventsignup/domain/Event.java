@@ -1,8 +1,13 @@
+/*
+Copyright Juhani Vähä-Mäkilä (juhani@fmail.co.uk) 2022.
+Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
+ */
 package fi.asteriski.eventsignup.domain;
 
 import lombok.Data;
 import lombok.NonNull;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
 
 import java.time.Instant;
 import java.util.Map;
@@ -11,7 +16,6 @@ import java.util.Map;
 public class Event {
 
     @Id
-    @NonNull
     private String id;
     @NonNull
     private String name;
@@ -23,7 +27,7 @@ public class Event {
     private String description;
     @NonNull
     private Form form;
-    @NonNull
+    @Indexed
     private String owner;
     private Instant endDate;
     private Integer minParticipants;
