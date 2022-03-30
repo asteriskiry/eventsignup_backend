@@ -71,4 +71,8 @@ public class EventService {
         eventRepository.deleteById(eventId);
         participantRepository.deleteAllByEvent(eventId);
     }
+
+    public boolean eventExists(String eventId) {
+        return eventRepository.existsById(eventId);
+    }
 }
