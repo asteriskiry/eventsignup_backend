@@ -7,11 +7,18 @@ package fi.asteriski.eventsignup.domain;
 import lombok.Data;
 import lombok.NonNull;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.CompoundIndex;
+import org.springframework.data.mongodb.core.index.CompoundIndexes;
 import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.Instant;
 import java.util.Map;
 
+@CompoundIndexes({
+    @CompoundIndex(name = "id_event", def = "{'id' : 1, 'event': 1}")
+})
+@Document
 @Data
 public class Participant {
 
@@ -28,8 +35,8 @@ public class Participant {
     private MealChoice mealChoice;
     private Map<String, String> drinkChoice;
     private String belongsToQuota;
-    private boolean isMember;
-    private boolean hasPaid;
+    private Boolean isMember;
+    private Boolean hasPaid;
     private Instant signupTime;
     private Map<String, Object> otherData;
     private Map<String, Object> metaData;
