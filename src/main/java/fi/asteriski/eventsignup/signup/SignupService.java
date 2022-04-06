@@ -9,7 +9,6 @@ import fi.asteriski.eventsignup.domain.Event;
 import fi.asteriski.eventsignup.domain.Participant;
 import fi.asteriski.eventsignup.event.EventNotFoundException;
 import fi.asteriski.eventsignup.event.EventService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -20,10 +19,13 @@ import java.time.format.DateTimeFormatter;
 @Service
 public class SignupService {
 
-    @Autowired
     EventService eventService;
-    @Autowired
     ParticipantRepository participantRepository;
+
+    public SignupService(EventService eventService, ParticipantRepository participantRepository) {
+        this.eventService = eventService;
+        this.participantRepository = participantRepository;
+    }
 
     public Event getEventForSignUp(String eventId) {
         Event event = eventService.getEvent(eventId);
@@ -49,7 +51,7 @@ public class SignupService {
         return event;
     }
 
-    public void addParticipantToEvent(String eventId, Participant participant) {
+    public Participant addParticipantToEvent(String eventId, Participant participant) {
         if (!eventId.equals(participant.getEvent())) {
             throw new EventNotFoundException(participant.getEvent());
         }
@@ -57,7 +59,7 @@ public class SignupService {
             throw new EventNotFoundException(eventId);
         }
         participant.setSignupTime(Instant.now());
-        participantRepository.save(participant);
+        return participantRepository.save(participant);
     }
 
     public void removeParticipantFromEvent(String eventId, String participantId) {

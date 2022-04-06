@@ -10,6 +10,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.index.CompoundIndexes;
 import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.Instant;
 import java.util.Map;
@@ -17,6 +18,7 @@ import java.util.Map;
 @CompoundIndexes({
     @CompoundIndex(name = "id_event", def = "{'id' : 1, 'event': 1}")
 })
+@Document
 @Data
 public class Participant {
 
