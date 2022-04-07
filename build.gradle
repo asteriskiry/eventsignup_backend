@@ -30,6 +30,7 @@ dependencies {
     implementation 'commons-io:commons-io:2.11.0'
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.13.2'
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.13.2'
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
     compileOnly 'org.projectlombok:lombok:1.18.22'
     developmentOnly 'org.springframework.boot:spring-boot-devtools:2.6.3'
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'

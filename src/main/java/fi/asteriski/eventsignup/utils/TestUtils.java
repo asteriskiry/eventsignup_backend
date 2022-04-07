@@ -4,11 +4,10 @@ Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
  */
 package fi.asteriski.eventsignup.utils;
 
-import fi.asteriski.eventsignup.domain.Event;
-import fi.asteriski.eventsignup.domain.Form;
-import fi.asteriski.eventsignup.domain.Participant;
+import fi.asteriski.eventsignup.domain.*;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -20,6 +19,7 @@ import java.nio.file.StandardCopyOption;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
@@ -34,7 +34,7 @@ public final class TestUtils {
     public static Event createRandomEvent() {
         var random = new Random();
         var form = new Form();
-        var instant = random.nextBoolean() ?  Instant.now().minus(random.nextLong(10, 100), ChronoUnit.DAYS) : Instant.now().plus(random.nextLong(10, 100), ChronoUnit.DAYS);
+        var instant = random.nextBoolean() ? Instant.now().minus(random.nextLong(10, 100), ChronoUnit.DAYS) : Instant.now().plus(random.nextLong(10, 100), ChronoUnit.DAYS);
         return new Event(
             Utils.generateRandomString(random.nextInt(5, 15)),
             instant,
@@ -45,7 +45,7 @@ public final class TestUtils {
     }
 
     public static List<Event> getRandomEvents() {
-        List<Event> returnValue = new ArrayList<>();
+        List<Event> returnValue = new LinkedList<>();
         var random = new Random();
         for (int i = 0; i < random.nextInt(10, 101); i++) {
             returnValue.add(createRandomEvent());
@@ -54,7 +54,7 @@ public final class TestUtils {
     }
 
     public static List<Participant> getRandomParticipants() {
-        List<Participant> returnValue = new ArrayList<>();
+        List<Participant> returnValue = new LinkedList<>();
         var random = new Random();
         for (int i = 0; i < random.nextInt(10, 101); i++) {
             returnValue.add(createRandomParticipant());
@@ -71,9 +71,24 @@ public final class TestUtils {
         );
     }
 
+    public static User createRandomUser() {
+        var rnd = new Random();
+        return User.builder()
+            .firstName(generateRandomString(10))
+            .lastName(generateRandomString(10))
+            .email("test@example.com")
+            .userRole(UserRole.ROLE_USER)
+            .enabled(true)
+            .username(generateRandomString(10))
+            .password(generateRandomString(15))
+            .expirationDate(Instant.now().plus(rnd.nextInt(50) + 1, ChronoUnit.DAYS))
+            .build();
+    }
+
     /**
      * <p>Copies test file to a location expected by the application and returns it as byte[].<br>
      * Copied file is set to delete on exit.</p>
+     *
      * @return Byte[] of the test file.
      * @throws IOException If I/O error occurs when copying the file.
      */
@@ -84,15 +99,25 @@ public final class TestUtils {
             return file;
         }
         Files.copy(Path.of("./testData/testFile.jpg"), Path.of(rootPath + "/testFile.jpg"), StandardCopyOption.REPLACE_EXISTING);
-        var finalFile = new File(rootPath+"/testFile.jpg");
+        var finalFile = new File(rootPath + "/testFile.jpg");
         try (InputStream inputStream = new FileInputStream(finalFile.toString())) {
             file = IOUtils.toByteArray(inputStream);
-        } catch (IOException ignored) {}
+        } catch (IOException ignored) {
+        }
         finalFile.deleteOnExit();
         return file;
     }
 
     public static String generateRandomString(int targetStringLength) {
         return Utils.generateRandomString(targetStringLength);
+    }
+
+    public static List<User> createListOfRandomUsers() {
+        List<User> returnValue = new LinkedList<>();
+        var random = new Random();
+        for (int i = 0; i < random.nextInt(10, 101); i++) {
+            returnValue.add(createRandomUser());
+        }
+        return returnValue;
     }
 }
