@@ -11,6 +11,8 @@ import fi.asteriski.eventsignup.domain.Event;
 import fi.asteriski.eventsignup.domain.Participant;
 import fi.asteriski.eventsignup.event.EventNotFoundException;
 import fi.asteriski.eventsignup.event.EventService;
+import fi.asteriski.eventsignup.user.UserRepository;
+import fi.asteriski.eventsignup.user.UserService;
 import fi.asteriski.eventsignup.utils.TestUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -20,10 +22,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -31,19 +37,31 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(controllers = SignupController.class)
 class SignupControllerIntegrationTest {
 
-    @Autowired
     private MockMvc mockMvc;
     @MockBean
     private SignupService signupService;
     @Autowired
     private ObjectMapper mapper;
+    @Autowired
+    private WebApplicationContext context;
+    // These mock beans are needed since they are declared in EventsignupApplication class.
+    @MockBean
+    UserRepository userRepository;
+    @MockBean
+    BCryptPasswordEncoder bCryptPasswordEncoder;
+    @MockBean
+    UserService userService;
     private Participant participant;
     private Event event;
 
     @BeforeEach
     void setUp() {
-        this.participant = TestUtils.createRandomParticipant();
-        this.event = TestUtils.createRandomEvent();
+        mockMvc = MockMvcBuilders
+            .webAppContextSetup(context)
+            .apply(springSecurity()) // enable security for the mock set up
+            .build();
+        this.participant = TestUtils.createRandomParticipant(null);
+        this.event = TestUtils.createRandomEvent(null);
         // This is needed so Java 8 date/time classes are supported by the mapper.
         this.mapper.registerModule(new JavaTimeModule())
             .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
