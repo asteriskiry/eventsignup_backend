@@ -28,8 +28,8 @@ class SignupControllerUnitTest {
     void setUp() {
         signupService = Mockito.mock(SignupService.class);
         signupController = new SignupController(signupService);
-        participant = TestUtils.createRandomParticipant();
-        event = TestUtils.createRandomEvent();
+        participant = TestUtils.createRandomParticipant(null);
+        event = TestUtils.createRandomEvent(null);
     }
 
     @Test

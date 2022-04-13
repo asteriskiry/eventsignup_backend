@@ -21,4 +21,5 @@ To run:
     $ ./gradlew bootRun
 
 ## Other info
-testFile.jpg is 'Imladris' by joewight (https://www.deviantart.com/joewight/art/Imladris-430740597). Distributed under  CC by-nc-nd (http://creativecommons.org/licenses/by-nc-nd/3.0/).
+- testFile.jpg is 'Imladris' by joewight (https://www.deviantart.com/joewight/art/Imladris-430740597). Distributed under  CC by-nc-nd (http://creativecommons.org/licenses/by-nc-nd/3.0/).
+- User management adapted from https://github.com/kamer/spring-boot-user-registration
