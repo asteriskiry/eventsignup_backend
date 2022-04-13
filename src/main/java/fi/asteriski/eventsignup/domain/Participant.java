@@ -12,6 +12,8 @@ import org.springframework.data.mongodb.core.index.CompoundIndexes;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotNull;
 import java.time.Instant;
 import java.util.Map;
 
@@ -24,11 +26,15 @@ public class Participant {
 
     @Id
     private String id;
-    @NonNull
+    @NonNull // For lombok
+    @NotNull // For openApi
     private final String name;
-    @NonNull
+    @NonNull // For lombok
+    @NotNull // For openApi
+    @Email
     private String email;
-    @NonNull
+    @NonNull // For lombok
+    @NotNull // For openApi
     @Indexed
     private final String event;
     private Gender gender;

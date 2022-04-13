@@ -13,6 +13,8 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotNull;
 import java.time.Instant;
 import java.util.Collection;
 import java.util.Collections;
@@ -29,15 +31,21 @@ public class User implements UserDetails {
 
     @Id
     private String id;
-    @NonNull
+    @NonNull // For lombok
+    @NotNull // For openApi
     private String firstName;
-    @NonNull
+    @NonNull // For lombok
+    @NotNull // For openApi
     private String lastName;
-    @NonNull
+    @NonNull // For lombok
+    @NotNull // For openApi
+    @Email
     private String email;
-    @NonNull
+    @NonNull // For lombok
+    @NotNull // For openApi
     private String password;
-    @NonNull
+    @NonNull // For lombok
+    @NotNull // For openApi
     @Indexed(unique = true)
     private String username;
     private Instant expirationDate;

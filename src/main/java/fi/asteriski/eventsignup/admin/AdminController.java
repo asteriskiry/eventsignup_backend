@@ -7,6 +7,7 @@ package fi.asteriski.eventsignup.admin;
 import fi.asteriski.eventsignup.domain.Event;
 import fi.asteriski.eventsignup.domain.Participant;
 import fi.asteriski.eventsignup.domain.User;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,21 +22,25 @@ public class AdminController {
 
     private AdminService adminService;
 
+    @Operation(summary = "Gets all events for admin view.")
     @GetMapping("/admin/event/all")
     public List<Event> getAllEvents(@AuthenticationPrincipal User loggedInUser) {
         return adminService.getAllEvents();
     }
 
+    @Operation(summary = "Get all events of a specific user to admin view.")
     @GetMapping("/admin/event/{userId}")
     public List<Event> getAllEventsForUser(@PathVariable String userId, @AuthenticationPrincipal User loggedInUser) {
         return adminService.getAllEventsForUser(userId);
     }
 
+    @Operation(summary = "Gets all participants for admin view.")
     @GetMapping("/admin/participants/all")
     public List<Participant> getAllParticipants(@AuthenticationPrincipal User loggedInUser) {
         return adminService.getAllParticipants();
     }
 
+    @Operation(summary = "Gets all participants for a specific event.")
     @GetMapping("/admin/participants/{eventId}")
     public List<Participant> getAllParticipantsForEvent(@PathVariable String eventId, @AuthenticationPrincipal User loggedInUser) {
         return adminService.getAllParticipantsForEvent(eventId);

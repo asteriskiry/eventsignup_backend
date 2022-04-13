@@ -5,6 +5,7 @@ Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
 package fi.asteriski.eventsignup.event;
 
 import fi.asteriski.eventsignup.domain.User;
+import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -23,6 +24,7 @@ public class ImageController {
         this.imageService = imageService;
     }
 
+    @Operation(summary = "Get file path for the uploaded banner image.")
     @GetMapping("/event/banner/{fileName}")
     @ResponseBody
     public Map<String, String> getBannerImagePath(@PathVariable String fileName, @AuthenticationPrincipal User loggedInUser) {
@@ -31,11 +33,13 @@ public class ImageController {
         return returnValue;
     }
 
+    @Operation(summary = "Get a banner image.")
     @GetMapping(value = "/event/banner/get/{fileName}", produces = {MediaType.IMAGE_PNG_VALUE, MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_GIF_VALUE})
     public byte[] getBannerImage(@PathVariable String fileName, @AuthenticationPrincipal User loggedInUser) {
         return imageService.getBannerImage(fileName.replace('_', '/'));
     }
 
+    @Operation(summary = "Upload a new banner image.")
     @PostMapping("/event/banner/add")
     public RedirectView addBannerImg(@RequestBody byte[] file, @AuthenticationPrincipal User loggedInUser) {
         // During testing loggedInUser will be null.
