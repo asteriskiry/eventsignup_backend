@@ -12,29 +12,50 @@ import fi.asteriski.eventsignup.event.EventService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import java.util.List;
 
 @Service
 @AllArgsConstructor
-public class AdminService {
+class AdminService {
 
     EventRepository eventRepository;
     ParticipantRepository participantRepository;
     EventService eventService;
 
-    public List<Event> getAllEvents() {
+    /**
+     * Fetches all event from database in no particular order.
+     * @return List of events.
+     */
+    List<Event> getAllEvents() {
         return eventRepository.findAll();
     }
 
-    public List<Event> getAllEventsForUser(String userId) {
-        return eventService.getAllEventsForUser(userId);
+    /**
+     * Fetches all events belonging to a particular user.
+     * @param userId Id of the user.
+     * @return List of events ordered by starting date.
+     */
+    List<Event> getAllEventsForUser(String userId) {
+        List<Event> events = eventService.getAllEventsForUser(userId);
+        events.sort(Comparator.comparing(Event::getStartDate));
+        return events;
     }
 
-    public List<Participant> getAllParticipants() {
+    /**
+     * Fetched all participants from database.
+     * @return List of participants in no particular order.
+     */
+    List<Participant> getAllParticipants() {
         return participantRepository.findAll();
     }
 
-    public List<Participant> getAllParticipantsForEvent(String eventId) {
+    /**
+     * Fetched all participants for the specified event.
+     * @param eventId Event's id.
+     * @return List of participants in no particular order.
+     */
+    List<Participant> getAllParticipantsForEvent(String eventId) {
         return eventService.getParticipants(eventId);
     }
 }

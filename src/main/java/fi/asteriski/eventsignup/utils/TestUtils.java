@@ -31,47 +31,52 @@ public final class TestUtils {
     // To prevent instantiation of the class.
     private TestUtils(){}
 
-    public static Event createRandomEvent() {
+    public static Event createRandomEvent(String owner) {
         var random = new Random();
         var form = new Form();
         var instant = random.nextBoolean() ? Instant.now().minus(random.nextLong(10, 100), ChronoUnit.DAYS) : Instant.now().plus(random.nextLong(10, 100), ChronoUnit.DAYS);
-        return new Event(
+        var event = new Event(
             Utils.generateRandomString(random.nextInt(5, 15)),
             instant,
             Utils.generateRandomString(random.nextInt(5, 15)),
             Utils.generateRandomString(random.nextInt(20, 50)),
             form
         );
+        if (owner != null) {
+            event.setOwner(owner);
+        }
+        return event;
     }
 
-    public static List<Event> getRandomEvents() {
+    public static List<Event> getRandomEvents(String owner) {
         List<Event> returnValue = new LinkedList<>();
         var random = new Random();
         for (int i = 0; i < random.nextInt(10, 101); i++) {
-            returnValue.add(createRandomEvent());
+            returnValue.add(createRandomEvent(owner));
         }
         return returnValue;
     }
 
-    public static List<Participant> getRandomParticipants() {
+    public static List<Participant> getRandomParticipants(String eventId) {
         List<Participant> returnValue = new LinkedList<>();
         var random = new Random();
         for (int i = 0; i < random.nextInt(10, 101); i++) {
-            returnValue.add(createRandomParticipant());
+            returnValue.add(createRandomParticipant(eventId));
         }
         return returnValue;
     }
 
-    public static Participant createRandomParticipant() {
+    public static Participant createRandomParticipant(String eventId) {
         var random = new Random();
+        eventId = eventId != null ? eventId : Utils.generateRandomString(random.nextInt(5, 15));
         return new Participant(
             Utils.generateRandomString(random.nextInt(5, 15)),
             Utils.generateRandomString(random.nextInt(5, 15)),
-            Utils.generateRandomString(random.nextInt(5, 15))
+            eventId
         );
     }
 
-    public static User createRandomUser() {
+    public static User createRandomUser(String username) {
         var rnd = new Random();
         return User.builder()
             .firstName(generateRandomString(10))
@@ -79,7 +84,7 @@ public final class TestUtils {
             .email("test@example.com")
             .userRole(UserRole.ROLE_USER)
             .enabled(true)
-            .username(generateRandomString(10))
+            .username(username)
             .password(generateRandomString(15))
             .expirationDate(Instant.now().plus(rnd.nextInt(50) + 1, ChronoUnit.DAYS))
             .build();
@@ -112,11 +117,11 @@ public final class TestUtils {
         return Utils.generateRandomString(targetStringLength);
     }
 
-    public static List<User> createListOfRandomUsers() {
+    public static List<User> createListOfRandomUsers(String username) {
         List<User> returnValue = new LinkedList<>();
         var random = new Random();
         for (int i = 0; i < random.nextInt(10, 101); i++) {
-            returnValue.add(createRandomUser());
+            returnValue.add(createRandomUser(username));
         }
         return returnValue;
     }

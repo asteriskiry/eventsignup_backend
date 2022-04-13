@@ -18,7 +18,7 @@ public class UserController {
     private UserService userService;
 
     @GetMapping("/admin/users/all")
-    public List<User> getAllUsers(@AuthenticationPrincipal User loggedInUser) {
+    public List<User> getAllNonAdminUsers(@AuthenticationPrincipal User loggedInUser) {
         return userService.getAllNonAdminUsers();
     }
 
@@ -38,7 +38,7 @@ public class UserController {
     }
 
     @DeleteMapping("/admin/users/delete/all")
-    public void deleteAllUsers(@AuthenticationPrincipal User loggedInUser) {
-        userService.deleteAllUsers();
+    public void deleteAllNonAdminUsers(@AuthenticationPrincipal User loggedInUser) {
+        userService.deleteAllNonAdminUsers();
     }
 }

@@ -23,16 +23,28 @@ import java.util.List;
 public class UserService implements UserDetailsService {
 
     @Value("${default.days.until.password.expire}")
-    private Integer passwordExpiryDays;
+    private static Integer passwordExpiryDays;
     private UserRepository userRepository;
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
+    /**
+     * Fetches a user from database on login. Called automatically by Spring.
+     *
+     * @param username the username identifying the user whose data is required.
+     * @return The requested user.
+     * @throws UsernameNotFoundException If user is not found.
+     */
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return userRepository.findByUsername(username).orElseThrow(() ->
             new UsernameNotFoundException(String.format("User '%s' not found.", username)));
     }
 
+    /**
+     * Adds a new user to the database.
+     *
+     * @param user User entity to save.
+     */
     void addUser(User user) {
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         user.setExpirationDate(Instant.now().plus(passwordExpiryDays, ChronoUnit.DAYS));
@@ -44,6 +56,12 @@ public class UserService implements UserDetailsService {
         userRepository.save(user);
     }
 
+    /**
+     * <p>Fetches all non-admin users from database.<br>
+     * Sets all passwords to an empty string for security reasons.</p>
+     *
+     * @return List of users.
+     */
     List<User> getAllNonAdminUsers() {
         List<User> users = userRepository.findAll();
         users.removeIf(user -> UserRole.ROLE_ADMIN.equals(user.getUserRole()));
@@ -51,6 +69,11 @@ public class UserService implements UserDetailsService {
         return users;
     }
 
+    /**
+     * Edits an existing user and saves it to database.
+     *
+     * @param user New user entity to apply changes from to existing user.
+     */
     void editUser(User user) {
         User userFromDb = userRepository.findById(user.getId()).orElseThrow(UserNotFoundException::new);
         userFromDb.setFirstName(userFromDb.getFirstName());
@@ -69,11 +92,19 @@ public class UserService implements UserDetailsService {
         userRepository.save(userFromDb);
     }
 
+    /**
+     * Deletes a user from database.
+     *
+     * @param userId Id of the user to delete.
+     */
     void deleteUser(String userId) {
         userRepository.deleteById(userId);
     }
 
-    void deleteAllUsers() {
+    /**
+     * Deletes of non-admin users from database.
+     */
+    void deleteAllNonAdminUsers() {
         userRepository.deleteAllByUserRole(UserRole.ROLE_USER);
     }
 }

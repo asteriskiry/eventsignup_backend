@@ -31,8 +31,8 @@ class AdminControllerUnitTest {
     void setUp() {
         adminService = Mockito.mock(AdminService.class);
         adminController = new AdminController(adminService);
-        participants = TestUtils.getRandomParticipants();
-        events = TestUtils.getRandomEvents();
+        participants = TestUtils.getRandomParticipants(null);
+        events = TestUtils.getRandomEvents(null);
     }
 
     @Test

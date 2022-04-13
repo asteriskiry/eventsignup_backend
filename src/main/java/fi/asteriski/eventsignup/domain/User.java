@@ -48,6 +48,7 @@ public class User implements UserDetails {
     private Boolean locked = false;
     @Builder.Default
     private Boolean enabled = true;
+    @Builder.Default
     @Transient
     private boolean isAdmin = false;
 

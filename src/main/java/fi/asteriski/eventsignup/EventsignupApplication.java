@@ -8,14 +8,10 @@ import fi.asteriski.eventsignup.domain.User;
 import fi.asteriski.eventsignup.domain.UserRole;
 import fi.asteriski.eventsignup.user.UserRepository;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
 
 @SpringBootApplication
 @AllArgsConstructor
@@ -30,12 +26,14 @@ public class EventsignupApplication implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        var adminUsername = System.getenv("ADMIN_USERNAME");
-        var adminPassword = System.getenv("ADMIN_PASSWORD");
-        User admin = new User("Asteriski", "Admin", "www-asteriski@utu.fi", bCryptPasswordEncoder.encode(adminPassword), adminUsername);
-        admin.setUserRole(UserRole.ROLE_ADMIN);
-        if (!userRepository.existsByUsername(adminUsername)) {
-            userRepository.save(admin);
+        if (!userRepository.getClass().getSimpleName().contains("Mockito")) {
+            var adminUsername = System.getenv("ADMIN_USERNAME");
+            var adminPassword = System.getenv("ADMIN_PASSWORD");
+            User admin = new User("Asteriski", "Admin", "www-asteriski@utu.fi", bCryptPasswordEncoder.encode(adminPassword), adminUsername);
+            admin.setUserRole(UserRole.ROLE_ADMIN);
+            if (!userRepository.existsByUsername(adminUsername)) {
+                userRepository.save(admin);
+            }
         }
     }
 }

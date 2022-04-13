@@ -2,7 +2,7 @@
 Copyright Juhani Vähä-Mäkilä (juhani@fmail.co.uk) 2022.
 Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
  */
-package fi.asteriski.eventsignup;
+package fi.asteriski.eventsignup.config;
 
 import fi.asteriski.eventsignup.user.UserService;
 import lombok.AllArgsConstructor;
@@ -18,8 +18,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 
 @Configuration
-//@EnableMethodSecurity(securedEnabled = true)
-//@EnableGlobalMethodSecurity(prePostEnabled = true)
 @EnableWebSecurity
 @AllArgsConstructor
 public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
@@ -28,6 +26,11 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
+    /**
+     * Configures end point security.
+     * @param http the {@link HttpSecurity} to modify
+     * @throws Exception
+     */
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
@@ -39,7 +42,6 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
             .logout().deleteCookies()
             .and()
             .authorizeRequests()
-//            .anyRequest().permitAll();
             .antMatchers(HttpMethod.GET, "/admin/**").hasRole("ADMIN")
             .antMatchers(HttpMethod.POST, "/admin/**").hasRole("ADMIN")
             .antMatchers(HttpMethod.POST, "/event/create").hasAnyRole("ADMIN", "USER")
@@ -49,19 +51,16 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
             .antMatchers(HttpMethod.DELETE, "/event/remove/**").hasAnyRole("ADMIN", "USER")
             .antMatchers(HttpMethod.GET, "/event/**").hasAnyRole("ADMIN", "USER")
             .antMatchers(HttpMethod.GET, "/signup/**").permitAll()
-//            .anyRequest().permitAll()
-//            .antMatchers(HttpMethod.GET, "/admin/**").authenticated()
             .and()
             .csrf().disable();
     }
 
-//    @Override
-//    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-//        String adminUserName = System.getenv("ADMIN_USERNAME");
-//        auth.inMemoryAuthentication().withUser("user").password(bCryptPasswordEncoder.encode("password")).roles("USER")
-//            .and().withUser("admin").password(bCryptPasswordEncoder.encode("password")).roles("ADMIN", "USER");
-//    }
 
+    /**
+     * Configures to use custom service for user management and password encrypting method..
+     * @param auth Builtin AuthenticationManagerBuilder entity.
+     * @throws Exception
+     */
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userService)

@@ -3,6 +3,8 @@ package fi.asteriski.eventsignup.event;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import fi.asteriski.eventsignup.user.UserRepository;
+import fi.asteriski.eventsignup.user.UserService;
 import fi.asteriski.eventsignup.utils.TestUtils;
 import fi.asteriski.eventsignup.domain.Event;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,7 +13,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -27,12 +31,19 @@ class EventControllerAcceptanceTest {
     private MockMvc mockMvc;
     @Autowired
     private ObjectMapper mapper;
+    // These mock beans are needed since they are declared in EventsignupApplication class.
+    @MockBean
+    UserRepository userRepository;
+    @MockBean
+    BCryptPasswordEncoder bCryptPasswordEncoder;
+    @MockBean
+    UserService userService;
     private Event event;
 
 
     @BeforeEach
     void setUp() {
-        this.event = TestUtils.createRandomEvent();
+        this.event = TestUtils.createRandomEvent(null);
         // This is needed so Java 8 date/time classes are supported by the mapper.
         this.mapper.registerModule(new JavaTimeModule())
             .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
