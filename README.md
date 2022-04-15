@@ -15,6 +15,8 @@ Used technologies:
 - Import Gradle project
 - Expects Mongodb at localhost:27017
 - Server will be at localhost:8080
+- OpenAPI definitions are available at http://localhost:8080/api-docs.<yaml | json>
+- OpenAPI swagger ui is available at http://localhost:8080/swagger-ui.html
 
 To run:
 

@@ -6,6 +6,7 @@ package fi.asteriski.eventsignup.domain;
 
 import lombok.Data;
 
+import javax.validation.constraints.NotNull;
 import java.time.Instant;
 import java.util.Map;
 
@@ -18,6 +19,7 @@ public class Form {
     Otherwise, conversion from incoming json to Event in EventController will fail!
      */
     private Instant dateCreated;
+    @NotNull // for openAPI
     private Map<String, Object> formData;
     private String userCreated;
 }

@@ -10,6 +10,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import javax.validation.constraints.NotNull;
 import java.time.Instant;
 import java.util.Map;
 
@@ -19,15 +20,20 @@ public class Event {
 
     @Id
     private String id;
-    @NonNull
+    @NonNull // For lombok
+    @NotNull // For openApi
     private String name;
-    @NonNull
+    @NonNull // For lombok
+    @NotNull // For openApi
     private Instant startDate;
-    @NonNull
+    @NonNull // For lombok
+    @NotNull // For openApi
     private String place;
-    @NonNull
+    @NonNull // For lombok
+    @NotNull // For openApi
     private String description;
-    @NonNull
+    @NonNull // For lombok
+    @NotNull // For openApi
     private Form form;
     @Indexed
     private String owner;
