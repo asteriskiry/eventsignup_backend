@@ -5,6 +5,7 @@ Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
 package fi.asteriski.eventsignup.event;
 
 import fi.asteriski.eventsignup.utils.Utils;
+import lombok.extern.log4j.Log4j2;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,7 +17,7 @@ import java.awt.image.BufferedImage;
 import java.io.*;
 import java.nio.file.Files;
 
-@Slf4j
+@Log4j2
 @Service
 public class ImageService {
 
@@ -28,12 +29,14 @@ public class ImageService {
     public byte[] getBannerImage(String fileName) {
         File filePath = new File(String.format("%s/%s", rootPath, fileName));
         if (!filePath.canRead()) {
+            log.info(String.format("%s Requested file %s doesn't exist and/or cannot be read.", LOG_PREFIX, fileName));
             throw new ImageNotFoundException(fileName.substring(fileName.lastIndexOf("/") + 1));
         }
         byte[] returnValue;
         try (InputStream inputStream = new FileInputStream(filePath.toString())) {
             returnValue = IOUtils.toByteArray(inputStream);
         } catch (IOException ioException) {
+            log.error(String.format("%s IOError while reading file <%s>", LOG_PREFIX, fileName));
             throw new ImageNotFoundException(fileName.substring(fileName.lastIndexOf("/") + 1), ioException);
         }
         return returnValue;
