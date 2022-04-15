@@ -50,7 +50,10 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
             .antMatchers(HttpMethod.PUT, "/event/edit/**").hasAnyRole("ADMIN", "USER")
             .antMatchers(HttpMethod.DELETE, "/event/remove/**").hasAnyRole("ADMIN", "USER")
             .antMatchers(HttpMethod.GET, "/event/**").hasAnyRole("ADMIN", "USER")
-            .antMatchers(HttpMethod.GET, "/swagger-ui/**").fullyAuthenticated()
+            .antMatchers(HttpMethod.GET, "/swagger-ui/**").hasRole("ADMIN")
+            .antMatchers(HttpMethod.GET, "/api-docs/**").hasRole("ADMIN")
+            .antMatchers(HttpMethod.GET, "/api-docs.yaml").hasRole("ADMIN")
+            .antMatchers(HttpMethod.GET, "/api-docs.json").hasRole("ADMIN")
             .antMatchers(HttpMethod.GET, "/signup/**").permitAll()
             .and()
             .csrf().disable();
