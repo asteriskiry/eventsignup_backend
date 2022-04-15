@@ -6,12 +6,14 @@ package fi.asteriski.eventsignup.event;
 
 import fi.asteriski.eventsignup.domain.User;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
 
-import java.security.Principal;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -24,7 +26,9 @@ public class ImageController {
         this.imageService = imageService;
     }
 
-    @Operation(summary = "Get file path for the uploaded banner image.")
+    @Operation(summary = "Get file path for the uploaded banner image.", parameters =
+        {@Parameter(name = "fileName", description = "Filename generated when saving an image."),
+            @Parameter(name = "loggedInUser", description = "Not required. Automatically added currently logged in user.")})
     @GetMapping("/event/banner/{fileName}")
     @ResponseBody
     public Map<String, String> getBannerImagePath(@PathVariable String fileName, @AuthenticationPrincipal User loggedInUser) {
@@ -39,7 +43,12 @@ public class ImageController {
         return imageService.getBannerImage(fileName.replace('_', '/'));
     }
 
-    @Operation(summary = "Upload a new banner image.")
+    @Operation(summary = "Upload a new banner image.", parameters =
+        {@Parameter(name = "file", description = "Raw bytes of the image being uploaded."),
+            @Parameter(name = "loggedInUser", description = "Not required. Automatically added currently logged in user.")})
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "302", description = "Redirect to /event/banner/{fileName}.")
+    })
     @PostMapping("/event/banner/add")
     public RedirectView addBannerImg(@RequestBody byte[] file, @AuthenticationPrincipal User loggedInUser) {
         // During testing loggedInUser will be null.
