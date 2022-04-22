@@ -10,14 +10,18 @@ import fi.asteriski.eventsignup.domain.Participant;
 import fi.asteriski.eventsignup.event.EventRepository;
 import fi.asteriski.eventsignup.event.EventService;
 import lombok.AllArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
 import java.util.List;
 
+@Log4j2
 @Service
 @AllArgsConstructor
 class AdminService {
+
+    private static final String LOG_PREFIX = "[AdminService]";
 
     EventRepository eventRepository;
     ParticipantRepository participantRepository;
@@ -37,6 +41,7 @@ class AdminService {
      * @return List of events ordered by starting date.
      */
     List<Event> getAllEventsForUser(String userId) {
+        log.info(String.format("%s In %s.getAllEventsForUser(). User: %s", LOG_PREFIX, this.getClass().getSimpleName(), userId));
         List<Event> events = eventService.getAllEventsForUser(userId);
         events.sort(Comparator.comparing(Event::getStartDate));
         return events;
