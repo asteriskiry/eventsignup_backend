@@ -8,16 +8,18 @@ import fi.asteriski.eventsignup.ParticipantRepository;
 import fi.asteriski.eventsignup.domain.ArchivedEvent;
 import fi.asteriski.eventsignup.domain.Event;
 import fi.asteriski.eventsignup.domain.Participant;
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.util.List;
 
-@Slf4j
+@Log4j2
 @Service
 public class EventService {
+
+    private static final String LOG_PREFIX = "[EventService]";
 
     @Autowired
     private EventRepository eventRepository;
@@ -53,13 +55,19 @@ public class EventService {
     }
 
     public Event editExistingEvent(Event newEvent) {
-        Event oldEvent = eventRepository.findById(newEvent.getId()).orElseThrow(() -> new EventNotFoundException(newEvent.getId()));
+        Event oldEvent = eventRepository.findById(newEvent.getId()).orElseThrow(() -> {
+            log.error(String.format("%s Unable to edit Existing event. Old event with id <%s> was not found!", LOG_PREFIX, newEvent.getId()));
+            throw new EventNotFoundException(newEvent.getId());
+        });
         newEvent.setId(oldEvent.getId());
         return eventRepository.save(newEvent);
     }
 
     public ArchivedEvent archiveEvent(String eventId) {
-        Event oldEvent = eventRepository.findById(eventId).orElseThrow(() -> new EventNotFoundException(eventId));
+        Event oldEvent = eventRepository.findById(eventId).orElseThrow(() -> {
+            log.error(String.format("%s Unable to archive event. Old event with id <%s> was not found!", LOG_PREFIX, eventId));
+            throw new EventNotFoundException(eventId);
+        });
         long numberOfParticipants = participantRepository.countAllByEvent(eventId);
         ArchivedEvent archivedEvent = new ArchivedEvent(oldEvent, Instant.now(), numberOfParticipants);
         archivedEvent = archivedEventRepository.save(archivedEvent);

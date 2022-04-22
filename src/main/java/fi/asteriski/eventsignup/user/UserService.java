@@ -7,6 +7,7 @@ package fi.asteriski.eventsignup.user;
 import fi.asteriski.eventsignup.domain.User;
 import fi.asteriski.eventsignup.domain.UserRole;
 import lombok.AllArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -18,10 +19,12 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
+@Log4j2
 @Service
 @AllArgsConstructor
 public class UserService implements UserDetailsService {
 
+    private static final String LOG_PREFIX = "[UserService]";
     @Value("${default.days.until.password.expire}")
     private static Integer passwordExpiryDays;
     private UserRepository userRepository;
@@ -52,7 +55,7 @@ public class UserService implements UserDetailsService {
         if (user.isAdmin()) {
             user.setUserRole(UserRole.ROLE_ADMIN);
         }
-
+        log.info(String.format("%s Adding new user: '%s'", LOG_PREFIX, user));
         userRepository.save(user);
     }
 
@@ -75,7 +78,10 @@ public class UserService implements UserDetailsService {
      * @param user New user entity to apply changes from to existing user.
      */
     void editUser(User user) {
-        User userFromDb = userRepository.findById(user.getId()).orElseThrow(UserNotFoundException::new);
+        User userFromDb = userRepository.findById(user.getId()).orElseThrow(() -> {
+            log.error(String.format("%s Unable to edit user. Existing user with id <%s> not found.", LOG_PREFIX, user.getId()));
+            throw new UserNotFoundException();
+        });
         userFromDb.setFirstName(userFromDb.getFirstName());
         userFromDb.setLastName(userFromDb.getLastName());
         userFromDb.setEmail(user.getEmail());
