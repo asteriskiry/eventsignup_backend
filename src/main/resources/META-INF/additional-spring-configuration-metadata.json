@@ -14,5 +14,10 @@
       "name": "default.days.until.password.expire",
       "type": "java.lang.Integer",
       "description": "Default amount of days a newly created password is valid."
+    },
+    {
+      "name": "default.email.sender.address",
+      "type": "java.lang.String",
+      "description": "Default sender address in emails."
     }
   ] }
