@@ -19,5 +19,10 @@
       "name": "default.email.sender.address",
       "type": "java.lang.String",
       "description": "Default sender address in emails."
+    },
+    {
+      "name": "default.days.to.archive.past.events",
+      "type": "java.lang.Integer",
+      "description": "Default amount of days before automatic archiving of past events."
     }
   ] }

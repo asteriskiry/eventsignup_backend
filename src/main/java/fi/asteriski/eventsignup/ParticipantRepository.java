@@ -16,4 +16,5 @@ public interface ParticipantRepository extends MongoRepository<Participant, Stri
     long countAllByEvent(String event);
     void deleteAllByEvent(String event);
     void deleteParticipantByEventAndId(String event, String participant);
+    void deleteAllByEventIn(List<String> events);
 }
