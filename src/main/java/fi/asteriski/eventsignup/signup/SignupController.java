@@ -15,6 +15,9 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.ZoneId;
+import java.util.Locale;
+
 @RestController
 public class SignupController {
 
@@ -37,23 +40,27 @@ public class SignupController {
 
     @Operation(summary = "Signup for an event (i.e. add a participant).",
         requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content =
-            {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = Participant.class))}))
+            {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = Participant.class))}),
+    parameters = {@Parameter(name = "usersLocale", description = "Automatically inserted based on request headers."),
+        @Parameter(name = "userTimeZone", description = "Automatically inserted based on request headers.")})
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Signup successful.")
     })
     @PostMapping(value = "/signup/{eventId}/add", consumes = "application/json")
-    public void addParticipantToEvent(@PathVariable String eventId, @RequestBody Participant participant) {
-        signupService.addParticipantToEvent(eventId, participant);
+    public void addParticipantToEvent(@PathVariable String eventId, @RequestBody Participant participant, Locale usersLocale, ZoneId userTimeZone) {
+        signupService.addParticipantToEvent(eventId, participant, usersLocale, userTimeZone);
     }
 
     @Operation(summary = "Cancel participation to an event.", parameters =
         {@Parameter(name = "eventId", description = "Event's id where to cancel from."),
-            @Parameter(name = "participantId", description = "Participant's id (who's cancelling).")})
+            @Parameter(name = "participantId", description = "Participant's id (who's cancelling)."),
+        @Parameter(name = "usersLocale", description = "Automatically inserted based on request headers."),
+        @Parameter(name = "userTimeZone", description = "Automatically inserted based on request headers.")})
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Cancellation successful.")
     })
     @DeleteMapping("/signup/cancel/{eventId}/{participantId}")
-    void removeParticipantFromEvent(@PathVariable String eventId, @PathVariable String participantId) {
-        signupService.removeParticipantFromEvent(eventId, participantId);
+    void removeParticipantFromEvent(@PathVariable String eventId, @PathVariable String participantId, Locale usersLocale, ZoneId userTimeZone) {
+        signupService.removeParticipantFromEvent(eventId, participantId, usersLocale, userTimeZone);
     }
 }

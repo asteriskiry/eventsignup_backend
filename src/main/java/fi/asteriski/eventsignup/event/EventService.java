@@ -8,6 +8,8 @@ import fi.asteriski.eventsignup.ParticipantRepository;
 import fi.asteriski.eventsignup.domain.ArchivedEvent;
 import fi.asteriski.eventsignup.domain.Event;
 import fi.asteriski.eventsignup.domain.Participant;
+import fi.asteriski.eventsignup.domain.User;
+import fi.asteriski.eventsignup.utils.CustomEventPublisher;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,6 +29,8 @@ public class EventService {
     private ArchivedEventRepository archivedEventRepository;
     @Autowired
     private ParticipantRepository participantRepository;
+    @Autowired
+    private CustomEventPublisher customEventPublisher;
 
     public Event getEvent(String id) {
         return eventRepository.findById(id).orElseThrow(() -> new EventNotFoundException(id));
@@ -40,26 +44,28 @@ public class EventService {
         return participantRepository.findAllByEvent(eventId);
     }
 
-    public Event createNewEvent(Event event, String userName) {
-        event.setOwner(userName);
+    public Event createNewEvent(Event event, User loggedInUser) {
+        event.setOwner(loggedInUser.getUsername());
         if (event.getBannerImg() != null) {
-            event.setBannerImg(String.format("%s_%s", userName, event.getBannerImg()));
+            event.setBannerImg(String.format("%s_%s", loggedInUser.getUsername(), event.getBannerImg()));
         }
         if (event.getForm().getUserCreated() == null) {
-            event.getForm().setUserCreated(userName);
+            event.getForm().setUserCreated(loggedInUser.getUsername());
         }
         if (event.getForm().getDateCreated() == null) {
             event.getForm().setDateCreated(Instant.now());
         }
+        customEventPublisher.publishSavedEventEvent(event, loggedInUser);
         return eventRepository.save(event);
     }
 
-    public Event editExistingEvent(Event newEvent) {
+    public Event editExistingEvent(Event newEvent, User loggedInUser) {
         Event oldEvent = eventRepository.findById(newEvent.getId()).orElseThrow(() -> {
             log.error(String.format("%s Unable to edit Existing event. Old event with id <%s> was not found!", LOG_PREFIX, newEvent.getId()));
             throw new EventNotFoundException(newEvent.getId());
         });
         newEvent.setId(oldEvent.getId());
+        customEventPublisher.publishSavedEventEvent(newEvent, loggedInUser);
         return eventRepository.save(newEvent);
     }
 

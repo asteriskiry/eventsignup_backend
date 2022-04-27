@@ -14,6 +14,9 @@ import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
+import java.time.ZoneId;
+import java.util.Locale;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -72,9 +75,13 @@ class SignupControllerUnitTest {
     void addParticipantToEvent() {
         var valueCapture = ArgumentCaptor.forClass(String.class);
         var valueCapture2 = ArgumentCaptor.forClass(Participant.class);
-        when(signupService.addParticipantToEvent(valueCapture.capture(), valueCapture2.capture())).thenReturn(this.participant);
-        signupController.addParticipantToEvent("123", participant);
-        verify(signupService).addParticipantToEvent("123", this.participant);
+        var valueCapture3 = ArgumentCaptor.forClass(Locale.class);
+        var valueCapture4 = ArgumentCaptor.forClass(ZoneId.class);
+        var defaultLocale = Locale.getDefault();
+        var defaultTimeZone = ZoneId.systemDefault();
+        when(signupService.addParticipantToEvent(valueCapture.capture(), valueCapture2.capture(), valueCapture3.capture(), valueCapture4.capture())).thenReturn(this.participant);
+        signupController.addParticipantToEvent("123", participant, defaultLocale, defaultTimeZone);
+        verify(signupService).addParticipantToEvent("123", this.participant, defaultLocale, defaultTimeZone);
         assertEquals("123", valueCapture.getValue());
         assertEquals(this.participant, valueCapture2.getValue());
     }
@@ -84,10 +91,12 @@ class SignupControllerUnitTest {
     void removeParticipantFromEvent() {
         var valueCapture = ArgumentCaptor.forClass(String.class);
         var valueCapture2 = ArgumentCaptor.forClass(String.class);
-        doNothing().when(signupService).removeParticipantFromEvent(valueCapture.capture(), valueCapture2.capture());
-        signupController.removeParticipantFromEvent("123", "456");
-        verify(signupService).removeParticipantFromEvent("123", "456");
-        assertEquals("123", valueCapture.getValue());
-        assertEquals("456", valueCapture2.getValue());
+        var valueCapture3 = ArgumentCaptor.forClass(Locale.class);
+        var valueCapture4 = ArgumentCaptor.forClass(ZoneId.class);
+        doNothing().when(signupService).removeParticipantFromEvent(valueCapture.capture(), valueCapture.capture(), valueCapture3.capture(), valueCapture4.capture());
+        signupController.removeParticipantFromEvent("123", "456", Locale.getDefault(), ZoneId.systemDefault());
+        verify(signupService).removeParticipantFromEvent(eq("123"), eq("456"), any(Locale.class), any(ZoneId.class));
+        assertEquals("123", valueCapture.getAllValues().get(0));
+        assertEquals("456", valueCapture.getAllValues().get(1));
     }
 }
