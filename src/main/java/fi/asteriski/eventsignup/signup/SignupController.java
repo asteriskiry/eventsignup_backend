@@ -35,7 +35,7 @@ public class SignupController {
     })
     @GetMapping("/signup/{eventId}")
     public Event getEventForSignup(@PathVariable String eventId, Locale usersLocale, ZoneId userTimeZone) {
-        return signupService.getEventForSignUp(eventId, usersLocale);
+        return signupService.getEventForSignUp(eventId, usersLocale, userTimeZone);
     }
 
     @Operation(summary = "Signup for an event (i.e. add a participant).",

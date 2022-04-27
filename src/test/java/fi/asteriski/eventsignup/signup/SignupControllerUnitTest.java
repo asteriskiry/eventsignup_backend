@@ -38,35 +38,35 @@ class SignupControllerUnitTest {
     @Test
     @DisplayName("Get an existing event for signup.")
     void getExistingEventForSignup() {
-        when(signupService.getEventForSignUp(eq("123"), any(Locale.class))).thenReturn(this.event);
+        when(signupService.getEventForSignUp(eq("123"), any(Locale.class), any(ZoneId.class))).thenReturn(this.event);
         assertInstanceOf(Event.class, signupController.getEventForSignup("123", Locale.getDefault(), ZoneId.systemDefault()));
     }
 
     @Test
     @DisplayName("Get an non-existing event for signup.")
     void getNonExistingEventForSignup() {
-        when(signupService.getEventForSignUp(eq("123"), any(Locale.class))).thenThrow(EventNotFoundException.class);
+        when(signupService.getEventForSignUp(eq("123"), any(Locale.class), any(ZoneId.class))).thenThrow(EventNotFoundException.class);
         assertThrows(EventNotFoundException.class, () -> signupController.getEventForSignup("123", Locale.getDefault(), ZoneId.systemDefault()));
     }
 
     @Test
     @DisplayName("Get an existing event for signup which is already full.")
     void getEventForSignupThatIsFull() {
-        when(signupService.getEventForSignUp(eq("123"), any(Locale.class))).thenThrow(EventFullException.class);
+        when(signupService.getEventForSignUp(eq("123"), any(Locale.class), any(ZoneId.class))).thenThrow(EventFullException.class);
         assertThrows(EventFullException.class, () -> signupController.getEventForSignup("123", Locale.getDefault(), ZoneId.systemDefault()));
     }
 
     @Test
     @DisplayName("Get an existing event for signup where signup hasn't started yet.")
     void getEventForSignupThatHasNotStartedYet() {
-        when(signupService.getEventForSignUp(eq("123"), any(Locale.class))).thenThrow(SignupNotStartedException.class);
+        when(signupService.getEventForSignUp(eq("123"), any(Locale.class), any(ZoneId.class))).thenThrow(SignupNotStartedException.class);
         assertThrows(SignupNotStartedException.class, () -> signupController.getEventForSignup("123", Locale.getDefault(), ZoneId.systemDefault()));
     }
 
     @Test
     @DisplayName("Get an existing event for signup where signup has ended.")
     void getEventForSignupThatSignupHasEnded() {
-        when(signupService.getEventForSignUp(eq("123"), any(Locale.class))).thenThrow(SignupEndedException.class);
+        when(signupService.getEventForSignUp(eq("123"), any(Locale.class), any(ZoneId.class))).thenThrow(SignupEndedException.class);
         assertThrows(SignupEndedException.class, () -> signupController.getEventForSignup("123", Locale.getDefault(), ZoneId.systemDefault()));
     }
 
