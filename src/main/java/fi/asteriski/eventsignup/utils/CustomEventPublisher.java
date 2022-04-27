@@ -10,6 +10,9 @@ import lombok.AllArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 
+import java.time.ZoneId;
+import java.util.Locale;
+
 @Component
 @AllArgsConstructor
 public class CustomEventPublisher {
@@ -21,13 +24,13 @@ public class CustomEventPublisher {
         applicationEventPublisher.publishEvent(savedEventSpringEvent);
     }
 
-    public void publishSignupSuccessfulEvent(final Event event, final Participant participant) {
-        SignupSuccessfulSpringEvent signupSuccessfulSpringEvent = new SignupSuccessfulSpringEvent(this, event, participant);
+    public void publishSignupSuccessfulEvent(final Event event, final Participant participant, Locale usersLocale, ZoneId userTimeZone) {
+        SignupSuccessfulSpringEvent signupSuccessfulSpringEvent = new SignupSuccessfulSpringEvent(this, event, participant, usersLocale, userTimeZone);
         applicationEventPublisher.publishEvent(signupSuccessfulSpringEvent);
     }
 
-    public void publishSignupCancelledEvent(final Event event, final Participant participant) {
-        SignupCancelledSpringEvent signupCancelledSpringEvent = new SignupCancelledSpringEvent(this, event, participant);
+    public void publishSignupCancelledEvent(final Event event, final Participant participant, Locale usersLocale, ZoneId userTimeZone) {
+        SignupCancelledSpringEvent signupCancelledSpringEvent = new SignupCancelledSpringEvent(this, event, participant, usersLocale, userTimeZone);
         applicationEventPublisher.publishEvent(signupCancelledSpringEvent);
     }
 }

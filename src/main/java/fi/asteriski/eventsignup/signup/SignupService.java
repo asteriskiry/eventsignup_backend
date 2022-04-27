@@ -18,6 +18,7 @@ import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 
 @Log4j2
 @AllArgsConstructor
@@ -53,7 +54,7 @@ public class SignupService {
         return event;
     }
 
-    public Participant addParticipantToEvent(String eventId, Participant participant) {
+    public Participant addParticipantToEvent(String eventId, Participant participant, Locale usersLocale, ZoneId userTimeZone) {
         if (!eventId.equals(participant.getEvent())) {
             throw new EventNotFoundException(participant.getEvent());
         }
@@ -61,16 +62,17 @@ public class SignupService {
             throw new EventNotFoundException(eventId);
         }
         participant.setSignupTime(Instant.now());
-        customEventPublisher.publishSignupSuccessfulEvent(eventService.getEvent(eventId), participant);
-        return participantRepository.save(participant);
+        participant = participantRepository.save(participant);
+        customEventPublisher.publishSignupSuccessfulEvent(eventService.getEvent(eventId), participant, usersLocale, userTimeZone);
+        return participant;
     }
 
-    public void removeParticipantFromEvent(String eventId, String participantId) {
+    public void removeParticipantFromEvent(String eventId, String participantId, Locale usersLocale, ZoneId userTimeZone) {
         if (!eventService.eventExists(eventId)) {
             throw new EventNotFoundException(eventId);
         }
         Participant participant = participantRepository.findById(participantId).orElseThrow(() -> new ParticipantNotFoundException(participantId, eventId));
         participantRepository.deleteParticipantByEventAndId(eventId, participantId);
-        customEventPublisher.publishSignupCancelledEvent(eventService.getEvent(eventId), participant);
+        customEventPublisher.publishSignupCancelledEvent(eventService.getEvent(eventId), participant, usersLocale, userTimeZone);
     }
 }

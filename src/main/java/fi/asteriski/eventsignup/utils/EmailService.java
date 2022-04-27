@@ -21,6 +21,8 @@ import org.springframework.stereotype.Component;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 
 
 @Log4j2
@@ -78,6 +80,7 @@ public class EmailService {
      */
     private static final String MAIL_SUBJECT_SIGNUP_SUCCESSFUL_TEMPLATE = "Signup for %s successful";
     private static final String MAIL_SUBJECT_SIGNUP_CANCELLED_TEMPLATE = "Participation to %s cancelled successfully";
+    private static final String LOG_ERROR_MESSAGE_TEMPLATE = "Error with email. Error was: %s";
 
     @Async
     @EventListener
@@ -89,7 +92,7 @@ public class EmailService {
                 String.format(MAIL_SUBJECT_EVENT_TEMPLATE, event.getName()),
                 String.format(MAIL_MESSAGE_EVENT_TEMPLATE, event.getName(), event.getStartDate(), event.getDescription()));
         } catch (MessagingException messagingException) {
-            log.error(String.format("Error with email. Error was: %s", messagingException));
+            log.error(String.format(LOG_ERROR_MESSAGE_TEMPLATE, messagingException));
         }
     }
 
@@ -98,14 +101,16 @@ public class EmailService {
     public void onSignupSuccessfulEvent(SignupSuccessfulSpringEvent signupSuccessfulSpringEvent) {
         Participant participant = signupSuccessfulSpringEvent.getParticipant();
         Event event = signupSuccessfulSpringEvent.getEvent();
+        ZonedDateTime zonedDateTime = event.getStartDate().atZone(signupSuccessfulSpringEvent.getUserTimeZone());
+        String formattedDateTime = zonedDateTime.format(DateTimeFormatter.RFC_1123_DATE_TIME);
         try {
             sendEmail(participant.getEmail(), defaultSender,
                 String.format(MAIL_SUBJECT_SIGNUP_SUCCESSFUL_TEMPLATE, event.getName()),
-                String.format(MAIL_MESSAGE_SIGNUP_SUCCESSFUL_TEMPLATE, event.getName(), event.getStartDate(),
+                String.format(MAIL_MESSAGE_SIGNUP_SUCCESSFUL_TEMPLATE, event.getName(), formattedDateTime,
                     event.getId(), participant.getId(),
                     event.getId(), participant.getId()));
         } catch (MessagingException messagingException) {
-            log.error(String.format("Error with email. Error was: %s", messagingException));
+            log.error(String.format(LOG_ERROR_MESSAGE_TEMPLATE, messagingException));
         }
     }
 
@@ -119,7 +124,7 @@ public class EmailService {
                 String.format(MAIL_SUBJECT_SIGNUP_CANCELLED_TEMPLATE, event.getName()),
                 String.format(MAIL_MESSAGE_SIGNUP_CANCELLED_TEMPLATE, event.getName()));
         } catch (MessagingException messagingException) {
-            log.error(String.format("Error with email. Error was: %s", messagingException));
+            log.error(String.format(LOG_ERROR_MESSAGE_TEMPLATE, messagingException));
         }
     }
 
@@ -139,7 +144,7 @@ public class EmailService {
         } catch (MailSendException mailSendException) {
             log.error(String.format("Error sending email to '%s'. Error was: %s.", recipient, mailSendException));
         } catch (MailException mailException) {
-            log.error(String.format("Error with email. Error was: %s.", mailException));
+            log.error(String.format(LOG_ERROR_MESSAGE_TEMPLATE, mailException));
         }
     }
 }
