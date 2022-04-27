@@ -73,43 +73,43 @@ class SignupControllerIntegrationTest {
     @DisplayName("Get an existing event for signup.")
     void getExistingEventForSignup() throws Exception {
         var jsonString = mapper.writeValueAsString(event);
-        when(signupService.getEventForSignUp("123")).thenReturn(event);
+        when(signupService.getEventForSignUp(anyString(), any(Locale.class), any(ZoneId.class))).thenReturn(event);
         mockMvc.perform(get("/signup/123")).andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(content().json(jsonString, true));
-        verify(signupService).getEventForSignUp("123");
+        verify(signupService).getEventForSignUp(eq("123"), any(Locale.class), any(ZoneId.class));
     }
 
     @Test
     @DisplayName("Get non-existing event for signup.")
     void getNonExistingEventForSignup() throws Exception {
-        when(signupService.getEventForSignUp("456")).thenThrow(EventNotFoundException.class);
+        when(signupService.getEventForSignUp(anyString(), any(Locale.class), any(ZoneId.class))).thenThrow(EventNotFoundException.class);
         mockMvc.perform(get("/signup/456")).andExpect(status().isNotFound());
-        verify(signupService).getEventForSignUp("456");
+        verify(signupService).getEventForSignUp(eq("456"), any(Locale.class), any(ZoneId.class));
     }
 
     @Test
     @DisplayName("Get existing event for signup where event is full.")
     void getExistingEventForSignupWhichIsFull() throws Exception {
-        when(signupService.getEventForSignUp("789")).thenThrow(EventFullException.class);
+        when(signupService.getEventForSignUp(anyString(), any(Locale.class), any(ZoneId.class))).thenThrow(EventFullException.class);
         mockMvc.perform(get("/signup/789")).andExpect(status().isConflict());
-        verify(signupService).getEventForSignUp("789");
+        verify(signupService).getEventForSignUp(eq("789"), any(Locale.class), any(ZoneId.class));
     }
 
     @Test
     @DisplayName("Get existing event for signup where signup hasn't started yet.")
     void getExistingEventForSignupWhereSignupHasNotStarted() throws Exception {
-        when(signupService.getEventForSignUp("1234")).thenThrow(SignupNotStartedException.class);
+        when(signupService.getEventForSignUp(anyString(), any(Locale.class), any(ZoneId.class))).thenThrow(SignupNotStartedException.class);
         mockMvc.perform(get("/signup/1234")).andExpect(status().isConflict());
-        verify(signupService).getEventForSignUp("1234");
+        verify(signupService).getEventForSignUp(eq("1234"), any(Locale.class), any(ZoneId.class));
     }
 
     @Test
     @DisplayName("Get existing event for signup where signup time has ended..")
     void getExistingEventForSignupWhereSignupHasEnded() throws Exception {
-        when(signupService.getEventForSignUp("456123")).thenThrow(SignupEndedException.class);
+        when(signupService.getEventForSignUp(anyString(), any(Locale.class), any(ZoneId.class))).thenThrow(SignupEndedException.class);
         mockMvc.perform(get("/signup/456123")).andExpect(status().isConflict());
-        verify(signupService).getEventForSignUp("456123");
+        verify(signupService).getEventForSignUp(eq("456123"), any(Locale.class), any(ZoneId.class));
     }
 
     @Test
