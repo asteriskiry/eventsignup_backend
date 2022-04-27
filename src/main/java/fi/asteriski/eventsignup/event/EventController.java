@@ -13,20 +13,20 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import lombok.AllArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.ZoneId;
 import java.util.List;
+import java.util.Locale;
 
+@AllArgsConstructor
 @RestController
 public class EventController {
 
     private EventService eventService;
-
-    public EventController(EventService eventService){
-        this.eventService=eventService;
-    }
 
     @Operation(summary = "Get an event by its id.", parameters =
         {@Parameter(name = "eventId", description = "Requested events id."),
@@ -38,8 +38,8 @@ public class EventController {
         @ApiResponse(responseCode = "404", description = "Event not found.")
     })
     @GetMapping("/event/get/{eventId}")
-    public Event getEvent(@PathVariable String eventId, @AuthenticationPrincipal User loggedInUser) {
-        return eventService.getEvent(eventId);
+    public Event getEvent(@PathVariable String eventId, @AuthenticationPrincipal User loggedInUser, Locale usersLocale, ZoneId userTimeZone) {
+        return eventService.getEvent(eventId, usersLocale);
     }
 
     @Operation(summary = "Get all events for a user.", parameters = {@Parameter(description = "User's id."),
@@ -68,28 +68,32 @@ public class EventController {
     }
 
     @Operation(summary = "Create a new event.", parameters =
-        {@Parameter(name = "loggedInUser", description = "Not required. Automatically added currently logged in user.")},
+        {@Parameter(name = "loggedInUser", description = "Not required. Automatically added currently logged in user."),
+            @Parameter(name = "usersLocale", description = "Automatically inserted based on request headers."),
+            @Parameter(name = "userTimeZone", description = "Automatically inserted based on request headers.")},
     requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content =
         {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = Participant.class))}))
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Event creation successful.")
     })
     @PostMapping(value = "/event/create", consumes = "application/json")
-    public void createEvent(@RequestBody Event event, @AuthenticationPrincipal User loggedInUser) {
+    public void createEvent(@RequestBody Event event, @AuthenticationPrincipal User loggedInUser, Locale usersLocale, ZoneId userTimeZone) {
         // During testing loggedInUser will be null.
-        eventService.createNewEvent(event, loggedInUser);
+        eventService.createNewEvent(event, loggedInUser, usersLocale, userTimeZone);
     }
 
     @Operation(summary = "Edit an existing event.", parameters =
-        {@Parameter(name = "loggedInUser", description = "Not required. Automatically added currently logged in user.")},
+        {@Parameter(name = "loggedInUser", description = "Not required. Automatically added currently logged in user."),
+            @Parameter(name = "usersLocale", description = "Automatically inserted based on request headers."),
+            @Parameter(name = "userTimeZone", description = "Automatically inserted based on request headers.")},
     requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content =
         {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = Event.class))}))
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Event editing successful.")
     })
     @PutMapping("/event/edit")
-    public void editEvent(@RequestBody Event event, @AuthenticationPrincipal User loggedInUser) {
-        eventService.editExistingEvent(event, loggedInUser);
+    public void editEvent(@RequestBody Event event, @AuthenticationPrincipal User loggedInUser, Locale usersLocale, ZoneId userTimeZone) {
+        eventService.editExistingEvent(event, loggedInUser, usersLocale, userTimeZone);
     }
 
     @Operation(summary = "Archive an event.", parameters =

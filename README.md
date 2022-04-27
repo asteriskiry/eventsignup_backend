@@ -17,6 +17,8 @@ Used technologies:
 - Server will be at localhost:8080
 - OpenAPI definitions are available at http://localhost:8080/api-docs.<yaml | json>
 - OpenAPI swagger ui is available at http://localhost:8080/swagger-ui.html
+- All text which is visible to the end user (e.g. email) must use i18n translations (messages*.properties files)
+
 
 To run:
 
