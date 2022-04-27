@@ -24,6 +24,8 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.time.Instant;
+import java.time.ZoneId;
+import java.util.Locale;
 import java.util.Random;
 
 import static fi.asteriski.eventsignup.utils.TestUtils.*;
@@ -70,32 +72,32 @@ class EventControllerIntegrationTest {
     @DisplayName("Get existing event.")
     void getEvent() throws Exception {
         var jsonString = mapper.writeValueAsString(event);
-        when(eventService.getEvent("123")).thenReturn(event);
+        when(eventService.getEvent(eq("123"), any(Locale.class))).thenReturn(event);
         performLogin();
         mockMvc.perform(get("/event/get/123")).andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(content().json(jsonString, true));
-        verify(eventService).getEvent("123");
+        verify(eventService).getEvent(eq("123"), any(Locale.class));
     }
 
     @Test
     @WithMockUser(value = "test", password = "pass")
     @DisplayName("Try to get non-exiting event with id.")
     void getNonExistentEvent() throws Exception {
-        when(eventService.getEvent("987")).thenThrow(new EventNotFoundException("not found"));
+        when(eventService.getEvent(eq("987"), any(Locale.class))).thenThrow(new EventNotFoundException("not found"));
         performLogin();
         mockMvc.perform(get("/event/get/987")).andExpect(status().isNotFound());
-        verify(eventService).getEvent("987");
+        verify(eventService).getEvent(eq("987"), any(Locale.class));
     }
 
     @Test
     @WithMockUser(value = "test", password = "pass")
     @DisplayName("Make a request for an event but provide no id.")
     void requestEventWithNoId() throws Exception {
-        when(eventService.getEvent("123")).thenThrow(new IllegalArgumentException("not found"));
+        when(eventService.getEvent(eq("123"), any(Locale.class))).thenThrow(new IllegalArgumentException("not found"));
         performLogin();
         mockMvc.perform(get("/event/get/")).andExpect(status().isNotFound());
-        verify(eventService, never()).getEvent("123");
+        verify(eventService, never()).getEvent(eq("123"), any(Locale.class));
     }
 
     @Test
@@ -132,12 +134,14 @@ class EventControllerIntegrationTest {
     void createEvent() throws Exception {
         var eventAsJsonString = mapper.writeValueAsString(event);
         var valueCapture = ArgumentCaptor.forClass(User.class);
-        when(eventService.createNewEvent(any(Event.class), valueCapture.capture())).thenReturn(event);
+        var valueCapture2 = ArgumentCaptor.forClass(Locale.class);
+        var valueCapture3 = ArgumentCaptor.forClass(ZoneId.class);
+        when(eventService.createNewEvent(any(Event.class), valueCapture.capture(), valueCapture2.capture(), valueCapture3.capture())).thenReturn(event);
         performLogin();
         mockMvc.perform(post("/event/create")
             .content(eventAsJsonString).contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(status().isOk());
-        verify(eventService).createNewEvent(any(Event.class), any());
+        verify(eventService).createNewEvent(any(Event.class), any(), any(Locale.class), any(ZoneId.class));
     }
 
     @Test
@@ -155,12 +159,12 @@ class EventControllerIntegrationTest {
     @DisplayName("Edit an existing event.")
     void editEvent() throws Exception {
         var eventAsJsonString = mapper.writeValueAsString(event);
-       when(eventService.editExistingEvent(any(Event.class), any(User.class))).thenReturn(event);
+       when(eventService.editExistingEvent(any(Event.class), any(User.class), any(Locale.class), any(ZoneId.class))).thenReturn(event);
        performLogin();
         mockMvc.perform(put("/event/edit")
                 .content(eventAsJsonString).contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(status().isOk());
-        verify(eventService).editExistingEvent(any(Event.class), any());
+        verify(eventService).editExistingEvent(any(Event.class), any(), any(Locale.class), any(ZoneId.class));
     }
 
     @Test
@@ -205,7 +209,7 @@ class EventControllerIntegrationTest {
     void testRandomEventIds() throws Exception {
         var rnd = new Random();
         var randomString = generateRandomString(rnd.nextInt(5, 31));
-        when(eventService.getEvent(anyString())).thenThrow(new EventNotFoundException("not found"));
+        when(eventService.getEvent(anyString(), any(Locale.class))).thenThrow(new EventNotFoundException("not found"));
         performLogin();
         mockMvc.perform(get(String.format("/event/get/%s", randomString))).andExpect(status().isNotFound());
     }

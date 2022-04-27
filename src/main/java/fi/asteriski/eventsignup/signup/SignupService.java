@@ -30,8 +30,8 @@ public class SignupService {
     private CustomEventPublisher customEventPublisher;
 
 
-    public Event getEventForSignUp(String eventId) {
-        Event event = eventService.getEvent(eventId);
+    public Event getEventForSignUp(String eventId, Locale usersLocale) {
+        Event event = eventService.getEvent(eventId, usersLocale);
         Instant now = Instant.now();
         if (event.getSignupStarts() != null && event.getSignupStarts().isAfter(now)) {
             ZonedDateTime zonedDateTime = ZonedDateTime.from(event.getSignupStarts().atZone(ZoneId.systemDefault()));
@@ -63,7 +63,7 @@ public class SignupService {
         }
         participant.setSignupTime(Instant.now());
         participant = participantRepository.save(participant);
-        customEventPublisher.publishSignupSuccessfulEvent(eventService.getEvent(eventId), participant, usersLocale, userTimeZone);
+        customEventPublisher.publishSignupSuccessfulEvent(eventService.getEvent(eventId, usersLocale), participant, usersLocale, userTimeZone);
         return participant;
     }
 
@@ -73,6 +73,6 @@ public class SignupService {
         }
         Participant participant = participantRepository.findById(participantId).orElseThrow(() -> new ParticipantNotFoundException(participantId, eventId));
         participantRepository.deleteParticipantByEventAndId(eventId, participantId);
-        customEventPublisher.publishSignupCancelledEvent(eventService.getEvent(eventId), participant, usersLocale, userTimeZone);
+        customEventPublisher.publishSignupCancelledEvent(eventService.getEvent(eventId, usersLocale), participant, usersLocale, userTimeZone);
     }
 }

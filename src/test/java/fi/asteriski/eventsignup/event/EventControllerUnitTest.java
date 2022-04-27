@@ -8,10 +8,14 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
+import java.time.ZoneId;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
 class EventControllerUnitTest {
@@ -30,22 +34,22 @@ class EventControllerUnitTest {
     @Test
     @DisplayName("Get an existing event.")
     void getExistingEvent() {
-        when(eventService.getEvent("123")).thenReturn(this.event);
-        assertInstanceOf(Event.class, eventController.getEvent("123", null));
+        when(eventService.getEvent(eq("123"), any(Locale.class))).thenReturn(this.event);
+        assertInstanceOf(Event.class, eventController.getEvent("123", null, Locale.getDefault(), ZoneId.systemDefault()));
     }
 
     @Test
     @DisplayName("Getting an existing event doesn't throw an exception")
     void getExistingEventWithNoExceptionThrown() {
-        when(eventService.getEvent("123")).thenReturn(this.event);
-        assertDoesNotThrow(() -> eventController.getEvent("123", null));
+        when(eventService.getEvent(eq("123"), any(Locale.class))).thenReturn(this.event);
+        assertDoesNotThrow(() -> eventController.getEvent("123", null, null, null));
     }
 
     @Test
     @DisplayName("Try to get non-existent event.")
     void tryToGetNonExistentEvent() {
-        when(eventService.getEvent("not-exist")).thenThrow(new EventNotFoundException("not-exist"));
-        assertThrows(EventNotFoundException.class, () -> eventController.getEvent("not-exist", null));
+        when(eventService.getEvent(eq("not-exist"), any(Locale.class))).thenThrow(new EventNotFoundException("not-exist"));
+        assertThrows(EventNotFoundException.class, () -> eventController.getEvent("not-exist", null, Locale.getDefault(), ZoneId.systemDefault()));
     }
 
     @Test
