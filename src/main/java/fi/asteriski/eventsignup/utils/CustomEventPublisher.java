@@ -19,8 +19,8 @@ public class CustomEventPublisher {
 
     private ApplicationEventPublisher applicationEventPublisher;
 
-    public void publishSavedEventEvent(final Event event, final User loggedInUser) {
-        SavedEventSpringEvent savedEventSpringEvent = new SavedEventSpringEvent(this, event, loggedInUser);
+    public void publishSavedEventEvent(final Event event, final User loggedInUser, Locale usersLocale, ZoneId userTimeZone) {
+        SavedEventSpringEvent savedEventSpringEvent = new SavedEventSpringEvent(this, event, loggedInUser, usersLocale, userTimeZone);
         applicationEventPublisher.publishEvent(savedEventSpringEvent);
     }
 

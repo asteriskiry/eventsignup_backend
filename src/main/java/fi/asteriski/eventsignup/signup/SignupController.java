@@ -12,30 +12,30 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import lombok.AllArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.ZoneId;
 import java.util.Locale;
 
+@AllArgsConstructor
 @RestController
 public class SignupController {
 
     private SignupService signupService;
 
-    public SignupController(SignupService signupService) {
-        this.signupService = signupService;
-    }
-
     @Operation(summary = "Get an event for signup purposes.", parameters =
-        {@Parameter(name = "eventId", description = "Event's id")})
+        {@Parameter(name = "eventId", description = "Event's id"),
+            @Parameter(name = "usersLocale", description = "Automatically inserted based on request headers."),
+            @Parameter(name = "userTimeZone", description = "Automatically inserted based on request headers.")})
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "The event requested.",
             content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = Event.class))})
     })
     @GetMapping("/signup/{eventId}")
-    public Event getEventForSignup(@PathVariable String eventId) {
-        return signupService.getEventForSignUp(eventId);
+    public Event getEventForSignup(@PathVariable String eventId, Locale usersLocale, ZoneId userTimeZone) {
+        return signupService.getEventForSignUp(eventId, usersLocale, userTimeZone);
     }
 
     @Operation(summary = "Signup for an event (i.e. add a participant).",

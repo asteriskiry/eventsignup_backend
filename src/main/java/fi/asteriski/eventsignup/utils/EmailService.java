@@ -10,6 +10,7 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.MessageSource;
 import org.springframework.context.event.EventListener;
 import org.springframework.mail.MailAuthenticationException;
 import org.springframework.mail.MailException;
@@ -34,16 +35,20 @@ public class EmailService {
     private String defaultSender;
     @NonNull
     private JavaMailSender javaMailSender;
+    @NonNull
+    private MessageSource messageSource;
 
     /*
     Format:
+    email.message.body.event
     Title date (format as locale specific string)
 
     description
      */
     private static final String MAIL_MESSAGE_EVENT_TEMPLATE = """
         <html>
-        This email was automatically sent by the system. Here's your event.
+        %s
+        <br>
         ------
         <h1>%s %s</h1>
         <p>
@@ -53,20 +58,20 @@ public class EmailService {
         """;
     /*
     Format:
+    email.message.body.signup.success
     Event name date (format as locale specific string)
-    Event's id User's id
-    Event's id User's id
+    email.message.body.signup.success.to.cancel Event's id User's id, Event's id User's id
      */
     private static final String MAIL_MESSAGE_SIGNUP_SUCCESSFUL_TEMPLATE = """
         <html>
-        You have successfully signed up to %s on the %s.
-        
-        To cancel your participation: <a href=https://ilmot.asteriski.fi/signup/cancel/%s/%s target="_blank">https://ilmot.asteriski.fi/signup/cancel/%s/%s</a>
+        %s %s %s.
+        <br>
+        %s: <a href=https://ilmot.asteriski.fi/signup/cancel/%s/%s target="_blank">https://ilmot.asteriski.fi/signup/cancel/%s/%s</a>
         </html>
         """;
     private static final String MAIL_MESSAGE_SIGNUP_CANCELLED_TEMPLATE = """
         <html>
-        You have successfully cancelled your participation to %s.
+        %s %s.
         </html>
         """;
     /*
@@ -78,8 +83,6 @@ public class EmailService {
     Format:
     Name of event
      */
-    private static final String MAIL_SUBJECT_SIGNUP_SUCCESSFUL_TEMPLATE = "Signup for %s successful";
-    private static final String MAIL_SUBJECT_SIGNUP_CANCELLED_TEMPLATE = "Participation to %s cancelled successfully";
     private static final String LOG_ERROR_MESSAGE_TEMPLATE = "Error with email. Error was: %s";
 
     @Async
@@ -90,7 +93,7 @@ public class EmailService {
         try {
             sendEmail(loggedInUser.getEmail(), defaultSender,
                 String.format(MAIL_SUBJECT_EVENT_TEMPLATE, event.getName()),
-                String.format(MAIL_MESSAGE_EVENT_TEMPLATE, event.getName(), event.getStartDate(), event.getDescription()));
+                String.format(MAIL_MESSAGE_EVENT_TEMPLATE, messageSource.getMessage("email.message.body.event", null, savedEventSpringEvent.getUsersLocale()), event.getName(), event.getStartDate(), event.getDescription()));
         } catch (MessagingException messagingException) {
             log.error(String.format(LOG_ERROR_MESSAGE_TEMPLATE, messagingException));
         }
@@ -105,8 +108,12 @@ public class EmailService {
         String formattedDateTime = zonedDateTime.format(DateTimeFormatter.RFC_1123_DATE_TIME);
         try {
             sendEmail(participant.getEmail(), defaultSender,
-                String.format(MAIL_SUBJECT_SIGNUP_SUCCESSFUL_TEMPLATE, event.getName()),
-                String.format(MAIL_MESSAGE_SIGNUP_SUCCESSFUL_TEMPLATE, event.getName(), formattedDateTime,
+                String.format(messageSource.getMessage("email.message.subject.signup.success", null, signupSuccessfulSpringEvent.getUserLocale()),
+                    event.getName()),
+                String.format(MAIL_MESSAGE_SIGNUP_SUCCESSFUL_TEMPLATE,
+                    messageSource.getMessage("email.message.body.signup.success", null, signupSuccessfulSpringEvent.getUserLocale()),
+                    event.getName(), formattedDateTime,
+                    messageSource.getMessage("email.message.body.signup.success.to.cancel", null, signupSuccessfulSpringEvent.getUserLocale()),
                     event.getId(), participant.getId(),
                     event.getId(), participant.getId()));
         } catch (MessagingException messagingException) {
@@ -121,8 +128,11 @@ public class EmailService {
         Event event = signupCancelledSpringEvent.getEvent();
         try {
             sendEmail(participant.getEmail(), defaultSender,
-                String.format(MAIL_SUBJECT_SIGNUP_CANCELLED_TEMPLATE, event.getName()),
-                String.format(MAIL_MESSAGE_SIGNUP_CANCELLED_TEMPLATE, event.getName()));
+                String.format(messageSource.getMessage("email.message.subject.signup.cancelled", null, signupCancelledSpringEvent.getUsersLocale()),
+                    event.getName()),
+                String.format(MAIL_MESSAGE_SIGNUP_CANCELLED_TEMPLATE,
+                    messageSource.getMessage("email.message.body.signup.cancelled", null, signupCancelledSpringEvent.getUsersLocale()),
+                    event.getName()));
         } catch (MessagingException messagingException) {
             log.error(String.format(LOG_ERROR_MESSAGE_TEMPLATE, messagingException));
         }
