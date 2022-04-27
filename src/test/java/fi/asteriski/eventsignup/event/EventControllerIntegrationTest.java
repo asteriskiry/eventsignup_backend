@@ -5,9 +5,9 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import fi.asteriski.eventsignup.domain.ArchivedEvent;
 import fi.asteriski.eventsignup.domain.Event;
+import fi.asteriski.eventsignup.domain.User;
 import fi.asteriski.eventsignup.user.UserRepository;
 import fi.asteriski.eventsignup.user.UserService;
-import fi.asteriski.eventsignup.utils.TestUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.RepeatedTest;
@@ -131,13 +131,13 @@ class EventControllerIntegrationTest {
     @DisplayName("Create an event.")
     void createEvent() throws Exception {
         var eventAsJsonString = mapper.writeValueAsString(event);
-        var valueCapture = ArgumentCaptor.forClass(String.class);
+        var valueCapture = ArgumentCaptor.forClass(User.class);
         when(eventService.createNewEvent(any(Event.class), valueCapture.capture())).thenReturn(event);
         performLogin();
         mockMvc.perform(post("/event/create")
             .content(eventAsJsonString).contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(status().isOk());
-        verify(eventService).createNewEvent(any(Event.class), anyString());
+        verify(eventService).createNewEvent(any(Event.class), any());
     }
 
     @Test
@@ -155,12 +155,12 @@ class EventControllerIntegrationTest {
     @DisplayName("Edit an existing event.")
     void editEvent() throws Exception {
         var eventAsJsonString = mapper.writeValueAsString(event);
-       when(eventService.editExistingEvent(any(Event.class))).thenReturn(event);
+       when(eventService.editExistingEvent(any(Event.class), any(User.class))).thenReturn(event);
        performLogin();
         mockMvc.perform(put("/event/edit")
                 .content(eventAsJsonString).contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(status().isOk());
-        verify(eventService).editExistingEvent(any(Event.class));
+        verify(eventService).editExistingEvent(any(Event.class), any());
     }
 
     @Test

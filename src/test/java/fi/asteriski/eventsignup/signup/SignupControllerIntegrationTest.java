@@ -10,7 +10,6 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import fi.asteriski.eventsignup.domain.Event;
 import fi.asteriski.eventsignup.domain.Participant;
 import fi.asteriski.eventsignup.event.EventNotFoundException;
-import fi.asteriski.eventsignup.event.EventService;
 import fi.asteriski.eventsignup.user.UserRepository;
 import fi.asteriski.eventsignup.user.UserService;
 import fi.asteriski.eventsignup.utils.TestUtils;
@@ -26,6 +25,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
+
+import java.time.ZoneId;
+import java.util.Locale;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -116,12 +118,14 @@ class SignupControllerIntegrationTest {
         var participantAsJson = mapper.writeValueAsString(this.participant);
         var valueCapture = ArgumentCaptor.forClass(String.class);
         var valueCapture2 = ArgumentCaptor.forClass(Participant.class);
-        when(signupService.addParticipantToEvent(valueCapture.capture(), valueCapture2.capture()))
+        var valueCapture3 = ArgumentCaptor.forClass(Locale.class);
+        var valueCapture4 = ArgumentCaptor.forClass(ZoneId.class);
+        when(signupService.addParticipantToEvent(valueCapture.capture(), valueCapture2.capture(), valueCapture3.capture(), valueCapture4.capture()))
             .thenReturn(this.participant);
         mockMvc.perform(post("/signup/123/add").
                 content(participantAsJson).contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk());
-        verify(signupService).addParticipantToEvent(anyString(), any(Participant.class));
+        verify(signupService).addParticipantToEvent(anyString(), any(Participant.class), any(Locale.class), any(ZoneId.class));
         assertEquals("123", valueCapture.getValue());
         assertEquals(this.participant, valueCapture2.getValue());
     }
@@ -132,12 +136,15 @@ class SignupControllerIntegrationTest {
         var participantAsJson = mapper.writeValueAsString(this.participant);
         var valueCapture = ArgumentCaptor.forClass(String.class);
         var valueCapture2 = ArgumentCaptor.forClass(Participant.class);
-        when(signupService.addParticipantToEvent(valueCapture.capture(), valueCapture2.capture()))
+        var valueCapture3 = ArgumentCaptor.forClass(Locale.class);
+        var valueCapture4 = ArgumentCaptor.forClass(ZoneId.class);
+        var defaultTimeZone = ZoneId.systemDefault();
+        when(signupService.addParticipantToEvent(valueCapture.capture(), valueCapture2.capture(), valueCapture3.capture(), valueCapture4.capture()))
             .thenThrow(EventNotFoundException.class);
         mockMvc.perform(post("/signup/456/add").
                 content(participantAsJson).contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isNotFound());
-        verify(signupService).addParticipantToEvent(anyString(), any(Participant.class));
+        verify(signupService).addParticipantToEvent(anyString(), any(Participant.class), any(Locale.class), any(ZoneId.class));
         assertEquals("456", valueCapture.getValue());
         assertEquals(this.participant, valueCapture2.getValue());
     }
@@ -146,7 +153,9 @@ class SignupControllerIntegrationTest {
     @DisplayName("Remove a participant from event.")
     void removeParticipantFromEvent() throws Exception {
         var valueCapture = ArgumentCaptor.forClass(String.class);
-        doNothing().when(signupService).removeParticipantFromEvent(valueCapture.capture(), valueCapture.capture());
+        var valueCapture2 = ArgumentCaptor.forClass(Locale.class);
+        var valueCapture3 = ArgumentCaptor.forClass(ZoneId.class);
+        doNothing().when(signupService).removeParticipantFromEvent(valueCapture.capture(), valueCapture.capture(), valueCapture2.capture(), valueCapture3.capture());
         mockMvc.perform(delete("/signup/cancel/123/456")).andExpect(status().isOk());
         assertEquals("123", valueCapture.getAllValues().get(0));
         assertEquals("456", valueCapture.getAllValues().get(1));

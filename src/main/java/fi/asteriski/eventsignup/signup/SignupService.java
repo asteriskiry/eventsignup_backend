@@ -9,6 +9,8 @@ import fi.asteriski.eventsignup.domain.Event;
 import fi.asteriski.eventsignup.domain.Participant;
 import fi.asteriski.eventsignup.event.EventNotFoundException;
 import fi.asteriski.eventsignup.event.EventService;
+import fi.asteriski.eventsignup.utils.CustomEventPublisher;
+import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 
@@ -16,18 +18,17 @@ import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 
 @Log4j2
+@AllArgsConstructor
 @Service
 public class SignupService {
 
     EventService eventService;
     ParticipantRepository participantRepository;
+    private CustomEventPublisher customEventPublisher;
 
-    public SignupService(EventService eventService, ParticipantRepository participantRepository) {
-        this.eventService = eventService;
-        this.participantRepository = participantRepository;
-    }
 
     public Event getEventForSignUp(String eventId) {
         Event event = eventService.getEvent(eventId);
@@ -53,7 +54,7 @@ public class SignupService {
         return event;
     }
 
-    public Participant addParticipantToEvent(String eventId, Participant participant) {
+    public Participant addParticipantToEvent(String eventId, Participant participant, Locale usersLocale, ZoneId userTimeZone) {
         if (!eventId.equals(participant.getEvent())) {
             throw new EventNotFoundException(participant.getEvent());
         }
@@ -61,10 +62,17 @@ public class SignupService {
             throw new EventNotFoundException(eventId);
         }
         participant.setSignupTime(Instant.now());
-        return participantRepository.save(participant);
+        participant = participantRepository.save(participant);
+        customEventPublisher.publishSignupSuccessfulEvent(eventService.getEvent(eventId), participant, usersLocale, userTimeZone);
+        return participant;
     }
 
-    public void removeParticipantFromEvent(String eventId, String participantId) {
+    public void removeParticipantFromEvent(String eventId, String participantId, Locale usersLocale, ZoneId userTimeZone) {
+        if (!eventService.eventExists(eventId)) {
+            throw new EventNotFoundException(eventId);
+        }
+        Participant participant = participantRepository.findById(participantId).orElseThrow(() -> new ParticipantNotFoundException(participantId, eventId));
         participantRepository.deleteParticipantByEventAndId(eventId, participantId);
+        customEventPublisher.publishSignupCancelledEvent(eventService.getEvent(eventId), participant, usersLocale, userTimeZone);
     }
 }
