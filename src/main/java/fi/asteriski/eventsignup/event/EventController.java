@@ -77,8 +77,7 @@ public class EventController {
     @PostMapping(value = "/event/create", consumes = "application/json")
     public void createEvent(@RequestBody Event event, @AuthenticationPrincipal User loggedInUser) {
         // During testing loggedInUser will be null.
-        var user = loggedInUser != null ? loggedInUser.getUsername() : "testUser";
-        eventService.createNewEvent(event, user);
+        eventService.createNewEvent(event, loggedInUser);
     }
 
     @Operation(summary = "Edit an existing event.", parameters =
@@ -90,7 +89,7 @@ public class EventController {
     })
     @PutMapping("/event/edit")
     public void editEvent(@RequestBody Event event, @AuthenticationPrincipal User loggedInUser) {
-        eventService.editExistingEvent(event);
+        eventService.editExistingEvent(event, loggedInUser);
     }
 
     @Operation(summary = "Archive an event.", parameters =
