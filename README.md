@@ -1,5 +1,8 @@
 # Eventsignup Backend
-Used technologies:
+Copyright Juhani Vähä-Mäkilä (juhani@fmail.co.uk) 2022.
+Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
+
+## Used technologies
 
 - Java 17
 - Springboot 2.6.x
@@ -18,7 +21,8 @@ Used technologies:
 - OpenAPI definitions are available at http://localhost:8080/api-docs.<yaml | json>
 - OpenAPI swagger ui is available at http://localhost:8080/swagger-ui.html
 - All text which is visible to the end user (e.g. email) must use i18n translations (messages*.properties files)
-
+- All features and bug fixes are done in their own branches
+- All Pull Requests need to squash commits before merge so git history of develop (and master) remains clean and linear
 
 To run:
 
