@@ -29,7 +29,10 @@ public class EventsignupApplication implements CommandLineRunner {
         if (!userRepository.getClass().getSimpleName().contains("Mockito")) {
             var adminUsername = System.getenv("ADMIN_USERNAME");
             var adminPassword = System.getenv("ADMIN_PASSWORD");
-            User admin = new User("Asteriski", "Admin", "www-asteriski@utu.fi", bCryptPasswordEncoder.encode(adminPassword), adminUsername);
+            var adminEmail = System.getenv("ADMIN_EMAIL");
+            var adminFirstName = System.getenv("ADMIN_FIRST_NAME");
+            var adminLastName = System.getenv("ADMIN_LAST_NAME");
+            var admin = new User(adminFirstName, adminLastName, adminEmail, bCryptPasswordEncoder.encode(adminPassword), adminUsername);
             admin.setUserRole(UserRole.ROLE_ADMIN);
             if (!userRepository.existsByUsername(adminUsername)) {
                 userRepository.save(admin);
