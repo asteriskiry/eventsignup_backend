@@ -9,6 +9,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import fi.asteriski.eventsignup.domain.Event;
 import fi.asteriski.eventsignup.domain.Participant;
+import fi.asteriski.eventsignup.domain.SignupEvent;
 import fi.asteriski.eventsignup.event.EventNotFoundException;
 import fi.asteriski.eventsignup.user.UserRepository;
 import fi.asteriski.eventsignup.user.UserService;
@@ -72,8 +73,9 @@ class SignupControllerIntegrationTest {
     @Test
     @DisplayName("Get an existing event for signup.")
     void getExistingEventForSignup() throws Exception {
-        var jsonString = mapper.writeValueAsString(event);
-        when(signupService.getEventForSignUp(anyString(), any(Locale.class), any(ZoneId.class))).thenReturn(event);
+        var signupEvent = new SignupEvent(event);
+        var jsonString = mapper.writeValueAsString(signupEvent);
+        when(signupService.getEventForSignUp(anyString(), any(Locale.class), any(ZoneId.class))).thenReturn(signupEvent);
         mockMvc.perform(get("/signup/123")).andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(content().json(jsonString, true));

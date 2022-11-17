@@ -7,6 +7,7 @@ package fi.asteriski.eventsignup.signup;
 import fi.asteriski.eventsignup.ParticipantRepository;
 import fi.asteriski.eventsignup.domain.Event;
 import fi.asteriski.eventsignup.domain.Participant;
+import fi.asteriski.eventsignup.domain.SignupEvent;
 import fi.asteriski.eventsignup.event.EventNotFoundException;
 import fi.asteriski.eventsignup.event.EventService;
 import fi.asteriski.eventsignup.utils.CustomEventPublisher;
@@ -32,7 +33,7 @@ public class SignupService {
     private MessageSource messageSource;
 
 
-    public Event getEventForSignUp(String eventId, Locale usersLocale, ZoneId userTimeZone) {
+    public SignupEvent getEventForSignUp(String eventId, Locale usersLocale, ZoneId userTimeZone) {
         Event event = eventService.getEvent(eventId, usersLocale);
         Instant now = Instant.now();
         if (event.getSignupStarts() != null && event.getSignupStarts().isAfter(now)) {
@@ -57,7 +58,7 @@ public class SignupService {
                     event.getName()));
             }
         }
-        return event;
+        return new SignupEvent(event);
     }
 
     public Participant addParticipantToEvent(String eventId, Participant participant, Locale usersLocale, ZoneId userTimeZone) {
