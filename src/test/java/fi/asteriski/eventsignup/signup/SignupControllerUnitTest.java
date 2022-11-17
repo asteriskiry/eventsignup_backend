@@ -6,6 +6,7 @@ package fi.asteriski.eventsignup.signup;
 
 import fi.asteriski.eventsignup.domain.Event;
 import fi.asteriski.eventsignup.domain.Participant;
+import fi.asteriski.eventsignup.domain.SignupEvent;
 import fi.asteriski.eventsignup.event.EventNotFoundException;
 import fi.asteriski.eventsignup.utils.TestUtils;
 import org.junit.jupiter.api.BeforeEach;
@@ -38,8 +39,8 @@ class SignupControllerUnitTest {
     @Test
     @DisplayName("Get an existing event for signup.")
     void getExistingEventForSignup() {
-        when(signupService.getEventForSignUp(eq("123"), any(Locale.class), any(ZoneId.class))).thenReturn(this.event);
-        assertInstanceOf(Event.class, signupController.getEventForSignup("123", Locale.getDefault(), ZoneId.systemDefault()));
+        when(signupService.getEventForSignUp(eq("123"), any(Locale.class), any(ZoneId.class))).thenReturn(new SignupEvent(this.event));
+        assertInstanceOf(SignupEvent.class, signupController.getEventForSignup("123", Locale.getDefault(), ZoneId.systemDefault()));
     }
 
     @Test
