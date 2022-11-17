@@ -43,6 +43,7 @@ public class Event {
     private Instant signupStarts;
     private Instant signupEnds;
     private Map<String, Object> quotas;
+    private Double price;
     private String bannerImg;
     private Map<String, Object> otherData;
     private Map<String, Object> metaData;
