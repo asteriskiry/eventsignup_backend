@@ -4,8 +4,8 @@ Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
  */
 package fi.asteriski.eventsignup.signup;
 
-import fi.asteriski.eventsignup.domain.Event;
 import fi.asteriski.eventsignup.domain.Participant;
+import fi.asteriski.eventsignup.domain.SignupEvent;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -31,10 +31,10 @@ public class SignupController {
             @Parameter(name = "userTimeZone", description = "Automatically inserted based on request headers.")})
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "The event requested.",
-            content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = Event.class))})
+            content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = SignupEvent.class))})
     })
     @GetMapping("/signup/{eventId}")
-    public Event getEventForSignup(@PathVariable String eventId, Locale usersLocale, ZoneId userTimeZone) {
+    public SignupEvent getEventForSignup(@PathVariable String eventId, Locale usersLocale, ZoneId userTimeZone) {
         return signupService.getEventForSignUp(eventId, usersLocale, userTimeZone);
     }
 
