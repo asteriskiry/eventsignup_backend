@@ -72,7 +72,7 @@ public class EventController {
             @Parameter(name = "usersLocale", description = "Automatically inserted based on request headers."),
             @Parameter(name = "userTimeZone", description = "Automatically inserted based on request headers.")},
     requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content =
-        {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = Participant.class))}))
+        {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = Event.class))}))
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Event creation successful.")
     })
