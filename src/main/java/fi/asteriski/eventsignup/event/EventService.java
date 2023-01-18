@@ -48,7 +48,8 @@ public class EventService {
 
     public Event getEvent(String id, Locale usersLocale) {
         return eventRepository.findById(id).orElseThrow(() ->
-            new EventNotFoundException(String.format(messageSource.getMessage("event.not.found.message", null, usersLocale), id)));
+            new EventNotFoundException(String.format(messageSource.getMessage("event.not.found.message", null, usersLocale), id)))
+            .toEvent();
     }
 
     public List<Event> getAllEventsForUser(String user) {
@@ -71,24 +72,24 @@ public class EventService {
             event.getForm().setDateCreated(Instant.now());
         }
         customEventPublisher.publishSavedEventEvent(event, loggedInUser, usersLocale, userTimeZone);
-        return eventRepository.save(event);
+        return eventRepository.save(event.toDto()).toEvent();
     }
 
     public Event editExistingEvent(Event newEvent, User loggedInUser, Locale usersLocale, ZoneId userTimeZone) {
         Event oldEvent = eventRepository.findById(newEvent.getId()).orElseThrow(() -> {
             log.error(String.format("%s Unable to edit Existing event. Old event with id <%s> was not found!", LOG_PREFIX, newEvent.getId()));
             throw new EventNotFoundException(newEvent.getId());
-        });
+        }).toEvent();
         newEvent.setId(oldEvent.getId());
         customEventPublisher.publishSavedEventEvent(newEvent, loggedInUser, usersLocale, userTimeZone);
-        return eventRepository.save(newEvent);
+        return eventRepository.save(newEvent.toDto()).toEvent();
     }
 
     public ArchivedEvent archiveEvent(String eventId) {
         Event oldEvent = eventRepository.findById(eventId).orElseThrow(() -> {
             log.error(String.format("%s Unable to archive event. Old event with id <%s> was not found!", LOG_PREFIX, eventId));
             throw new EventNotFoundException(eventId);
-        });
+        }).toEvent();
         long numberOfParticipants = participantRepository.countAllByEvent(eventId);
         ArchivedEvent archivedEvent = new ArchivedEvent(oldEvent, Instant.now(), numberOfParticipants);
         archivedEvent = archivedEventRepository.save(archivedEvent);
