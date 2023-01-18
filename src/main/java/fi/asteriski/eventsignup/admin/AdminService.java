@@ -6,6 +6,7 @@ package fi.asteriski.eventsignup.admin;
 
 import fi.asteriski.eventsignup.ParticipantRepository;
 import fi.asteriski.eventsignup.domain.Event;
+import fi.asteriski.eventsignup.domain.EventDAO;
 import fi.asteriski.eventsignup.domain.Participant;
 import fi.asteriski.eventsignup.event.EventRepository;
 import fi.asteriski.eventsignup.event.EventService;
@@ -14,7 +15,9 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Log4j2
 @Service
@@ -32,7 +35,9 @@ class AdminService {
      * @return List of events.
      */
     List<Event> getAllEvents() {
-        return eventRepository.findAll();
+        return eventRepository.findAll().stream()
+            .map(EventDAO::toEvent)
+            .collect(Collectors.toCollection(LinkedList::new));
     }
 
     /**

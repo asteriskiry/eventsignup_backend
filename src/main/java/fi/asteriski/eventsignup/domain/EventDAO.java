@@ -1,5 +1,5 @@
 /*
-Copyright Juhani Vähä-Mäkilä (juhani@fmail.co.uk) 2022.
+Copyright Juhani Vähä-Mäkilä (juhani@fmail.co.uk) 2023.
 Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
  */
 package fi.asteriski.eventsignup.domain;
@@ -7,24 +7,32 @@ package fi.asteriski.eventsignup.domain;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NonNull;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.validation.constraints.NotNull;
+import java.time.Instant;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Map;
 
+@Document("event")
 @Data
 @Builder
-public class Event {
+public final class EventDAO {
 
+    private static final String USE_UTC_TIME_ZONE = "Z";
+
+    @Id
     private String id;
     @NonNull // For lombok
     @NotNull // For openApi
     private String name;
     @NonNull // For lombok
     @NotNull // For openApi
-    private ZonedDateTime startDate;
+    private Instant startDate;
     @NonNull // For lombok
     @NotNull // For openApi
     private String place;
@@ -36,22 +44,22 @@ public class Event {
     private Form form;
     @Indexed
     private String owner;
-    private ZonedDateTime endDate;
+    private Instant endDate;
     private Integer minParticipants;
     private Integer maxParticipants;
-    private ZonedDateTime signupStarts;
-    private ZonedDateTime signupEnds;
+    private Instant signupStarts;
+    private Instant signupEnds;
     private List<Map<String, Object>> quotas;
     private Double price;
     private String bannerImg;
     private Map<String, Object> otherData;
     private Map<String, Object> metaData;
 
-    public EventDAO toDao() {
-        var event = EventDAO.builder()
+    public Event toEvent() {
+        var event = Event.builder()
             .id(this.id)
             .name(this.name)
-            .startDate(this.startDate.toInstant())
+            .startDate(ZonedDateTime.ofInstant(this.startDate, ZoneId.of(USE_UTC_TIME_ZONE)))
             .place(this.place)
             .description(this.description)
             .form(this.form)
@@ -65,14 +73,14 @@ public class Event {
             .metaData(this.metaData)
             .build();
 
-        if (this.signupStarts != null) {
-            event.setEndDate(this.signupStarts.toInstant());
-        }
         if (this.endDate != null) {
-            event.setEndDate(this.endDate.toInstant());
+            event.setEndDate(ZonedDateTime.ofInstant(this.endDate, ZoneId.of(USE_UTC_TIME_ZONE)));
+        }
+        if (this.signupStarts != null) {
+            event.setSignupStarts(ZonedDateTime.ofInstant(this.signupStarts, ZoneId.of(USE_UTC_TIME_ZONE)));
         }
         if (this.signupEnds != null) {
-            event.setSignupEnds(this.signupEnds.toInstant());
+            event.setSignupEnds(ZonedDateTime.ofInstant(this.signupEnds, ZoneId.of(USE_UTC_TIME_ZONE)));
         }
 
         return event;

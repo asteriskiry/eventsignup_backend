@@ -17,6 +17,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.time.Instant;
+import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -34,14 +35,14 @@ public final class TestUtils {
     public static Event createRandomEvent(String owner) {
         var random = new Random();
         var form = new Form();
-        var instant = random.nextBoolean() ? Instant.now().minus(random.nextLong(10, 100), ChronoUnit.DAYS) : Instant.now().plus(random.nextLong(10, 100), ChronoUnit.DAYS);
-        var event = new Event(
-            Utils.generateRandomString(random.nextInt(5, 15)),
-            instant,
-            Utils.generateRandomString(random.nextInt(5, 15)),
-            Utils.generateRandomString(random.nextInt(20, 50)),
-            form
-        );
+        var instant = random.nextBoolean() ? ZonedDateTime.now().minus(random.nextLong(10, 100), ChronoUnit.DAYS) : ZonedDateTime.now().plus(random.nextLong(10, 100), ChronoUnit.DAYS);
+        var event = Event.builder()
+            .name(Utils.generateRandomString(random.nextInt(5, 15)))
+            .startDate(instant)
+            .place(Utils.generateRandomString(random.nextInt(5, 15)))
+            .description(Utils.generateRandomString(random.nextInt(20, 50)))
+            .form(form)
+            .build();
         if (owner != null) {
             event.setOwner(owner);
         }

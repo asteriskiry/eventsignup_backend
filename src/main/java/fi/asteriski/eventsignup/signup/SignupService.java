@@ -35,10 +35,9 @@ public class SignupService {
 
     public SignupEvent getEventForSignUp(String eventId, Locale usersLocale, ZoneId userTimeZone) {
         Event event = eventService.getEvent(eventId, usersLocale);
-        Instant now = Instant.now();
+        ZonedDateTime now = ZonedDateTime.now();
         if (event.getSignupStarts() != null && event.getSignupStarts().isAfter(now)) {
-            ZonedDateTime zonedDateTime = ZonedDateTime.from(event.getSignupStarts().atZone(userTimeZone));
-            String formattedZonedDateTime = zonedDateTime.format(DateTimeFormatter.RFC_1123_DATE_TIME);
+            String formattedZonedDateTime = event.getSignupStarts().format(DateTimeFormatter.RFC_1123_DATE_TIME);
             String errorMsg = String.format(messageSource.getMessage("signup.not.started.error", null, usersLocale),
                 event.getName(), formattedZonedDateTime);
             throw new SignupNotStartedException(errorMsg);
