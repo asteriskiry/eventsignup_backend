@@ -34,7 +34,7 @@ public class MongoTest {
 
     @BeforeEach
     void setUp() {
-        eventRepository.save(TestUtils.createRandomEvent(null));
+        eventRepository.save(TestUtils.createRandomEvent(null).toDto());
         participantRepository.save(TestUtils.createRandomParticipant(null));
     }
 
