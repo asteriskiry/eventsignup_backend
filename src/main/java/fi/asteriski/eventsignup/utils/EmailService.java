@@ -108,8 +108,7 @@ public class EmailService {
     public void onSignupSuccessfulEvent(SignupSuccessfulSpringEvent signupSuccessfulSpringEvent) {
         Participant participant = signupSuccessfulSpringEvent.getParticipant();
         Event event = signupSuccessfulSpringEvent.getEvent();
-        ZonedDateTime zonedDateTime = event.getStartDate().atZone(signupSuccessfulSpringEvent.getUserTimeZone());
-        String formattedDateTime = zonedDateTime.format(DateTimeFormatter.RFC_1123_DATE_TIME);
+        String formattedDateTime = event.getStartDate().format(DateTimeFormatter.RFC_1123_DATE_TIME);
         try {
             sendEmail(participant.getEmail(), defaultSender,
                 String.format(messageSource.getMessage("email.message.subject.signup.success", null, signupSuccessfulSpringEvent.getUserLocale()),

@@ -8,7 +8,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 
-import java.time.Instant;
+import java.time.ZonedDateTime;
 
 @Getter
 @ToString
@@ -17,11 +17,11 @@ public class SignupEvent {
 
     private final String id;
     private final String name;
-    private final Instant startDate;
+    private final ZonedDateTime startDate;
     private final String place;
     private final String description;
     private final Form form;
-    private final Instant endDate;
+    private final ZonedDateTime endDate;
     private final Double price;
     private final String bannerImg;
 
