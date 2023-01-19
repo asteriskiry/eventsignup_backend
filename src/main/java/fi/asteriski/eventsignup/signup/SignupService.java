@@ -9,6 +9,7 @@ import fi.asteriski.eventsignup.domain.Event;
 import fi.asteriski.eventsignup.domain.Participant;
 import fi.asteriski.eventsignup.domain.SignupEvent;
 import fi.asteriski.eventsignup.event.EventNotFoundException;
+import fi.asteriski.eventsignup.event.EventRepository;
 import fi.asteriski.eventsignup.event.EventService;
 import fi.asteriski.eventsignup.utils.CustomEventPublisher;
 import lombok.AllArgsConstructor;
@@ -20,7 +21,11 @@ import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Locale;
+import java.util.stream.Collectors;
 
 @Log4j2
 @AllArgsConstructor
@@ -29,6 +34,7 @@ public class SignupService {
 
     EventService eventService;
     ParticipantRepository participantRepository;
+    private EventRepository eventRepository;
     private CustomEventPublisher customEventPublisher;
     private MessageSource messageSource;
 
@@ -81,5 +87,13 @@ public class SignupService {
             new ParticipantNotFoundException(String.format(messageSource.getMessage("signup.participant.remove.error", null, usersLocale), participantId, eventId)));
         participantRepository.deleteParticipantByEventAndId(eventId, participantId);
         customEventPublisher.publishSignupCancelledEvent(eventService.getEvent(eventId, usersLocale), participant, usersLocale, userTimeZone);
+    }
+
+    public List<SignupEvent> getUpcomingEvents(String days) {
+        var today = Instant.now();
+        var daysToGet = Integer.parseInt(days);
+        return eventRepository.findAllByStartDateIsBeforeAndStartDateIsAfter(today.plus(daysToGet, ChronoUnit.DAYS), today).stream()
+            .map(eventDAO -> new SignupEvent(eventDAO.toEvent()))
+            .collect(Collectors.toCollection(LinkedList::new));
     }
 }
