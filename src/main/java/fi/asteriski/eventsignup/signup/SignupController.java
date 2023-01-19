@@ -4,6 +4,7 @@ Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
  */
 package fi.asteriski.eventsignup.signup;
 
+import fi.asteriski.eventsignup.domain.Event;
 import fi.asteriski.eventsignup.domain.Participant;
 import fi.asteriski.eventsignup.domain.SignupEvent;
 import io.swagger.v3.oas.annotations.Operation;
@@ -17,6 +18,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.ZoneId;
+import java.util.List;
 import java.util.Locale;
 
 @AllArgsConstructor
@@ -36,6 +38,17 @@ public class SignupController {
     @GetMapping("/signup/{eventId}")
     public SignupEvent getEventForSignup(@PathVariable String eventId, Locale usersLocale, ZoneId userTimeZone) {
         return signupService.getEventForSignUp(eventId, usersLocale, userTimeZone);
+    }
+
+    @Operation(summary = "Get a list of upcoming events at to selected days.", parameters =
+        {@Parameter(name = "days", description = "How many days into the future events are wanted.")})
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "The events requested.",
+            content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = Event.class))})
+    })
+    @GetMapping("/signup/upcomingEvents/{days}")
+    public List<SignupEvent> getUpcomingEvents(@PathVariable String days) {
+        return signupService.getUpcomingEvents(days);
     }
 
     @Operation(summary = "Signup for an event (i.e. add a participant).",
