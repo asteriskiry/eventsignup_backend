@@ -14,12 +14,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.*;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
 @AllArgsConstructor
 @Service
 public final class AuthService {
+
+    private static final Map<String, AuthCredentialsResponse> CACHE = new HashMap<>();
 
     private AuthenticationManager authenticationManager;
     private JwtUtil jwtUtil;
@@ -35,19 +38,22 @@ public final class AuthService {
 
             var user = (User) authenticate.getPrincipal();
             var token = jwtUtil.generateToken(user);
-            var responseBody = Map.of(
-                "isAdmin", Objects.equals(UserRole.ROLE_ADMIN.name(), user.getUserRole().name()),
-                "token", token
-            );
+            var authCredentials = AuthCredentialsResponse.builder()
+                .isAdmin(Objects.equals(UserRole.ROLE_ADMIN.name(), user.getUserRole().name()))
+                .token(token)
+                .build();
+            var id = Integer.valueOf(token.hashCode()).toString();
+            CACHE.put(id, authCredentials);
 
-            return ResponseEntity.ok()
-                .header(
-                    HttpHeaders.AUTHORIZATION,
-                    token
-                )
-                .body(responseBody);
+            return ResponseEntity.status(HttpStatus.SEE_OTHER)
+                .header(HttpHeaders.LOCATION, String.format("/api/auth/creds/%s", id))
+                .build();
         } catch (DisabledException | LockedException | BadCredentialsException ex) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
+    }
+
+    AuthCredentialsResponse getAuthCredentials(String id) {
+        return CACHE.remove(id);
     }
 }
