@@ -19,7 +19,7 @@ import java.time.Instant;
 import java.util.Collection;
 import java.util.Collections;
 
-@Document("admin")
+@Document("users")
 @Getter
 @Setter
 @Builder
