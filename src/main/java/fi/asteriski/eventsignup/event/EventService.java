@@ -16,6 +16,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.time.Instant;
 import java.time.ZoneId;
@@ -62,7 +63,7 @@ public class EventService {
 
     public Event createNewEvent(Event event, User loggedInUser, Locale usersLocale, ZoneId userTimeZone) {
         event.setOwner(loggedInUser.getUsername());
-        if (event.getBannerImg() != null) {
+        if (StringUtils.hasText(event.getBannerImg())) {
             event.setBannerImg(String.format("%s_%s", loggedInUser.getUsername(), event.getBannerImg()));
         }
         if (event.getForm().getUserCreated() == null) {
