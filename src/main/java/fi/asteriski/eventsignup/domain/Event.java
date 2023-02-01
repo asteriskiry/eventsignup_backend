@@ -47,8 +47,8 @@ public class Event {
     private Map<String, Object> otherData;
     private Map<String, Object> metaData;
 
-    public EventDAO toDao() {
-        var event = EventDAO.builder()
+    public EventDto toDto() {
+        var event = EventDto.builder()
             .id(this.id)
             .name(this.name)
             .startDate(this.startDate.toInstant())

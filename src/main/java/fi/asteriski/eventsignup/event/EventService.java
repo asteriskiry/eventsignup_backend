@@ -72,7 +72,7 @@ public class EventService {
             event.getForm().setDateCreated(Instant.now());
         }
         customEventPublisher.publishSavedEventEvent(event, loggedInUser, usersLocale, userTimeZone);
-        return eventRepository.save(event.toDao()).toEvent();
+        return eventRepository.save(event.toDto()).toEvent();
     }
 
     public Event editExistingEvent(Event newEvent, User loggedInUser, Locale usersLocale, ZoneId userTimeZone) {
@@ -82,7 +82,7 @@ public class EventService {
         }).toEvent();
         newEvent.setId(oldEvent.getId());
         customEventPublisher.publishSavedEventEvent(newEvent, loggedInUser, usersLocale, userTimeZone);
-        return eventRepository.save(newEvent.toDao()).toEvent();
+        return eventRepository.save(newEvent.toDto()).toEvent();
     }
 
     public ArchivedEvent archiveEvent(String eventId) {

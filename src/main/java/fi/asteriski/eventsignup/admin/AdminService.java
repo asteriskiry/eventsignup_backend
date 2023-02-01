@@ -6,7 +6,7 @@ package fi.asteriski.eventsignup.admin;
 
 import fi.asteriski.eventsignup.ParticipantRepository;
 import fi.asteriski.eventsignup.domain.Event;
-import fi.asteriski.eventsignup.domain.EventDAO;
+import fi.asteriski.eventsignup.domain.EventDto;
 import fi.asteriski.eventsignup.domain.Participant;
 import fi.asteriski.eventsignup.event.EventRepository;
 import fi.asteriski.eventsignup.event.EventService;
@@ -36,7 +36,7 @@ class AdminService {
      */
     List<Event> getAllEvents() {
         return eventRepository.findAll().stream()
-            .map(EventDAO::toEvent)
+            .map(EventDto::toEvent)
             .collect(Collectors.toCollection(LinkedList::new));
     }
 

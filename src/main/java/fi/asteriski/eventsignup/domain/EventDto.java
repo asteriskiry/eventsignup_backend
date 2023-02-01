@@ -21,7 +21,7 @@ import java.util.Map;
 @Document("event")
 @Data
 @Builder
-public final class EventDAO {
+public final class EventDto {
 
     private static final String USE_UTC_TIME_ZONE = "Z";
 
