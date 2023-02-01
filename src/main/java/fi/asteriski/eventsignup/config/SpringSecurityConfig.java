@@ -4,17 +4,23 @@ Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
  */
 package fi.asteriski.eventsignup.config;
 
+import fi.asteriski.eventsignup.filter.JwtFilter;
 import fi.asteriski.eventsignup.user.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import javax.servlet.http.HttpServletResponse;
 
 
 @Configuration
@@ -25,6 +31,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
     private final UserService userService;
 
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private JwtFilter jwtFilter;
 
     /**
      * Configures end point security.
@@ -34,12 +41,11 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-//            HTTP Basic authentication
-            .httpBasic()
+            .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             .and()
-            .formLogin().successForwardUrl("/redirect")
-            .and()
-            .logout().deleteCookies()
+            .exceptionHandling().authenticationEntryPoint(((request, response, authException) -> {
+                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, authException.getMessage());
+            }))
             .and()
             .authorizeRequests()
             .antMatchers(HttpMethod.GET, "/admin/**").hasRole("ADMIN")
@@ -55,8 +61,11 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
             .antMatchers(HttpMethod.GET, "/api-docs.yaml").hasRole("ADMIN")
             .antMatchers(HttpMethod.GET, "/api-docs.json").hasRole("ADMIN")
             .antMatchers(HttpMethod.GET, "/signup/**").permitAll()
+            .antMatchers(HttpMethod.POST, "/api/auth/**").permitAll()
+            .antMatchers(HttpMethod.GET, "/api/auth/**").permitAll()
             .and()
-            .csrf().disable();
+            .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+            .csrf().disable().cors().disable(); // Don't disable these in prod
     }
 
 
@@ -71,4 +80,8 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
             .passwordEncoder(bCryptPasswordEncoder);
     }
 
+    @Override @Bean
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+        return super.authenticationManagerBean();
+    }
 }
