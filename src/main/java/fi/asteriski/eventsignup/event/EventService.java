@@ -5,10 +5,7 @@ Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
 package fi.asteriski.eventsignup.event;
 
 import fi.asteriski.eventsignup.ParticipantRepository;
-import fi.asteriski.eventsignup.domain.ArchivedEvent;
-import fi.asteriski.eventsignup.domain.Event;
-import fi.asteriski.eventsignup.domain.Participant;
-import fi.asteriski.eventsignup.domain.User;
+import fi.asteriski.eventsignup.domain.*;
 import fi.asteriski.eventsignup.utils.CustomEventPublisher;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -108,8 +105,8 @@ public class EventService {
     }
 
     public void archivePastEvents() {
-        Instant dateLimit = Instant.now().minus(defaultDaysToArchivePastEvents, ChronoUnit.DAYS);
         Instant now = Instant.now();
+        Instant dateLimit = now.minus(defaultDaysToArchivePastEvents, ChronoUnit.DAYS);
         List<Event> events = eventRepository.findAllByStartDateIsBeforeOrEndDateIsBefore(dateLimit, dateLimit);
         log.info(String.format("Archiving %s events that had startDate or endDate %s days ago i.e. on %s.", events.size(), defaultDaysToArchivePastEvents, dateLimit));
         List<String> eventIds = events.stream().map(Event::getId).collect(Collectors.toCollection(LinkedList::new));

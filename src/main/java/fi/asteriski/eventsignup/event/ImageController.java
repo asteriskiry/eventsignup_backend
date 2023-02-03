@@ -9,23 +9,20 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import lombok.AllArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
 
-import java.util.HashMap;
 import java.util.Map;
 
+@AllArgsConstructor
 @RestController
 @RequestMapping("/api/event")
 public class ImageController {
 
     private ImageService imageService;
-
-    public ImageController(ImageService imageService) {
-        this.imageService = imageService;
-    }
 
     @Operation(summary = "Get file path for the uploaded banner image.", parameters =
         {@Parameter(name = "fileName", description = "Filename generated when saving an image."),
@@ -36,9 +33,7 @@ public class ImageController {
     @GetMapping("banner/{fileName}")
     @ResponseBody
     public Map<String, String> getBannerImagePath(@PathVariable String fileName, @AuthenticationPrincipal User loggedInUser) {
-        Map<String, String> returnValue = new HashMap<>();
-        returnValue.put("fileName", fileName);
-        return returnValue;
+        return Map.of("fileName", fileName);
     }
 
     @Operation(summary = "Get a banner image.", parameters = {
@@ -69,6 +64,6 @@ public class ImageController {
         // During testing loggedInUser will be null.
         var user = loggedInUser != null ? loggedInUser.getUsername() : "testUser";
         String filePath = imageService.addBannerImage(file, user);
-        return new RedirectView("/event/banner/" + filePath);
+        return new RedirectView(String.format("/api/event/banner/%s", filePath));
     }
 }
