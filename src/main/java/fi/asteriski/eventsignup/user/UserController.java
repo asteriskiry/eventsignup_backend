@@ -20,6 +20,7 @@ import java.util.List;
 
 @RestController
 @AllArgsConstructor
+@RequestMapping("/api/admin")
 public class UserController {
 
     private UserService userService;
@@ -31,7 +32,7 @@ public class UserController {
                 schema = @Schema(implementation = User.class))}),
         @ApiResponse(responseCode = "401", description = "Unauthenticated.")
     })
-    @GetMapping("/admin/users/all")
+    @GetMapping("users/all")
     public List<User> getAllNonAdminUsers(@AuthenticationPrincipal User loggedInUser) {
         return userService.getAllNonAdminUsers();
     }
@@ -44,7 +45,7 @@ public class UserController {
         @ApiResponse(responseCode = "200", description = "New user adding successful."),
         @ApiResponse(responseCode = "401", description = "Unauthenticated.")
     })
-    @PostMapping(value = "/admin/users/add", consumes = "application/json")
+    @PostMapping(value = "users/add", consumes = "application/json")
     public void addUser(@RequestBody User user, @AuthenticationPrincipal User loggedInUser) {
         userService.addUser(user);
     }
@@ -57,7 +58,7 @@ public class UserController {
         @ApiResponse(responseCode = "200", description = "User editing successful."),
         @ApiResponse(responseCode = "401", description = "Unauthenticated.")
     })
-    @PutMapping("/admin/users/edit/")
+    @PutMapping("users/edit/")
     public void editUser(@RequestBody User user, @AuthenticationPrincipal User loggedInUser) {
         userService.editUser(user);
     }
@@ -69,7 +70,7 @@ public class UserController {
         @ApiResponse(responseCode = "200", description = "Delete was successful."),
         @ApiResponse(responseCode = "401", description = "Unauthenticated.")
     })
-    @DeleteMapping("/admin/users/delete/{userId}")
+    @DeleteMapping("users/delete/{userId}")
     public void deleteUser(@PathVariable String userId, @AuthenticationPrincipal User loggedInUser) {
         userService.deleteUser(userId);
     }
@@ -80,7 +81,7 @@ public class UserController {
         @ApiResponse(responseCode = "200", description = "Delete was successful."),
         @ApiResponse(responseCode = "401", description = "Unauthenticated.")
     })
-    @DeleteMapping("/admin/users/delete/all")
+    @DeleteMapping("users/delete/all")
     public void deleteAllNonAdminUsers(@AuthenticationPrincipal User loggedInUser) {
         userService.deleteAllNonAdminUsers();
     }

@@ -23,6 +23,7 @@ import java.util.Locale;
 
 @AllArgsConstructor
 @RestController
+@RequestMapping("/api/signup")
 public class SignupController {
 
     private SignupService signupService;
@@ -37,7 +38,7 @@ public class SignupController {
         @ApiResponse(responseCode = "404", description = "Event was already held."),
         @ApiResponse(responseCode = "409", description = "Signup not started/signup already ended/event full. See the message in response for details.")
     })
-    @GetMapping("/signup/{eventId}")
+    @GetMapping("{eventId}")
     public SignupEvent getEventForSignup(@PathVariable String eventId, Locale usersLocale, ZoneId userTimeZone) {
         return signupService.getEventForSignUp(eventId, usersLocale, userTimeZone);
     }
@@ -48,7 +49,7 @@ public class SignupController {
         @ApiResponse(responseCode = "200", description = "The events requested.",
             content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = SignupEvent.class))})
     })
-    @GetMapping("/signup/upcomingEvents/{days}")
+    @GetMapping("upcomingEvents/{days}")
     public List<SignupEvent> getUpcomingEvents(@PathVariable String days) {
         return signupService.getUpcomingEvents(days);
     }
@@ -62,7 +63,7 @@ public class SignupController {
         @ApiResponse(responseCode = "200", description = "Signup successful."),
         @ApiResponse(responseCode = "404", description = "Event not found."),
     })
-    @PostMapping(value = "/signup/{eventId}/add", consumes = "application/json")
+    @PostMapping(value = "{eventId}/add", consumes = "application/json")
     public void addParticipantToEvent(@PathVariable String eventId, @RequestBody Participant participant, Locale usersLocale, ZoneId userTimeZone) {
         signupService.addParticipantToEvent(eventId, participant, usersLocale, userTimeZone);
     }
@@ -76,7 +77,7 @@ public class SignupController {
         @ApiResponse(responseCode = "200", description = "Cancellation successful."),
         @ApiResponse(responseCode = "404", description = "Event not found"),
     })
-    @DeleteMapping("/signup/cancel/{eventId}/{participantId}")
+    @DeleteMapping("cancel/{eventId}/{participantId}")
     void removeParticipantFromEvent(@PathVariable String eventId, @PathVariable String participantId, Locale usersLocale, ZoneId userTimeZone) {
         signupService.removeParticipantFromEvent(eventId, participantId, usersLocale, userTimeZone);
     }
