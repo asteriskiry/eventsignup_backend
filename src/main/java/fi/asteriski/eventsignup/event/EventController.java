@@ -24,6 +24,7 @@ import java.util.Locale;
 
 @AllArgsConstructor
 @RestController
+@RequestMapping("/api/event")
 public class EventController {
 
     private EventService eventService;
@@ -38,7 +39,7 @@ public class EventController {
         @ApiResponse(responseCode = "401", description = "Unauthorized."),
         @ApiResponse(responseCode = "404", description = "Event not found.")
     })
-    @GetMapping("/event/get/{eventId}")
+    @GetMapping("get/{eventId}")
     public Event getEvent(@PathVariable String eventId, @AuthenticationPrincipal User loggedInUser, Locale usersLocale, ZoneId userTimeZone) {
         return eventService.getEvent(eventId, usersLocale);
     }
@@ -51,7 +52,7 @@ public class EventController {
                 schema = @Schema(implementation = Event.class))}),
         @ApiResponse(responseCode = "401", description = "Unauthorized.")
     })
-    @GetMapping("/event/all/{user}")
+    @GetMapping("all/{user}")
     public List<Event> getAllEventsForUser(@PathVariable String user, @AuthenticationPrincipal User loggedInUser) {
         return eventService.getAllEventsForUser(user);
     }
@@ -65,7 +66,7 @@ public class EventController {
                 schema = @Schema(implementation = Participant.class))}),
         @ApiResponse(responseCode = "401", description = "Unauthorized.")
     })
-    @GetMapping("/event/participants/{eventId}")
+    @GetMapping("participants/{eventId}")
     public List<Participant> getParticipants(@PathVariable String eventId, @AuthenticationPrincipal User loggedInUser) {
         return eventService.getParticipants(eventId);
     }
@@ -80,7 +81,7 @@ public class EventController {
         @ApiResponse(responseCode = "200", description = "Event creation successful."),
         @ApiResponse(responseCode = "401", description = "Unauthorized.")
     })
-    @PostMapping(value = "/event/create", consumes = "application/json")
+    @PostMapping(value = "create", consumes = MediaType.APPLICATION_JSON_VALUE)
     public void createEvent(@RequestBody Event event, @AuthenticationPrincipal User loggedInUser, Locale usersLocale, ZoneId userTimeZone) {
         // During testing loggedInUser will be null.
         eventService.createNewEvent(event, loggedInUser, usersLocale, userTimeZone);
@@ -97,7 +98,7 @@ public class EventController {
         @ApiResponse(responseCode = "401", description = "Unauthorized."),
         @ApiResponse(responseCode = "404", description = "Unable to edit. Old event not found.")
     })
-    @PutMapping("/event/edit")
+    @PutMapping("edit")
     public void editEvent(@RequestBody Event event, @AuthenticationPrincipal User loggedInUser, Locale usersLocale, ZoneId userTimeZone) {
         eventService.editExistingEvent(event, loggedInUser, usersLocale, userTimeZone);
     }
@@ -112,7 +113,7 @@ public class EventController {
         @ApiResponse(responseCode = "401", description = "Unauthorized."),
         @ApiResponse(responseCode = "404", description = "Unable to archive event. Event was not found.")
     })
-    @PutMapping("/event/archive/{eventId}")
+    @PutMapping("archive/{eventId}")
     public void archiveEvent(@PathVariable String eventId, @AuthenticationPrincipal User loggedInUser) {
         eventService.archiveEvent(eventId);
     }
@@ -124,7 +125,7 @@ public class EventController {
         @ApiResponse(responseCode = "200", description = "Event deleted successfully."),
         @ApiResponse(responseCode = "401", description = "Unauthorized.")
     })
-    @DeleteMapping("/event/remove/{eventId}")
+    @DeleteMapping("remove/{eventId}")
     public void removeEvent(@PathVariable String eventId, @AuthenticationPrincipal User loggedInUser) {
         eventService.removeEventAndParticipants(eventId);
     }
