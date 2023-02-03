@@ -18,12 +18,14 @@ import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
 @RestController
 @AllArgsConstructor
+@RequestMapping("/api/admin")
 public class AdminController {
 
     private AdminService adminService;
@@ -35,7 +37,7 @@ public class AdminController {
             content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                 schema = @Schema(implementation = Event.class))})
     })
-    @GetMapping("/admin/event/all")
+    @GetMapping("event/all")
     public List<Event> getAllEvents(@AuthenticationPrincipal User loggedInUser) {
         return adminService.getAllEvents();
     }
@@ -47,7 +49,7 @@ public class AdminController {
             content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                 schema = @Schema(implementation = Event.class))})
     })
-    @GetMapping("/admin/event/{userId}")
+    @GetMapping("event/{userId}")
     public List<Event> getAllEventsForUser(@PathVariable String userId, @AuthenticationPrincipal User loggedInUser) {
         return adminService.getAllEventsForUser(userId);
     }
@@ -59,7 +61,7 @@ public class AdminController {
             content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                 schema = @Schema(implementation = Participant.class))})
     })
-    @GetMapping("/admin/participants/all")
+    @GetMapping("participants/all")
     public List<Participant> getAllParticipants(@AuthenticationPrincipal User loggedInUser) {
         return adminService.getAllParticipants();
     }
@@ -72,7 +74,7 @@ public class AdminController {
             content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                 schema = @Schema(implementation = Participant.class))})
     })
-    @GetMapping("/admin/participants/{eventId}")
+    @GetMapping("participants/{eventId}")
     public List<Participant> getAllParticipantsForEvent(@PathVariable String eventId, @AuthenticationPrincipal User loggedInUser) {
         return adminService.getAllParticipantsForEvent(eventId);
     }
