@@ -6,7 +6,6 @@ package fi.asteriski.eventsignup.event;
 
 import fi.asteriski.eventsignup.utils.Utils;
 import lombok.extern.log4j.Log4j2;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -43,7 +42,7 @@ public class ImageService {
     }
 
     public String addBannerImage(byte[] file, String userName) {
-        if (isInputFileIsNonValidImage(file)) {
+        if (isInputFileNonValidImage(file)) {
             log.info(String.format("%s %s", LOG_PREFIX, "Input file is not a valid image. Throwing exception."));
             throw new InvalidImageFileException("Provided file is not a valid image file.");
         }
@@ -67,14 +66,14 @@ public class ImageService {
         try (ImageOutputStream imageOutputStream = ImageIO.createImageOutputStream(finalFile)) {
             imageOutputStream.write(file);
         } catch (IOException e) {
-            log.info(String.format("IOException occurred :%s", e.getMessage()));
+            log.info(String.format("IOException occurred: %s", e.getMessage()));
         }
         return String.format("%s_%s", userName, fileName);
     }
 
-    private boolean isInputFileIsNonValidImage(byte[] inputFile) {
+    private boolean isInputFileNonValidImage(byte[] inputFile) {
         BufferedImage final_buffered_image = null;
-        try (ByteArrayInputStream input_stream= new ByteArrayInputStream(inputFile);) {
+        try (ByteArrayInputStream input_stream= new ByteArrayInputStream(inputFile)) {
             final_buffered_image = ImageIO.read(input_stream);
         } catch (IOException ignored) {}
         return final_buffered_image == null;

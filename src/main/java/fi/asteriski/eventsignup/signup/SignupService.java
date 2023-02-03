@@ -32,8 +32,8 @@ import java.util.stream.Collectors;
 @Service
 public class SignupService {
 
-    EventService eventService;
-    ParticipantRepository participantRepository;
+    private EventService eventService;
+    private ParticipantRepository participantRepository;
     private EventRepository eventRepository;
     private CustomEventPublisher customEventPublisher;
     private MessageSource messageSource;
@@ -93,7 +93,7 @@ public class SignupService {
         var today = Instant.now();
         var daysToGet = Integer.parseInt(days);
         return eventRepository.findAllByStartDateIsBeforeAndStartDateIsAfter(today.plus(daysToGet, ChronoUnit.DAYS), today).stream()
-            .map(eventDAO -> new SignupEvent(eventDAO.toEvent()))
+            .map(eventDto -> new SignupEvent(eventDto.toEvent()))
             .collect(Collectors.toCollection(LinkedList::new));
     }
 }

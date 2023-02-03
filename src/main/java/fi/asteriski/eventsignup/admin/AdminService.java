@@ -26,9 +26,9 @@ class AdminService {
 
     private static final String LOG_PREFIX = "[AdminService]";
 
-    EventRepository eventRepository;
-    ParticipantRepository participantRepository;
-    EventService eventService;
+    private EventRepository eventRepository;
+    private ParticipantRepository participantRepository;
+    private EventService eventService;
 
     /**
      * Fetches all event from database in no particular order.

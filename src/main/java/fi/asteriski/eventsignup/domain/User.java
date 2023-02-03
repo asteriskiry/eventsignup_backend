@@ -17,7 +17,7 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import java.time.Instant;
 import java.util.Collection;
-import java.util.Collections;
+import java.util.List;
 
 @Document("users")
 @Getter
@@ -63,8 +63,7 @@ public class User implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        final SimpleGrantedAuthority simpleGrantedAuthority = new SimpleGrantedAuthority(userRole.name());
-        return Collections.singletonList(simpleGrantedAuthority);
+        return List.of(new SimpleGrantedAuthority(userRole.name()));
     }
 
     @Override
