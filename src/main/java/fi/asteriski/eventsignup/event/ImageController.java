@@ -29,6 +29,9 @@ public class ImageController {
     @Operation(summary = "Get file path for the uploaded banner image.", parameters =
         {@Parameter(name = "fileName", description = "Filename generated when saving an image."),
             @Parameter(name = "loggedInUser", description = "Not required. Automatically added currently logged in user.")})
+    @ApiResponses(
+        @ApiResponse(responseCode = "200", description = "Json: {'fileName': fileName}")
+    )
     @GetMapping("/event/banner/{fileName}")
     @ResponseBody
     public Map<String, String> getBannerImagePath(@PathVariable String fileName, @AuthenticationPrincipal User loggedInUser) {
@@ -37,7 +40,15 @@ public class ImageController {
         return returnValue;
     }
 
-    @Operation(summary = "Get a banner image.")
+    @Operation(summary = "Get a banner image.", parameters = {
+        @Parameter(name = "fileName", description = "File's name we want."),
+        @Parameter(name = "loggedInUser", description = "Automatically added currently logged in user.")
+    })
+    @ApiResponses( value = {
+        @ApiResponse(responseCode = "200", description = "The file requested."),
+        @ApiResponse(responseCode = "404", description = "File not found.")
+    }
+    )
     @GetMapping(value = "/event/banner/get/{fileName}", produces = {MediaType.IMAGE_PNG_VALUE, MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_GIF_VALUE})
     public byte[] getBannerImage(@PathVariable String fileName, @AuthenticationPrincipal User loggedInUser) {
         return imageService.getBannerImage(fileName.replace('_', '/'));
@@ -47,7 +58,10 @@ public class ImageController {
         {@Parameter(name = "file", description = "Raw bytes of the image being uploaded."),
             @Parameter(name = "loggedInUser", description = "Not required. Automatically added currently logged in user.")})
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "302", description = "Redirect to /event/banner/{fileName}.")
+        @ApiResponse(responseCode = "303", description = "Redirect to /api/event/banner/{fileName}."),
+        @ApiResponse(responseCode = "401", description = "Unauthenticated"),
+        @ApiResponse(responseCode = "406", description = "Invalid image file/file not an image."),
+        @ApiResponse(responseCode = "500", description = "Target directory creation failed.")
     })
     @PostMapping("/event/banner/add")
     public RedirectView addBannerImg(@RequestBody byte[] file, @AuthenticationPrincipal User loggedInUser) {

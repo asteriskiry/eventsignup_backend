@@ -33,7 +33,9 @@ public class SignupController {
             @Parameter(name = "userTimeZone", description = "Automatically inserted based on request headers.")})
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "The event requested.",
-            content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = SignupEvent.class))})
+            content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = SignupEvent.class))}),
+        @ApiResponse(responseCode = "404", description = "Event was already held."),
+        @ApiResponse(responseCode = "409", description = "Signup not started/signup already ended/event full. See the message in response for details.")
     })
     @GetMapping("/signup/{eventId}")
     public SignupEvent getEventForSignup(@PathVariable String eventId, Locale usersLocale, ZoneId userTimeZone) {
@@ -44,7 +46,7 @@ public class SignupController {
         {@Parameter(name = "days", description = "How many days into the future events are wanted.")})
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "The events requested.",
-            content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = Event.class))})
+            content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = SignupEvent.class))})
     })
     @GetMapping("/signup/upcomingEvents/{days}")
     public List<SignupEvent> getUpcomingEvents(@PathVariable String days) {
@@ -57,7 +59,8 @@ public class SignupController {
     parameters = {@Parameter(name = "usersLocale", description = "Automatically inserted based on request headers."),
         @Parameter(name = "userTimeZone", description = "Automatically inserted based on request headers.")})
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Signup successful.")
+        @ApiResponse(responseCode = "200", description = "Signup successful."),
+        @ApiResponse(responseCode = "404", description = "Event not found."),
     })
     @PostMapping(value = "/signup/{eventId}/add", consumes = "application/json")
     public void addParticipantToEvent(@PathVariable String eventId, @RequestBody Participant participant, Locale usersLocale, ZoneId userTimeZone) {
@@ -70,7 +73,8 @@ public class SignupController {
         @Parameter(name = "usersLocale", description = "Automatically inserted based on request headers."),
         @Parameter(name = "userTimeZone", description = "Automatically inserted based on request headers.")})
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Cancellation successful.")
+        @ApiResponse(responseCode = "200", description = "Cancellation successful."),
+        @ApiResponse(responseCode = "404", description = "Event not found"),
     })
     @DeleteMapping("/signup/cancel/{eventId}/{participantId}")
     void removeParticipantFromEvent(@PathVariable String eventId, @PathVariable String participantId, Locale usersLocale, ZoneId userTimeZone) {
