@@ -18,6 +18,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
+@RequestMapping("/api/event")
 public class ImageController {
 
     private ImageService imageService;
@@ -32,7 +33,7 @@ public class ImageController {
     @ApiResponses(
         @ApiResponse(responseCode = "200", description = "Json: {'fileName': fileName}")
     )
-    @GetMapping("/event/banner/{fileName}")
+    @GetMapping("banner/{fileName}")
     @ResponseBody
     public Map<String, String> getBannerImagePath(@PathVariable String fileName, @AuthenticationPrincipal User loggedInUser) {
         Map<String, String> returnValue = new HashMap<>();
@@ -49,7 +50,7 @@ public class ImageController {
         @ApiResponse(responseCode = "404", description = "File not found.")
     }
     )
-    @GetMapping(value = "/event/banner/get/{fileName}", produces = {MediaType.IMAGE_PNG_VALUE, MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_GIF_VALUE})
+    @GetMapping(value = "banner/get/{fileName}", produces = {MediaType.IMAGE_PNG_VALUE, MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_GIF_VALUE})
     public byte[] getBannerImage(@PathVariable String fileName, @AuthenticationPrincipal User loggedInUser) {
         return imageService.getBannerImage(fileName.replace('_', '/'));
     }
@@ -63,7 +64,7 @@ public class ImageController {
         @ApiResponse(responseCode = "406", description = "Invalid image file/file not an image."),
         @ApiResponse(responseCode = "500", description = "Target directory creation failed.")
     })
-    @PostMapping("/event/banner/add")
+    @PostMapping("banner/add")
     public RedirectView addBannerImg(@RequestBody byte[] file, @AuthenticationPrincipal User loggedInUser) {
         // During testing loggedInUser will be null.
         var user = loggedInUser != null ? loggedInUser.getUsername() : "testUser";
