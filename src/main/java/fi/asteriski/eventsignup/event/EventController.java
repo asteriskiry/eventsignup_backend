@@ -35,6 +35,7 @@ public class EventController {
         @ApiResponse(responseCode = "200", description = "Requested event.",
             content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                 schema = @Schema(implementation = Event.class))}),
+        @ApiResponse(responseCode = "401", description = "Unauthorized."),
         @ApiResponse(responseCode = "404", description = "Event not found.")
     })
     @GetMapping("/event/get/{eventId}")
@@ -45,9 +46,10 @@ public class EventController {
     @Operation(summary = "Get all events for a user.", parameters = {@Parameter(description = "User's id."),
         @Parameter(name = "loggedInUser", description = "Not required. Automatically added currently logged in user.")})
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "All events of the user.",
+        @ApiResponse(responseCode = "200", description = "All events of the user. List can be empty.",
             content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                schema = @Schema(implementation = Event.class))})
+                schema = @Schema(implementation = Event.class))}),
+        @ApiResponse(responseCode = "401", description = "Unauthorized.")
     })
     @GetMapping("/event/all/{user}")
     public List<Event> getAllEventsForUser(@PathVariable String user, @AuthenticationPrincipal User loggedInUser) {
@@ -58,9 +60,10 @@ public class EventController {
         {@Parameter(name = "eventId", description = "Event's id."),
         @Parameter(name = "loggedInUser", description = "Not required. Automatically added currently logged in user.")})
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Participants of the requested event.",
+        @ApiResponse(responseCode = "200", description = "Participants of the requested event. List can be empty.",
             content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                schema = @Schema(implementation = Participant.class))})
+                schema = @Schema(implementation = Participant.class))}),
+        @ApiResponse(responseCode = "401", description = "Unauthorized.")
     })
     @GetMapping("/event/participants/{eventId}")
     public List<Participant> getParticipants(@PathVariable String eventId, @AuthenticationPrincipal User loggedInUser) {
@@ -74,7 +77,8 @@ public class EventController {
     requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content =
         {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = Event.class))}))
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Event creation successful.")
+        @ApiResponse(responseCode = "200", description = "Event creation successful."),
+        @ApiResponse(responseCode = "401", description = "Unauthorized.")
     })
     @PostMapping(value = "/event/create", consumes = "application/json")
     public void createEvent(@RequestBody Event event, @AuthenticationPrincipal User loggedInUser, Locale usersLocale, ZoneId userTimeZone) {
@@ -89,7 +93,9 @@ public class EventController {
     requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content =
         {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = Event.class))}))
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Event editing successful.")
+        @ApiResponse(responseCode = "200", description = "Event editing successful."),
+        @ApiResponse(responseCode = "401", description = "Unauthorized."),
+        @ApiResponse(responseCode = "404", description = "Unable to edit. Old event not found.")
     })
     @PutMapping("/event/edit")
     public void editEvent(@RequestBody Event event, @AuthenticationPrincipal User loggedInUser, Locale usersLocale, ZoneId userTimeZone) {
@@ -102,7 +108,9 @@ public class EventController {
         requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content =
             {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = Event.class))}))
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Event archiving successful.")
+        @ApiResponse(responseCode = "200", description = "Event archiving successful."),
+        @ApiResponse(responseCode = "401", description = "Unauthorized."),
+        @ApiResponse(responseCode = "404", description = "Unable to archive event. Event was not found.")
     })
     @PutMapping("/event/archive/{eventId}")
     public void archiveEvent(@PathVariable String eventId, @AuthenticationPrincipal User loggedInUser) {
@@ -113,7 +121,8 @@ public class EventController {
         {@Parameter(name = "eventId", description = "Event's id."),
             @Parameter(name = "loggedInUser", description = "Not required. Automatically added currently logged in user.")})
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Event deleted successfully.")
+        @ApiResponse(responseCode = "200", description = "Event deleted successfully."),
+        @ApiResponse(responseCode = "401", description = "Unauthorized.")
     })
     @DeleteMapping("/event/remove/{eventId}")
     public void removeEvent(@PathVariable String eventId, @AuthenticationPrincipal User loggedInUser) {

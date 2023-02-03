@@ -28,7 +28,8 @@ public class UserController {
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "All participants in the specific event.",
             content = {@Content(mediaType = "application/json",
-                schema = @Schema(implementation = User.class))})
+                schema = @Schema(implementation = User.class))}),
+        @ApiResponse(responseCode = "401", description = "Unauthenticated.")
     })
     @GetMapping("/admin/users/all")
     public List<User> getAllNonAdminUsers(@AuthenticationPrincipal User loggedInUser) {
@@ -40,7 +41,8 @@ public class UserController {
         requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content =
             {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = User.class))}))
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "New user adding successful.")
+        @ApiResponse(responseCode = "200", description = "New user adding successful."),
+        @ApiResponse(responseCode = "401", description = "Unauthenticated.")
     })
     @PostMapping(value = "/admin/users/add", consumes = "application/json")
     public void addUser(@RequestBody User user, @AuthenticationPrincipal User loggedInUser) {
@@ -52,7 +54,8 @@ public class UserController {
         requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content =
             {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = User.class))}))
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "User editing successful.")
+        @ApiResponse(responseCode = "200", description = "User editing successful."),
+        @ApiResponse(responseCode = "401", description = "Unauthenticated.")
     })
     @PutMapping("/admin/users/edit/")
     public void editUser(@RequestBody User user, @AuthenticationPrincipal User loggedInUser) {
@@ -63,7 +66,8 @@ public class UserController {
         {@Parameter(name = "userId", description = "Id of the user to delete."),
             @Parameter(name = "loggedInUser", description = "Not required. Automatically added currently logged in user.")})
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Delete was successful.")
+        @ApiResponse(responseCode = "200", description = "Delete was successful."),
+        @ApiResponse(responseCode = "401", description = "Unauthenticated.")
     })
     @DeleteMapping("/admin/users/delete/{userId}")
     public void deleteUser(@PathVariable String userId, @AuthenticationPrincipal User loggedInUser) {
@@ -73,7 +77,8 @@ public class UserController {
     @Operation(summary = "Delete ALL non-admin users.", parameters =
         {@Parameter(name = "loggedInUser", description = "Not required. Automatically added currently logged in user.")})
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Delete was successful.")
+        @ApiResponse(responseCode = "200", description = "Delete was successful."),
+        @ApiResponse(responseCode = "401", description = "Unauthenticated.")
     })
     @DeleteMapping("/admin/users/delete/all")
     public void deleteAllNonAdminUsers(@AuthenticationPrincipal User loggedInUser) {
