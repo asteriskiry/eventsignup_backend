@@ -26,7 +26,6 @@ import org.springframework.stereotype.Component;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
-import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
 

@@ -9,7 +9,6 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.util.List;
 
-@SuppressWarnings("unused")
 public interface ParticipantRepository extends MongoRepository<Participant, String> {
 
     List<Participant> findAllByEvent(String event);
