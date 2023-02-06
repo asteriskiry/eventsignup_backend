@@ -4,6 +4,7 @@ Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
  */
 package fi.asteriski.eventsignup.jobs;
 
+import fi.asteriski.eventsignup.event.ArchivedEventService;
 import fi.asteriski.eventsignup.event.EventService;
 import lombok.NoArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -17,11 +18,11 @@ import java.time.LocalDateTime;
 public class ArchivePastEventsJob {
 
     @Autowired
-    private EventService eventService;
+    private ArchivedEventService archivedEventService;
 
     @Scheduled(cron = "@weekly")
     public void archivePastEventsJob() {
         log.info(String.format("[%s] Running ArchivePastEventsJob Job.", LocalDateTime.now()));
-        eventService.archivePastEvents();
+        archivedEventService.archivePastEvents();
     }
 }

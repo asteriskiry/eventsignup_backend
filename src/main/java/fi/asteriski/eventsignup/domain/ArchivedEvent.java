@@ -7,6 +7,7 @@ package fi.asteriski.eventsignup.domain;
 import lombok.Data;
 import lombok.NonNull;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
 
 import java.time.Instant;
 
@@ -21,5 +22,7 @@ public class ArchivedEvent {
     private final Instant dateArchived;
     @NonNull
     private final Long numberOfParticipants;
-
+    @NonNull
+    @Indexed
+    private final String originalOwner;
 }

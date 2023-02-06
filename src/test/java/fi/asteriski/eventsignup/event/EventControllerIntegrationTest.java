@@ -44,6 +44,8 @@ class EventControllerIntegrationTest {
     private WebApplicationContext context;
     @MockBean
     private EventService eventService;
+    @MockBean
+    private ArchivedEventService archivedEventService;
     // These mock beans are needed since they are declared in EventsignupApplication class.
     @MockBean
     UserRepository userRepository;
@@ -172,11 +174,11 @@ class EventControllerIntegrationTest {
     @DisplayName("Archive an existing event.")
     void archiveExistingEvent() throws Exception {
         var valueCapture = ArgumentCaptor.forClass(String.class);
-        var archivedEvent = new ArchivedEvent(event, Instant.now(), 10L);
-        when(eventService.archiveEvent(valueCapture.capture())).thenReturn(archivedEvent);
+        var archivedEvent = new ArchivedEvent(event, Instant.now(), 10L, "test");
+        when(archivedEventService.archiveEvent(valueCapture.capture(), any(Locale.class))).thenReturn(archivedEvent);
         performLogin();
         mockMvc.perform(put("/event/archive/123")).andExpect(status().isOk());
-        verify(eventService).archiveEvent(anyString());
+        verify(archivedEventService).archiveEvent(anyString(), any(Locale.class));
         assertEquals("123", valueCapture.getValue());
     }
     @Test
@@ -184,10 +186,10 @@ class EventControllerIntegrationTest {
     @DisplayName("Archive an non-existing event.")
     void archiveNonExistentEvent() throws Exception {
         var valueCapture = ArgumentCaptor.forClass(String.class);
-        when(eventService.archiveEvent(valueCapture.capture())).thenThrow(new EventNotFoundException("not found"));
+        when(archivedEventService.archiveEvent(valueCapture.capture(), any(Locale.class))).thenThrow(new EventNotFoundException("not found"));
         performLogin();
         mockMvc.perform(put("/event/archive/123")).andExpect(status().isNotFound());
-        verify(eventService).archiveEvent(anyString());
+        verify(archivedEventService).archiveEvent(anyString(), any(Locale.class));
         assertEquals("123", valueCapture.getValue());
     }
 
