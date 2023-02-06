@@ -1,6 +1,8 @@
 plugins {
     id 'org.springframework.boot' version '2.6.11'
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+    id "org.springdoc.openapi-gradle-plugin" version "1.5.0"
+    id "com.github.node-gradle.node" version "3.5.1"
     id 'java'
     id 'idea' // comment out if you don't use IntelliJ IDEA
     //id 'eclipse' // uncomment if you use Eclipse
@@ -18,6 +20,17 @@ configurations {
 
 repositories {
     mavenCentral()
+}
+
+node {
+    download = true
+}
+
+openApi {
+    apiDocsUrl.set("http://localhost:8080/api-docs")
+    customBootRun {
+        args.set(["--spring.profiles.active=special"])
+    }
 }
 
 dependencies {
@@ -47,4 +60,10 @@ tasks.named('test') {
 
 bootJar {
     baseName = 'eventsignup'
+}
+
+task generateTsTypes(type: NpxTask) {
+    dependsOn('generateOpenApiDocs')
+    command = "openapi-typescript"
+    args = ["${project.projectDir}/build/openapi.json", "--output", "${project.projectDir}/typesPlugin/src/generated/events-types.ts"]
 }

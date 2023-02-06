@@ -28,7 +28,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.Arrays;
 import java.util.Collections;
 
-
 @Configuration
 public class SpringSecurityConfig {
 
@@ -42,6 +41,40 @@ public class SpringSecurityConfig {
         private final BCryptPasswordEncoder bCryptPasswordEncoder;
         protected JwtFilter jwtFilter;
 
+        /**
+         * Configures end point security.
+         * @param http the {@link HttpSecurity} to modify
+         * @throws Exception
+         */
+        @Override
+        protected void configure(HttpSecurity http) throws Exception {
+            http
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
+                .exceptionHandling().authenticationEntryPoint(((request, response, authException) -> {
+                    response.sendError(HttpServletResponse.SC_UNAUTHORIZED, authException.getMessage());
+                }))
+                .and()
+                .authorizeRequests()
+                .antMatchers(HttpMethod.GET, "/api/admin/**").hasRole("ADMIN")
+                .antMatchers(HttpMethod.POST, "/api/admin/**").hasRole("ADMIN")
+                .antMatchers(HttpMethod.POST, "/api/event/create").hasAnyRole("ADMIN", "USER")
+                .antMatchers(HttpMethod.POST, "/api/event/banner/add").hasAnyRole("ADMIN", "USER")
+                .antMatchers(HttpMethod.GET, "/api/event/banner/**").permitAll()
+                .antMatchers(HttpMethod.PUT, "/api/event/edit/**").hasAnyRole("ADMIN", "USER")
+                .antMatchers(HttpMethod.DELETE, "/api/event/remove/**").hasAnyRole("ADMIN", "USER")
+                .antMatchers(HttpMethod.GET, "/api/event/**").hasAnyRole("ADMIN", "USER")
+                .antMatchers(HttpMethod.GET, "/swagger-ui/**").hasRole("ADMIN")
+                .antMatchers(HttpMethod.GET, "/api-docs/**").hasRole("ADMIN")
+                .antMatchers(HttpMethod.GET, "/api-docs.yaml").hasRole("ADMIN")
+                .antMatchers(HttpMethod.GET, "/api-docs.json").hasRole("ADMIN")
+                .antMatchers(HttpMethod.GET, "/api/signup/**").permitAll()
+                .antMatchers(HttpMethod.POST, "/api/auth/**").permitAll()
+                .antMatchers(HttpMethod.GET, "/api/auth/**").permitAll()
+                .and()
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+                .csrf().disable().cors().disable(); // Don't disable these in prod
+        }
 
         /**
          * Configures end point security.
