@@ -6,8 +6,10 @@ package fi.asteriski.eventsignup.config;
 
 import fi.asteriski.eventsignup.filter.JwtFilter;
 import fi.asteriski.eventsignup.user.UserService;
-import lombok.AllArgsConstructor;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -25,13 +27,17 @@ import javax.servlet.http.HttpServletResponse;
 
 @Configuration
 @EnableWebSecurity
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 
+    @NonNull
     private final UserService userService;
-
+    @NonNull
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    @NonNull
     private JwtFilter jwtFilter;
+    @Value("${spring.profiles.active}")
+    private String activeSpringProfile;
 
     /**
      * Configures end point security.
@@ -56,16 +62,28 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
             .antMatchers(HttpMethod.PUT, "/api/event/edit/**").hasAnyRole("ADMIN", "USER")
             .antMatchers(HttpMethod.DELETE, "/api/event/remove/**").hasAnyRole("ADMIN", "USER")
             .antMatchers(HttpMethod.GET, "/api/event/**").hasAnyRole("ADMIN", "USER")
-            .antMatchers(HttpMethod.GET, "/swagger-ui/**").hasRole("ADMIN")
-            .antMatchers(HttpMethod.GET, "/api-docs/**").hasRole("ADMIN")
-            .antMatchers(HttpMethod.GET, "/api-docs.yaml").hasRole("ADMIN")
-            .antMatchers(HttpMethod.GET, "/api-docs.json").hasRole("ADMIN")
             .antMatchers(HttpMethod.GET, "/api/signup/**").permitAll()
             .antMatchers(HttpMethod.POST, "/api/auth/**").permitAll()
             .antMatchers(HttpMethod.GET, "/api/auth/**").permitAll()
             .and()
-            .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
-            .csrf().disable().cors().disable(); // Don't disable these in prod
+            .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+
+        switch (activeSpringProfile) {
+            case ("dev") -> http
+                .authorizeRequests()
+                .antMatchers(HttpMethod.GET, "/swagger-ui/**").permitAll()
+                .antMatchers(HttpMethod.GET, "/api-docs/**").permitAll()
+                .antMatchers(HttpMethod.GET, "/api-docs.yaml").permitAll()
+                .antMatchers(HttpMethod.GET, "/api-docs.json").permitAll()
+                .and()
+                .csrf().disable().cors().disable();
+            case ("prod") -> http
+                .authorizeRequests()
+                .antMatchers(HttpMethod.GET, "/swagger-ui/**").hasRole("ADMIN")
+                .antMatchers(HttpMethod.GET, "/api-docs/**").hasRole("ADMIN")
+                .antMatchers(HttpMethod.GET, "/api-docs.yaml").hasRole("ADMIN")
+                .antMatchers(HttpMethod.GET, "/api-docs.json").hasRole("ADMIN");
+        }
     }
 
 
