@@ -49,7 +49,7 @@ public final class EventDto {
     private Integer maxParticipants;
     private Instant signupStarts;
     private Instant signupEnds;
-    private List<Map<String, Object>> quotas;
+    private List<Quota> quotas;
     private Double price;
     private String bannerImg;
     private Map<String, Object> otherData;
