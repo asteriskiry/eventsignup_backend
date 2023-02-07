@@ -62,9 +62,21 @@ public class ArchivedEventController {
         @ApiResponse(responseCode = "200", description = "Delete was successful."),
         @ApiResponse(responseCode = "401", description = "Unauthorized")
     })
-    @DeleteMapping("remove")
+    @DeleteMapping("remove/all")
     public void removeArchivedEvents(@RequestBody RemoveArchivedEventsRequest request, @AuthenticationPrincipal User loggedinUser) {
         archivedEventService.removeArchivedEventsBeforeDate(request.dateLimit().toInstant());
+    }
+
+    @Operation(summary = "Remove a single archived event. Admin user only.",
+        requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content =
+            {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ArchiveEventRequest.class))}))
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Delete was successful."),
+        @ApiResponse(responseCode = "401", description = "Unauthorized")
+    })
+    @DeleteMapping("remove")
+    public void removeArchivedEvent(@RequestBody ArchiveEventRequest request, @AuthenticationPrincipal User loggedinUSer) {
+        archivedEventService.removeArchivedEvent(request.eventId());
     }
 
     @Operation(summary = "Archive an event. Admin user only.", parameters =

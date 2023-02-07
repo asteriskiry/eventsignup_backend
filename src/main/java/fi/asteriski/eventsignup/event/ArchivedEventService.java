@@ -83,4 +83,13 @@ public class ArchivedEventService {
     public void removeArchivedEventsBeforeDate(Instant dateLimit) {
         archivedEventRepository.deleteAllByDateArchivedIsBefore(dateLimit);
     }
+
+    public void removeArchivedEvent(String eventId) {
+        archivedEventRepository.deleteById(eventId);
+    }
+
+    public void removeArchivedEventsOlderThanOneYear() {
+        var dateLimit = Instant.now().minus(1, ChronoUnit.YEARS);
+        archivedEventRepository.deleteAllByDateArchivedIsBefore(dateLimit);
+    }
 }
