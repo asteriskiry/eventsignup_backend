@@ -5,5 +5,5 @@ Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
 package fi.asteriski.eventsignup;
 
 public final class Constants {
-    public static final String API_KEY_ARCHIVE = "/api/archive";
+    public static final String API_PATH_ARCHIVE = "/api/archive";
 }

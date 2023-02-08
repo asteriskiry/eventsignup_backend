@@ -22,7 +22,7 @@ import java.util.Locale;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping(Constants.API_KEY_ARCHIVE)
+@RequestMapping(Constants.API_PATH_ARCHIVE)
 public class ArchivedEventController {
 
     private ArchivedEventService archivedEventService;
