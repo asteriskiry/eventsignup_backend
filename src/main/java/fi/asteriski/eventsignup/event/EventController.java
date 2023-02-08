@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 import java.time.ZoneId;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 
 @AllArgsConstructor
 @RestController
@@ -41,7 +42,7 @@ public class EventController {
     })
     @GetMapping("get/{eventId}")
     public Event getEvent(@PathVariable String eventId, @AuthenticationPrincipal User loggedInUser, Locale usersLocale, ZoneId userTimeZone) {
-        return eventService.getEvent(eventId, usersLocale);
+        return eventService.getEvent(eventId, usersLocale, Optional.empty());
     }
 
     @Operation(summary = "Get all events for a user.", parameters = {@Parameter(description = "User's id."),

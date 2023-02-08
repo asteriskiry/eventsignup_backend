@@ -4,10 +4,8 @@ Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
  */
 package fi.asteriski.eventsignup.event;
 
-import fi.asteriski.eventsignup.domain.ArchiveEventRequest;
-import fi.asteriski.eventsignup.domain.ArchivedEvent;
-import fi.asteriski.eventsignup.domain.RemoveArchivedEventsRequest;
-import fi.asteriski.eventsignup.domain.User;
+import fi.asteriski.eventsignup.Constants;
+import fi.asteriski.eventsignup.domain.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -24,7 +22,7 @@ import java.util.Locale;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping("/api/archive")
+@RequestMapping(Constants.API_KEY_ARCHIVE)
 public class ArchivedEventController {
 
     private ArchivedEventService archivedEventService;
@@ -33,11 +31,11 @@ public class ArchivedEventController {
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "All archived events. List can be empty.",
             content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                schema = @Schema(implementation = ArchivedEvent.class))}),
+                schema = @Schema(implementation = ArchivedEventResponse.class))}),
         @ApiResponse(responseCode = "401", description = "Unauthorized.")
     })
     @GetMapping("get/all")
-    public List<ArchivedEvent> getAllArchiveEvents(@AuthenticationPrincipal User loggedInUser) {
+    public List<ArchivedEventResponse> getAllArchiveEvents(@AuthenticationPrincipal User loggedInUser) {
         return archivedEventService.getAllArchivedEvents();
     }
 

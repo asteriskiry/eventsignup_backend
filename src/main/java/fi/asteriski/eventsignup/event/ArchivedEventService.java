@@ -6,6 +6,7 @@ package fi.asteriski.eventsignup.event;
 
 import fi.asteriski.eventsignup.ParticipantRepository;
 import fi.asteriski.eventsignup.domain.ArchivedEvent;
+import fi.asteriski.eventsignup.domain.ArchivedEventResponse;
 import fi.asteriski.eventsignup.domain.Event;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -16,10 +17,8 @@ import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.Comparator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 @Service
@@ -42,11 +41,12 @@ public class ArchivedEventService {
     @NonNull
     private MessageSource messageSource;
 
-    public ArchivedEvent archiveEvent(String eventId, Locale usersLocale) {
-        Event oldEvent = eventRepository.findById(eventId).orElseThrow(() -> {
+    ArchivedEvent archiveEvent(String eventId, Locale usersLocale) {
+        Supplier<EventNotFoundException> errorSupplier = (() -> {
             log.error(String.format("%s Unable to archive event. Old event with id <%s> was not found!", LOG_PREFIX, eventId));
             throw new EventNotFoundException(String.format(messageSource.getMessage("event.not.found.message", null, usersLocale), eventId));
-        }).toEvent();
+        });
+        Event oldEvent = eventService.getEvent(eventId, usersLocale, Optional.of(errorSupplier));
         long numberOfParticipants = participantRepository.countAllByEvent(eventId);
         ArchivedEvent archivedEvent = new ArchivedEvent(oldEvent, Instant.now(), numberOfParticipants, oldEvent.getOwner());
         archivedEvent = archivedEventRepository.save(archivedEvent);
@@ -70,21 +70,28 @@ public class ArchivedEventService {
         participantRepository.deleteAllByEventIn(eventIds);
     }
 
-    public List<ArchivedEvent> getAllArchivedEvents() {
-        return archivedEventRepository.findAll();
+    List<ArchivedEventResponse> getAllArchivedEvents() {
+        var archivedEvents = archivedEventRepository.findAll();
+        return archivedEvents.parallelStream()
+            .map(archivedEvent -> {
+                var events = archivedEvents.parallelStream()
+                    .filter(archivedEvent1 -> archivedEvent.getOriginalOwner().equals(archivedEvent1.getOriginalOwner()))
+                    .collect(Collectors.toCollection(LinkedList::new));
+                return new ArchivedEventResponse(archivedEvent.getOriginalOwner(), events);
+            }).collect(Collectors.toCollection(LinkedList::new));
     }
 
-    public List<ArchivedEvent> getAllArchivedEventsForUser(String userId) {
+    List<ArchivedEvent> getAllArchivedEventsForUser(String userId) {
         return archivedEventRepository.findAllByOriginalOwner(userId).stream()
             .sorted(Comparator.comparing(ArchivedEvent::getDateArchived))
             .collect(Collectors.toList());
     }
 
-    public void removeArchivedEventsBeforeDate(Instant dateLimit) {
+    void removeArchivedEventsBeforeDate(Instant dateLimit) {
         archivedEventRepository.deleteAllByDateArchivedIsBefore(dateLimit);
     }
 
-    public void removeArchivedEvent(String eventId) {
+    void removeArchivedEvent(String eventId) {
         archivedEventRepository.deleteById(eventId);
     }
 

@@ -13,7 +13,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @Configuration
 @EnableScheduling
 @EnableAsync
-public class RemoveOldArchiveEventsJobConfig {
+public class ScheduledJobsConfig {
     @Bean
-    public RemoveOldArchiveEventsJob task() {return new RemoveOldArchiveEventsJob();}
+    public RemoveOldArchiveEventsJob removeOldArchivedEvents() {return new RemoveOldArchiveEventsJob();}
 }

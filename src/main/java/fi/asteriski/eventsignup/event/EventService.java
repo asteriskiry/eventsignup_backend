@@ -18,6 +18,8 @@ import java.time.Instant;
 import java.time.ZoneId;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
+import java.util.function.Supplier;
 
 @Log4j2
 @RequiredArgsConstructor
@@ -35,9 +37,10 @@ public class EventService {
     @NonNull
     private MessageSource messageSource;
 
-    public Event getEvent(String id, Locale usersLocale) {
-        return eventRepository.findById(id).orElseThrow(() ->
-            new EventNotFoundException(String.format(messageSource.getMessage("event.not.found.message", null, usersLocale), id)))
+    public Event getEvent(String id, Locale usersLocale, Optional<Supplier<? extends RuntimeException>> errorSupplier) {
+        Supplier<EventNotFoundException> defaultErrorSupplier = () ->
+            new EventNotFoundException(String.format(messageSource.getMessage("event.not.found.message", null, usersLocale), id));
+        return eventRepository.findById(id).orElseThrow(errorSupplier.isPresent() ? errorSupplier.get() : defaultErrorSupplier)
             .toEvent();
     }
 
