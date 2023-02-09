@@ -4,22 +4,27 @@ Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
  */
 package fi.asteriski.eventsignup.domain;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NonNull;
-import org.springframework.data.annotation.Id;
 
 import java.time.Instant;
 
+@AllArgsConstructor
 @Data
 public class ArchivedEvent {
 
-    @Id
     private String id;
     @NonNull
-    private final Event originalEvent;
+    private Event originalEvent;
     @NonNull
-    private final Instant dateArchived;
+    private Instant dateArchived;
     @NonNull
-    private final Long numberOfParticipants;
+    private Long numberOfParticipants;
+    @NonNull
+    private String originalOwner;
 
+    public ArchivedEventDto toDto() {
+        return new ArchivedEventDto(originalEvent.toDto(), dateArchived, numberOfParticipants, originalOwner);
+    }
 }
