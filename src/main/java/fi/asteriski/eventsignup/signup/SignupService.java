@@ -25,6 +25,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Log4j2
@@ -40,7 +41,7 @@ public class SignupService {
 
 
     public SignupEvent getEventForSignUp(String eventId, Locale usersLocale, ZoneId userTimeZone) {
-        Event event = eventService.getEvent(eventId, usersLocale);
+        Event event = eventService.getEvent(eventId, usersLocale, Optional.empty());
         ZonedDateTime now = ZonedDateTime.now();
         if (event.getSignupStarts() != null && event.getSignupStarts().isAfter(now)) {
             String formattedZonedDateTime = event.getSignupStarts().format(DateTimeFormatter.RFC_1123_DATE_TIME);
@@ -75,7 +76,7 @@ public class SignupService {
         }
         participant.setSignupTime(Instant.now());
         participant = participantRepository.save(participant);
-        customEventPublisher.publishSignupSuccessfulEvent(eventService.getEvent(eventId, usersLocale), participant, usersLocale, userTimeZone);
+        customEventPublisher.publishSignupSuccessfulEvent(eventService.getEvent(eventId, usersLocale, Optional.empty()), participant, usersLocale, userTimeZone);
         return participant;
     }
 
@@ -86,7 +87,7 @@ public class SignupService {
         Participant participant = participantRepository.findById(participantId).orElseThrow(() ->
             new ParticipantNotFoundException(String.format(messageSource.getMessage("signup.participant.remove.error", null, usersLocale), participantId, eventId)));
         participantRepository.deleteParticipantByEventAndId(eventId, participantId);
-        customEventPublisher.publishSignupCancelledEvent(eventService.getEvent(eventId, usersLocale), participant, usersLocale, userTimeZone);
+        customEventPublisher.publishSignupCancelledEvent(eventService.getEvent(eventId, usersLocale, Optional.empty()), participant, usersLocale, userTimeZone);
     }
 
     public List<SignupEvent> getUpcomingEvents(String days) {
