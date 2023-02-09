@@ -34,21 +34,21 @@ class EventControllerUnitTest {
     @Test
     @DisplayName("Get an existing event.")
     void getExistingEvent() {
-        when(eventService.getEvent(eq("123"), any(Locale.class))).thenReturn(this.event);
+        when(eventService.getEvent(eq("123"), any(Locale.class), any())).thenReturn(this.event);
         assertInstanceOf(Event.class, eventController.getEvent("123", null, Locale.getDefault(), ZoneId.systemDefault()));
     }
 
     @Test
     @DisplayName("Getting an existing event doesn't throw an exception")
     void getExistingEventWithNoExceptionThrown() {
-        when(eventService.getEvent(eq("123"), any(Locale.class))).thenReturn(this.event);
+        when(eventService.getEvent(eq("123"), any(Locale.class), any())).thenReturn(this.event);
         assertDoesNotThrow(() -> eventController.getEvent("123", null, null, null));
     }
 
     @Test
     @DisplayName("Try to get non-existent event.")
     void tryToGetNonExistentEvent() {
-        when(eventService.getEvent(eq("not-exist"), any(Locale.class))).thenThrow(new EventNotFoundException("not-exist"));
+        when(eventService.getEvent(eq("not-exist"), any(Locale.class), any())).thenThrow(new EventNotFoundException("not-exist"));
         assertThrows(EventNotFoundException.class, () -> eventController.getEvent("not-exist", null, Locale.getDefault(), ZoneId.systemDefault()));
     }
 
