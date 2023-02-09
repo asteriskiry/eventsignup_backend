@@ -74,7 +74,7 @@ public class ArchivedEventController {
     })
     @DeleteMapping("remove")
     public void removeArchivedEvent(@RequestBody ArchiveEventRequest request, @AuthenticationPrincipal User loggedinUSer) {
-        archivedEventService.removeArchivedEvent(request.eventId());
+        archivedEventService.removeArchivedEvent(request.archivedEventId());
     }
 
     @Operation(summary = "Archive an event. Admin user only.", parameters =
@@ -88,6 +88,6 @@ public class ArchivedEventController {
     })
     @PutMapping("event")
     public void archiveEvent(@RequestBody ArchiveEventRequest request, @AuthenticationPrincipal User loggedInUser, Locale usersLocale) {
-        archivedEventService.archiveEvent(request.eventId(), usersLocale);
+        archivedEventService.archiveEvent(request.archivedEventId(), usersLocale);
     }
 }
