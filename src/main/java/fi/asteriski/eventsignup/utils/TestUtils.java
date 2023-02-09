@@ -123,4 +123,20 @@ public final class TestUtils {
         }
         return returnValue;
     }
+
+    public static List<ArchivedEvent> getRandomArchivedEvents(String owner) {
+        var random = new Random();
+        var events = new LinkedList<ArchivedEvent>();
+        for (int i = 0; i < random.nextInt(200, 1001); i++) {
+            events.add(createRandomArchivedEvent(owner));
+        }
+        return events;
+    }
+
+    public static ArchivedEvent createRandomArchivedEvent(String owner) {
+        var random = new Random();
+        var event = createRandomEvent(owner);
+        var dateArchived = Instant.now().minus(random.nextInt(10, 400), ChronoUnit.DAYS);
+        return new ArchivedEvent(event.getId(), event, dateArchived, random.nextLong(20,200), owner);
+    }
 }

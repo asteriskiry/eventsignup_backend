@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 import java.time.ZoneId;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 
 @AllArgsConstructor
 @RestController
@@ -41,7 +42,7 @@ public class EventController {
     })
     @GetMapping("get/{eventId}")
     public Event getEvent(@PathVariable String eventId, @AuthenticationPrincipal User loggedInUser, Locale usersLocale, ZoneId userTimeZone) {
-        return eventService.getEvent(eventId, usersLocale);
+        return eventService.getEvent(eventId, usersLocale, Optional.empty());
     }
 
     @Operation(summary = "Get all events for a user.", parameters = {@Parameter(description = "User's id."),
@@ -101,21 +102,6 @@ public class EventController {
     @PutMapping("edit")
     public void editEvent(@RequestBody Event event, @AuthenticationPrincipal User loggedInUser, Locale usersLocale, ZoneId userTimeZone) {
         eventService.editExistingEvent(event, loggedInUser, usersLocale, userTimeZone);
-    }
-
-    @Operation(summary = "Archive an event.", parameters =
-        {@Parameter(name = "eventId", description = "Event's id."),
-            @Parameter(name = "loggedInUser", description = "Not required. Automatically added currently logged in user.")},
-        requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content =
-            {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = Event.class))}))
-    @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Event archiving successful."),
-        @ApiResponse(responseCode = "401", description = "Unauthorized."),
-        @ApiResponse(responseCode = "404", description = "Unable to archive event. Event was not found.")
-    })
-    @PutMapping("archive/{eventId}")
-    public void archiveEvent(@PathVariable String eventId, @AuthenticationPrincipal User loggedInUser) {
-        eventService.archiveEvent(eventId);
     }
 
     @Operation(summary = "Delete an event.", parameters =
