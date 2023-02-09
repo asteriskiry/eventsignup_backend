@@ -4,6 +4,7 @@ Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
  */
 package fi.asteriski.eventsignup.config;
 
+import fi.asteriski.eventsignup.jobs.ArchivePastEventsJob;
 import fi.asteriski.eventsignup.jobs.RemoveOldArchiveEventsJob;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,4 +17,6 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 public class ScheduledJobsConfig {
     @Bean
     public RemoveOldArchiveEventsJob removeOldArchivedEvents() {return new RemoveOldArchiveEventsJob();}
+    @Bean
+    public ArchivePastEventsJob archivePastEventsJob() {return new ArchivePastEventsJob();}
 }
