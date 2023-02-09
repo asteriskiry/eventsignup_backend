@@ -4,5 +4,5 @@ Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
  */
 package fi.asteriski.eventsignup.domain;
 
-public record ArchiveEventRequest(String eventId) {
+public record ArchiveEventRequest(String archivedEventId) {
 }

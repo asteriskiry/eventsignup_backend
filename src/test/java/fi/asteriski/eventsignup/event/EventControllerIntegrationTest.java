@@ -174,7 +174,7 @@ class EventControllerIntegrationTest {
     @DisplayName("Archive an existing event.")
     void archiveExistingEvent() throws Exception {
         var valueCapture = ArgumentCaptor.forClass(String.class);
-        var archivedEvent = new ArchivedEvent(event, Instant.now(), 10L, "test");
+        var archivedEvent = new ArchivedEvent("123", event, Instant.now(), 10L, "test");
         when(archivedEventService.archiveEvent(valueCapture.capture(), any(Locale.class))).thenReturn(archivedEvent);
         performLogin();
         mockMvc.perform(put("/event/archive/123")).andExpect(status().isOk());

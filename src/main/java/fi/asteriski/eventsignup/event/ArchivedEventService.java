@@ -6,6 +6,7 @@ package fi.asteriski.eventsignup.event;
 
 import fi.asteriski.eventsignup.ParticipantRepository;
 import fi.asteriski.eventsignup.domain.ArchivedEvent;
+import fi.asteriski.eventsignup.domain.ArchivedEventDto;
 import fi.asteriski.eventsignup.domain.ArchivedEventResponse;
 import fi.asteriski.eventsignup.domain.Event;
 import lombok.NonNull;
@@ -48,10 +49,10 @@ public class ArchivedEventService {
         });
         Event oldEvent = eventService.getEvent(eventId, usersLocale, Optional.of(errorSupplier));
         long numberOfParticipants = participantRepository.countAllByEvent(eventId);
-        ArchivedEvent archivedEvent = new ArchivedEvent(oldEvent, Instant.now(), numberOfParticipants, oldEvent.getOwner());
-        archivedEvent = archivedEventRepository.save(archivedEvent);
+        ArchivedEventDto archivedEventDto = new ArchivedEventDto(oldEvent.toDto(), Instant.now(), numberOfParticipants, oldEvent.getOwner());
+        archivedEventDto = archivedEventRepository.save(archivedEventDto);
         eventService.removeEventAndParticipants(eventId);
-        return archivedEvent;
+        return archivedEventDto.toArchivedEvent();
     }
 
     public void archivePastEvents() {
@@ -65,24 +66,32 @@ public class ArchivedEventService {
         archivedEventRepository.saveAll(events.stream()
             .map(event -> {
                 long numberOfParticipants = participantRepository.countAllByEvent(event.getId());
-                return new ArchivedEvent(event, now, numberOfParticipants, event.getOwner());
+                return new ArchivedEventDto(event.toDto(), now, numberOfParticipants, event.getOwner());
             }).collect(Collectors.toCollection(LinkedList::new)));
         participantRepository.deleteAllByEventIn(eventIds);
     }
 
     List<ArchivedEventResponse> getAllArchivedEvents() {
-        var archivedEvents = archivedEventRepository.findAll();
-        return archivedEvents.parallelStream()
-            .map(archivedEvent -> {
-                var events = archivedEvents.parallelStream()
-                    .filter(archivedEvent1 -> archivedEvent.getOriginalOwner().equals(archivedEvent1.getOriginalOwner()))
-                    .collect(Collectors.toCollection(LinkedList::new));
-                return new ArchivedEventResponse(archivedEvent.getOriginalOwner(), events);
-            }).collect(Collectors.toCollection(LinkedList::new));
+        var archivedEvents = archivedEventRepository.findAll().parallelStream()
+            .map(ArchivedEventDto::toArchivedEvent)
+            .toList();
+        var eventMap = new HashMap<String, List<ArchivedEvent>>((int) Math.round(1.2 *  archivedEvents.size()), 0.9f);
+        for (var archivedEvent: archivedEvents) {
+            if (!eventMap.containsKey(archivedEvent.getOriginalOwner())) {
+                eventMap.put(archivedEvent.getOriginalOwner(), new LinkedList<>());
+            }
+            eventMap.get(archivedEvent.getOriginalOwner()).add(archivedEvent);
+        }
+        var returnValue = new LinkedList<ArchivedEventResponse>();
+        for (var key: eventMap.keySet()) {
+            returnValue.add(new ArchivedEventResponse(key, eventMap.get(key)));
+        }
+        return returnValue;
     }
 
     List<ArchivedEvent> getAllArchivedEventsForUser(String userId) {
         return archivedEventRepository.findAllByOriginalOwner(userId).stream()
+            .map(ArchivedEventDto::toArchivedEvent)
             .sorted(Comparator.comparing(ArchivedEvent::getDateArchived))
             .collect(Collectors.toList());
     }
@@ -91,12 +100,12 @@ public class ArchivedEventService {
         archivedEventRepository.deleteAllByDateArchivedIsBefore(dateLimit);
     }
 
-    void removeArchivedEvent(String eventId) {
-        archivedEventRepository.deleteById(eventId);
+    void removeArchivedEvent(String archivedEventId) {
+        archivedEventRepository.deleteById(archivedEventId);
     }
 
     public void removeArchivedEventsOlderThanOneYear() {
         var dateLimit = Instant.now().minus(1, ChronoUnit.YEARS);
-        archivedEventRepository.deleteAllByDateArchivedIsBefore(dateLimit);
+        removeArchivedEventsBeforeDate(dateLimit);
     }
 }
