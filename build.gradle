@@ -20,6 +20,9 @@ configurations {
 
 repositories {
     mavenCentral()
+    maven {
+        url "https://jcenter.bintray.com/"
+    }
 }
 
 node {
@@ -46,6 +49,8 @@ dependencies {
     implementation 'org.springdoc:springdoc-openapi-ui:1.6.11'
     implementation 'org.springdoc:springdoc-openapi-security:1.6.11'
     implementation 'io.jsonwebtoken:jjwt:0.9.1'
+    // Unfortunately not maintained. See https://github.com/michaelklishin/quartz-mongodb
+    implementation "com.novemberain:quartz-mongodb:2.2.0-rc2"
     compileOnly 'org.projectlombok:lombok:1.18.24'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'

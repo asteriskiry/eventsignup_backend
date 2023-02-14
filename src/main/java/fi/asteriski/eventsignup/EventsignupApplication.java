@@ -11,9 +11,11 @@ import lombok.AllArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.data.mongodb.config.EnableMongoAuditing;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @SpringBootApplication
+@EnableMongoAuditing
 @AllArgsConstructor
 public class EventsignupApplication implements CommandLineRunner {
 
