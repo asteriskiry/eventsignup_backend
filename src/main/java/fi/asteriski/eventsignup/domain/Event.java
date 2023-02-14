@@ -4,9 +4,7 @@ Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
  */
 package fi.asteriski.eventsignup.domain;
 
-import lombok.Builder;
-import lombok.Data;
-import lombok.NonNull;
+import lombok.*;
 import org.springframework.data.mongodb.core.index.Indexed;
 
 import javax.validation.constraints.NotNull;
@@ -41,7 +39,7 @@ public class Event {
     private Integer maxParticipants;
     private ZonedDateTime signupStarts;
     private ZonedDateTime signupEnds;
-    private List<Map<String, Object>> quotas;
+    private List<Quota> quotas;
     private Double price;
     private String bannerImg;
     private Map<String, Object> otherData;
@@ -77,4 +75,9 @@ public class Event {
 
         return event;
     }
+}
+@Data
+class Quota {
+    private String group;
+    private String quota;
 }
