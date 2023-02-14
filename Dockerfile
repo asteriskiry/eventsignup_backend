@@ -1,3 +1,17 @@
+FROM openjdk:17 as build
+WORKDIR /work
+
+COPY gradle gradle
+COPY gradlew .
+COPY build.gradle . 
+COPY settings.gradle .
+COPY src src
+
+RUN ./gradlew bootJar
+
+
 FROM openjdk:17
-COPY build/libs/eventsignup-1.0-SNAPSHOT.jar eventsignup.jar
-ENTRYPOINT ["java","-jar","/eventsignup.jar"]
+WORKDIR /app
+COPY --from=build /work/build/libs/eventsignup-1.0.0.jar .
+
+ENTRYPOINT ["java","-jar","eventsignup-1.0.0.jar"]
