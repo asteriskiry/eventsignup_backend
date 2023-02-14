@@ -76,8 +76,3 @@ public class Event {
         return event;
     }
 }
-@Data
-class Quota {
-    private String group;
-    private String quota;
-}
