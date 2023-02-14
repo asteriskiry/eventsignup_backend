@@ -9,8 +9,8 @@ export interface paths {
     /** Edit an existing event. */
     put: operations["editEvent"];
   };
-  "/api/event/archive/{eventId}": {
-    /** Archive an event. */
+  "/api/archive/event": {
+    /** Archive an event. Admin user only. */
     put: operations["archiveEvent"];
   };
   "/api/admin/users/edit/": {
@@ -69,6 +69,14 @@ export interface paths {
     /** Get needed login data so client side scripts can work. */
     get: operations["getCredentials"];
   };
+  "/api/archive/get/{userId}": {
+    /** Get all archived events for a specific user sorted by date archived (desc). Admin user only. */
+    get: operations["getAllArchivedEventsForUser"];
+  };
+  "/api/archive/get/all": {
+    /** Get all archived events. Admin user only. */
+    get: operations["getAllArchiveEvents"];
+  };
   "/api/admin/users/all": {
     /** Get all non-admin users for admin view. */
     get: operations["getAllNonAdminUsers"];
@@ -96,6 +104,14 @@ export interface paths {
   "/api/event/remove/{eventId}": {
     /** Delete an event. */
     delete: operations["removeEvent"];
+  };
+  "/api/archive/remove": {
+    /** Remove a single archived event. Admin user only. */
+    delete: operations["removeArchivedEvent"];
+  };
+  "/api/archive/remove/all": {
+    /** Delete archived events older than set date. Admin user only. */
+    delete: operations["removeArchivedEvents"];
   };
   "/api/admin/users/delete/{userId}": {
     /** Deletes an user by their id. */
@@ -154,6 +170,9 @@ export interface components {
       group?: string;
       quota?: string;
     };
+    ArchiveEventRequest: {
+      archivedEventId?: string;
+    };
     GrantedAuthority: {
       authority?: string;
     };
@@ -170,11 +189,11 @@ export interface components {
       userRole?: "ROLE_ADMIN" | "ROLE_USER" | "ADMIN" | "USER";
       locked?: boolean;
       enabled?: boolean;
-      admin?: boolean;
-      authorities?: (components["schemas"]["GrantedAuthority"])[];
       accountNonExpired?: boolean;
       accountNonLocked?: boolean;
       credentialsNonExpired?: boolean;
+      authorities?: (components["schemas"]["GrantedAuthority"])[];
+      admin?: boolean;
     };
     Participant: {
       id?: string;
@@ -336,6 +355,7 @@ export interface components {
         majorVersion?: number;
         /** Format: int32 */
         minorVersion?: number;
+        contextPath?: string;
         initParameterNames?: Record<string, never>;
         /** Format: int32 */
         effectiveMajorVersion?: number;
@@ -350,8 +370,8 @@ export interface components {
         servletContextName?: string;
         servletRegistrations?: {
           [key: string]: ({
-            runAsRole?: string;
             mappings?: (string)[];
+            runAsRole?: string;
             name?: string;
             className?: string;
             initParameters?: {
@@ -375,22 +395,22 @@ export interface components {
           name?: string;
           path?: string;
           comment?: string;
-          secure?: boolean;
           httpOnly?: boolean;
           /** Format: int32 */
           maxAge?: number;
+          secure?: boolean;
         };
         sessionTrackingModes?: ("COOKIE" | "URL" | "SSL")[];
         jspConfigDescriptor?: {
           jspPropertyGroups?: ({
               buffer?: string;
-              urlPatterns?: (string)[];
-              defaultContentType?: string;
               elIgnored?: string;
               pageEncoding?: string;
               scriptingInvalid?: string;
               includePreludes?: (string)[];
               includeCodas?: (string)[];
+              defaultContentType?: string;
+              urlPatterns?: (string)[];
               deferredSyntaxAllowedAsLiteral?: string;
               trimDirectiveWhitespaces?: string;
               errorOnUndeclaredNamespace?: string;
@@ -404,7 +424,6 @@ export interface components {
         virtualServerName?: string;
         /** Format: int32 */
         sessionTimeout?: number;
-        contextPath?: string;
         defaultSessionTrackingModes?: ("COOKIE" | "URL" | "SSL")[];
         effectiveSessionTrackingModes?: ("COOKIE" | "URL" | "SSL")[];
         requestCharacterEncoding?: string;
@@ -429,15 +448,15 @@ export interface components {
       expandUriTemplateVariables?: boolean;
       propagateQueryParams?: boolean;
       hosts?: (string)[];
-      redirectView?: boolean;
       propagateQueryProperties?: boolean;
+      redirectView?: boolean;
       attributes?: {
         [key: string]: string | undefined;
       };
+      attributesCSV?: string;
       attributesMap?: {
         [key: string]: Record<string, never> | undefined;
       };
-      attributesCSV?: string;
     };
     AuthCredentialsRequest: {
       username?: string;
@@ -460,6 +479,23 @@ export interface components {
     AuthCredentialsResponse: {
       isAdmin?: boolean;
       token?: string;
+    };
+    ArchivedEvent: {
+      id?: string;
+      originalEvent?: components["schemas"]["Event"];
+      /** Format: date-time */
+      dateArchived?: string;
+      /** Format: int64 */
+      numberOfParticipants?: number;
+      originalOwner?: string;
+    };
+    ArchivedEventResponse: {
+      eventOwner?: string;
+      events?: (components["schemas"]["ArchivedEvent"])[];
+    };
+    RemoveArchivedEventsRequest: {
+      /** Format: date-time */
+      dateLimit?: string;
     };
   };
   responses: never;
@@ -512,16 +548,10 @@ export interface operations {
     };
   };
   archiveEvent: {
-    /** Archive an event. */
-    parameters: {
-        /** @description Event's id. */
-      path: {
-        eventId: string;
-      };
-    };
-    requestBody?: {
+    /** Archive an event. Admin user only. */
+    requestBody: {
       content: {
-        "application/json": components["schemas"]["Event"];
+        "application/json": components["schemas"]["ArchiveEventRequest"];
       };
     };
     responses: {
@@ -1165,6 +1195,94 @@ export interface operations {
       };
     };
   };
+  getAllArchivedEventsForUser: {
+    /** Get all archived events for a specific user sorted by date archived (desc). Admin user only. */
+    parameters: {
+        /** @description User's id whose data is wanted. */
+      path: {
+        userId: string;
+      };
+    };
+    responses: {
+      /** @description All archived events for the requested user. List can be empty. */
+      200: {
+        content: {
+          "application/json": components["schemas"]["ArchivedEvent"];
+        };
+      };
+      /** @description Unauthorized */
+      401: {
+        content: {
+          "*/*": (components["schemas"]["ArchivedEvent"])[];
+        };
+      };
+      /** @description Not Found */
+      404: {
+        content: {
+          "*/*": string;
+        };
+      };
+      /** @description Not Acceptable */
+      406: {
+        content: {
+          "*/*": string;
+        };
+      };
+      /** @description Conflict */
+      409: {
+        content: {
+          "*/*": string;
+        };
+      };
+      /** @description Internal Server Error */
+      500: {
+        content: {
+          "*/*": string;
+        };
+      };
+    };
+  };
+  getAllArchiveEvents: {
+    /** Get all archived events. Admin user only. */
+    responses: {
+      /** @description All archived events. List can be empty. */
+      200: {
+        content: {
+          "application/json": components["schemas"]["ArchivedEventResponse"];
+        };
+      };
+      /** @description Unauthorized. */
+      401: {
+        content: {
+          "*/*": (components["schemas"]["ArchivedEventResponse"])[];
+        };
+      };
+      /** @description Not Found */
+      404: {
+        content: {
+          "*/*": string;
+        };
+      };
+      /** @description Not Acceptable */
+      406: {
+        content: {
+          "*/*": string;
+        };
+      };
+      /** @description Conflict */
+      409: {
+        content: {
+          "*/*": string;
+        };
+      };
+      /** @description Internal Server Error */
+      500: {
+        content: {
+          "*/*": string;
+        };
+      };
+    };
+  };
   getAllNonAdminUsers: {
     /** Get all non-admin users for admin view. */
     responses: {
@@ -1408,6 +1526,82 @@ export interface operations {
       /** @description Event deleted successfully. */
       200: never;
       /** @description Unauthorized. */
+      401: never;
+      /** @description Not Found */
+      404: {
+        content: {
+          "*/*": string;
+        };
+      };
+      /** @description Not Acceptable */
+      406: {
+        content: {
+          "*/*": string;
+        };
+      };
+      /** @description Conflict */
+      409: {
+        content: {
+          "*/*": string;
+        };
+      };
+      /** @description Internal Server Error */
+      500: {
+        content: {
+          "*/*": string;
+        };
+      };
+    };
+  };
+  removeArchivedEvent: {
+    /** Remove a single archived event. Admin user only. */
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["ArchiveEventRequest"];
+      };
+    };
+    responses: {
+      /** @description Delete was successful. */
+      200: never;
+      /** @description Unauthorized */
+      401: never;
+      /** @description Not Found */
+      404: {
+        content: {
+          "*/*": string;
+        };
+      };
+      /** @description Not Acceptable */
+      406: {
+        content: {
+          "*/*": string;
+        };
+      };
+      /** @description Conflict */
+      409: {
+        content: {
+          "*/*": string;
+        };
+      };
+      /** @description Internal Server Error */
+      500: {
+        content: {
+          "*/*": string;
+        };
+      };
+    };
+  };
+  removeArchivedEvents: {
+    /** Delete archived events older than set date. Admin user only. */
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["RemoveArchivedEventsRequest"];
+      };
+    };
+    responses: {
+      /** @description Delete was successful. */
+      200: never;
+      /** @description Unauthorized */
       401: never;
       /** @description Not Found */
       404: {
