@@ -1,0 +1,19 @@
+{
+    "name": "@asteriskiry/eventsignup_backend-types",
+    "description": "npm plugin that contains generated ts types",
+    "version": "1.0.0",
+    "license": "UNLICENSED",
+    "repository": {
+      "type": "git",
+      "url": "git://github.com/asteriskiry/eventsignup_backend.git"
+    },
+    "publishConfig": {
+      "registry": "https://npm.pkg.github.com/"
+    },
+    "files": [
+      "index.js",
+      "README.md",
+      "src/**"
+    ],
+    "main": "index.ts"
+  }
