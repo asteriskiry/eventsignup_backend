@@ -12,6 +12,6 @@ RUN ./gradlew bootJar
 
 FROM openjdk:17
 WORKDIR /app
-COPY --from=build /work/build/libs/eventsignup-1.0.0.jar .
+COPY --from=build /work/build/libs/eventsignup-1.0-SNAPSHOT.jar .
 
-ENTRYPOINT ["java","-jar","eventsignup-1.0.0.jar"]
+ENTRYPOINT ["java","-jar","eventsignup-1.0-SNAPSHOT.jar"]
