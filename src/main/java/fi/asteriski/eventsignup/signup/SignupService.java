@@ -93,7 +93,7 @@ public class SignupService {
     public List<SignupEvent> getUpcomingEvents(String days) {
         var today = Instant.now();
         var daysToGet = Integer.parseInt(days);
-        return eventRepository.findAllByStartDateIsBeforeAndStartDateIsAfter(today.plus(daysToGet, ChronoUnit.DAYS), today).stream()
+        return eventRepository.findAllByStartDateIsBetween(today, today.plus(daysToGet, ChronoUnit.DAYS)).stream()
             .map(eventDto -> new SignupEvent(eventDto.toEvent()))
             .collect(Collectors.toCollection(LinkedList::new));
     }

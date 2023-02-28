@@ -14,6 +14,6 @@ import java.util.List;
 public interface EventRepository extends MongoRepository<EventDto, String> {
     List<Event> findAllByOwner(String owner);
     List<Event> findAllByStartDateIsBeforeOrEndDateIsBefore(Instant instant, Instant instant2);
-    List<EventDto> findAllByStartDateIsBeforeAndStartDateIsAfter(Instant instant, Instant instant2);
+    List<EventDto> findAllByStartDateIsBetween(Instant start, Instant end);
 
 }
