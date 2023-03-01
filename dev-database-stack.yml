@@ -4,7 +4,9 @@ services:
   mongodb:
     image: mongo:5.0.5
     ports:
-      - "27017:27017"
+      - 27017:27017
+    volumes:
+      - mongodb_data:/data/db
     restart: always
   keycloak:
     image: quay.io/keycloak/keycloak:21.0.0

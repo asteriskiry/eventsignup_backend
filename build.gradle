@@ -65,7 +65,7 @@ tasks.named('test') {
 }
 
 bootJar {
-    baseName = 'eventsignup'
+    archiveFileName = 'eventsignup.jar'
 }
 
 task generateTsTypes(type: NpxTask) {
