@@ -32,7 +32,7 @@ import java.util.Collections;
 
 public class SpringSecurityConfig {
 
-    @Profile("!dev")
+    @Profile("!dev & !special")
     @KeycloakConfiguration
     public static class Authenticated extends KeycloakWebSecurityConfigurerAdapter {
 
@@ -110,7 +110,7 @@ public class SpringSecurityConfig {
         }
     }
 
-    @Profile("dev")
+    @Profile({"dev", "special"})
     @KeycloakConfiguration
     public static class DevAuths extends Authenticated {
         @Override

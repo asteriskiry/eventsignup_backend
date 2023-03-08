@@ -27,12 +27,13 @@ repositories {
 
 node {
     download = true
+    nodeProjectDir = file("${project.projectDir}/typesPlugin")
 }
 
 openApi {
     apiDocsUrl.set("http://localhost:8080/api-docs")
     customBootRun {
-        args.set(["--spring.profiles.active=dev"])
+        args.set(["--spring.profiles.active=special"])
     }
 }
 
@@ -72,4 +73,12 @@ task generateTsTypes(type: NpxTask) {
     dependsOn('generateOpenApiDocs')
     command = "openapi-typescript"
     args = ["${project.projectDir}/build/openapi.json", "--output", "${project.projectDir}/typesPlugin/src/generated/events-types.ts"]
+}
+
+task generateTypesVersionNumber(type: NpmTask) {
+    args = ["version", new Date().format('yyyyMMdd')+".0.0"]
+}
+
+task publishTypesPlugin(type: NpmTask) {
+    args = ["publish"]
 }
