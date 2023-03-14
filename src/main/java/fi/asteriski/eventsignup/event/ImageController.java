@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.AllArgsConstructor;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
@@ -32,7 +33,7 @@ public class ImageController {
     )
     @GetMapping("banner/{fileName}")
     @ResponseBody
-    public Map<String, String> getBannerImagePath(@PathVariable String fileName, @AuthenticationPrincipal User loggedInUser) {
+    public Map<String, String> getBannerImagePath(@PathVariable String fileName, Authentication loggedInUser) {
         return Map.of("fileName", fileName);
     }
 
@@ -46,7 +47,7 @@ public class ImageController {
     }
     )
     @GetMapping(value = "banner/get/{fileName}", produces = {MediaType.IMAGE_PNG_VALUE, MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_GIF_VALUE})
-    public byte[] getBannerImage(@PathVariable String fileName, @AuthenticationPrincipal User loggedInUser) {
+    public byte[] getBannerImage(@PathVariable String fileName, Authentication loggedInUser) {
         return imageService.getBannerImage(fileName.replace('_', '/'));
     }
 
@@ -60,9 +61,9 @@ public class ImageController {
         @ApiResponse(responseCode = "500", description = "Target directory creation failed.")
     })
     @PostMapping("banner/add")
-    public RedirectView addBannerImg(@RequestBody byte[] file, @AuthenticationPrincipal User loggedInUser) {
+    public RedirectView addBannerImg(@RequestBody byte[] file, Authentication loggedInUser) {
         // During testing loggedInUser will be null.
-        var user = loggedInUser != null ? loggedInUser.getUsername() : "testUser";
+        var user = loggedInUser != null ? loggedInUser.getName() : "testUser";
         String filePath = imageService.addBannerImage(file, user);
         return new RedirectView(String.format("/api/event/banner/%s", filePath));
     }

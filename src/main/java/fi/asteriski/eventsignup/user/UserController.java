@@ -13,6 +13,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.AllArgsConstructor;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,7 +34,7 @@ public class UserController {
         @ApiResponse(responseCode = "401", description = "Unauthenticated.")
     })
     @GetMapping("users/all")
-    public List<User> getAllNonAdminUsers(@AuthenticationPrincipal User loggedInUser) {
+    public List<User> getAllNonAdminUsers(Authentication loggedInUser) {
         return userService.getAllNonAdminUsers();
     }
 
@@ -46,7 +47,7 @@ public class UserController {
         @ApiResponse(responseCode = "401", description = "Unauthenticated.")
     })
     @PostMapping(value = "users/add", consumes = "application/json")
-    public void addUser(@RequestBody User user, @AuthenticationPrincipal User loggedInUser) {
+    public void addUser(@RequestBody User user, Authentication loggedInUser) {
         userService.addUser(user);
     }
 
@@ -59,7 +60,7 @@ public class UserController {
         @ApiResponse(responseCode = "401", description = "Unauthenticated.")
     })
     @PutMapping("users/edit/")
-    public void editUser(@RequestBody User user, @AuthenticationPrincipal User loggedInUser) {
+    public void editUser(@RequestBody User user, Authentication loggedInUser) {
         userService.editUser(user);
     }
 
@@ -71,7 +72,7 @@ public class UserController {
         @ApiResponse(responseCode = "401", description = "Unauthenticated.")
     })
     @DeleteMapping("users/delete/{userId}")
-    public void deleteUser(@PathVariable String userId, @AuthenticationPrincipal User loggedInUser) {
+    public void deleteUser(@PathVariable String userId, Authentication loggedInUser) {
         userService.deleteUser(userId);
     }
 
@@ -82,7 +83,7 @@ public class UserController {
         @ApiResponse(responseCode = "401", description = "Unauthenticated.")
     })
     @DeleteMapping("users/delete/all")
-    public void deleteAllNonAdminUsers(@AuthenticationPrincipal User loggedInUser) {
+    public void deleteAllNonAdminUsers(Authentication loggedInUser) {
         userService.deleteAllNonAdminUsers();
     }
 }

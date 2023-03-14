@@ -14,10 +14,14 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.AllArgsConstructor;
+import org.keycloak.adapters.RefreshableKeycloakSecurityContext;
+import org.keycloak.adapters.springsecurity.account.SimpleKeycloakAccount;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.time.ZoneId;
 import java.util.List;
 import java.util.Locale;
@@ -41,7 +45,7 @@ public class EventController {
         @ApiResponse(responseCode = "404", description = "Event not found.")
     })
     @GetMapping("get/{eventId}")
-    public Event getEvent(@PathVariable String eventId, @AuthenticationPrincipal User loggedInUser, Locale usersLocale, ZoneId userTimeZone) {
+    public Event getEvent(@PathVariable String eventId, Authentication loggedInUser, Locale usersLocale, ZoneId userTimeZone) {
         return eventService.getEvent(eventId, usersLocale, Optional.empty());
     }
 
@@ -54,7 +58,7 @@ public class EventController {
         @ApiResponse(responseCode = "401", description = "Unauthorized.")
     })
     @GetMapping("all/{user}")
-    public List<Event> getAllEventsForUser(@PathVariable String user, @AuthenticationPrincipal User loggedInUser) {
+    public List<Event> getAllEventsForUser(@PathVariable String user, Authentication loggedInUser) {
         return eventService.getAllEventsForUser(user);
     }
 
@@ -68,7 +72,7 @@ public class EventController {
         @ApiResponse(responseCode = "401", description = "Unauthorized.")
     })
     @GetMapping("participants/{eventId}")
-    public List<Participant> getParticipants(@PathVariable String eventId, @AuthenticationPrincipal User loggedInUser) {
+    public List<Participant> getParticipants(@PathVariable String eventId, Authentication loggedInUser) {
         return eventService.getParticipants(eventId);
     }
 
@@ -83,7 +87,7 @@ public class EventController {
         @ApiResponse(responseCode = "401", description = "Unauthorized.")
     })
     @PostMapping(value = "create", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void createEvent(@RequestBody Event event, @AuthenticationPrincipal User loggedInUser, Locale usersLocale, ZoneId userTimeZone) {
+    public void createEvent(@RequestBody Event event, Authentication loggedInUser, Locale usersLocale, ZoneId userTimeZone) {
         // During testing loggedInUser will be null.
         eventService.createNewEvent(event, loggedInUser, usersLocale, userTimeZone);
     }
@@ -100,7 +104,7 @@ public class EventController {
         @ApiResponse(responseCode = "404", description = "Unable to edit. Old event not found.")
     })
     @PutMapping("edit")
-    public void editEvent(@RequestBody Event event, @AuthenticationPrincipal User loggedInUser, Locale usersLocale, ZoneId userTimeZone) {
+    public void editEvent(@RequestBody Event event, Authentication loggedInUser, Locale usersLocale, ZoneId userTimeZone) {
         eventService.editExistingEvent(event, loggedInUser, usersLocale, userTimeZone);
     }
 
@@ -112,7 +116,7 @@ public class EventController {
         @ApiResponse(responseCode = "401", description = "Unauthorized.")
     })
     @DeleteMapping("remove/{eventId}")
-    public void removeEvent(@PathVariable String eventId, @AuthenticationPrincipal User loggedInUser) {
+    public void removeEvent(@PathVariable String eventId, Authentication loggedInUser) {
         eventService.removeEventAndParticipants(eventId);
     }
 }
