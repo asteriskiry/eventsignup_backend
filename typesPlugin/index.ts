@@ -1,1 +1,1 @@
-export type { components } from "./src/generated/events-types";
+export type { components, paths, operations } from "./src/generated/events-types";
