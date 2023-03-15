@@ -2,12 +2,23 @@ version: '2'
 
 services:
   mongodb:
-    image: docker.io/bitnami/mongodb:5.0.5
+    image: mongo:5.0.5
     ports:
-      - "27017:27017"
+      - 27017:27017
     volumes:
-      - 'mongodb_data:/bitnami/mongodb'
+      - mongodb_data:/data/db
     restart: always
+  keycloak:
+    image: quay.io/keycloak/keycloak:21.0.0
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+    ports:
+      - 9090:8080
+    volumes:
+      - ./keycloak/realm:/opt/keycloak/data/import
+      - ./keycloak/themes:/opt/keycloak/themes
+    command: 'start-dev --import-realm'
 
 volumes:
   mongodb_data:

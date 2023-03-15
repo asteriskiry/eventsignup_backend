@@ -74,20 +74,6 @@ public final class TestUtils {
         );
     }
 
-    public static User createRandomUser(String username) {
-        var rnd = new Random();
-        return User.builder()
-            .firstName(generateRandomString(10))
-            .lastName(generateRandomString(10))
-            .email("test@example.com")
-            .userRole(UserRole.ROLE_USER)
-            .enabled(true)
-            .username(username)
-            .password(generateRandomString(15))
-            .expirationDate(Instant.now().plus(rnd.nextInt(50) + 1, ChronoUnit.DAYS))
-            .build();
-    }
-
     /**
      * <p>Copies test file to a location expected by the application and returns it as byte[].<br>
      * Copied file is set to delete on exit.</p>
@@ -109,19 +95,6 @@ public final class TestUtils {
         }
         finalFile.deleteOnExit();
         return file;
-    }
-
-    public static String generateRandomString(int targetStringLength) {
-        return Utils.generateRandomString(targetStringLength);
-    }
-
-    public static List<User> createListOfRandomUsers(String username) {
-        List<User> returnValue = new LinkedList<>();
-        var random = new Random();
-        for (int i = 0; i < random.nextInt(10, 101); i++) {
-            returnValue.add(createRandomUser(username));
-        }
-        return returnValue;
     }
 
     public static List<ArchivedEvent> getRandomArchivedEvents(String owner) {

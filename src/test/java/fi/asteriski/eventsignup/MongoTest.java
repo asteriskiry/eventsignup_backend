@@ -5,15 +5,11 @@ Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
 package fi.asteriski.eventsignup;
 
 import fi.asteriski.eventsignup.event.EventRepository;
-import fi.asteriski.eventsignup.user.UserRepository;
-import fi.asteriski.eventsignup.user.UserService;
 import fi.asteriski.eventsignup.utils.TestUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -24,13 +20,6 @@ public class MongoTest {
     EventRepository eventRepository;
     @Autowired
     ParticipantRepository participantRepository;
-    // These mock beans are needed since they are declared in EventsignupApplication class.
-    @MockBean
-    UserRepository userRepository;
-    @MockBean
-    BCryptPasswordEncoder bCryptPasswordEncoder;
-    @MockBean
-    UserService userService;
 
     @BeforeEach
     void setUp() {

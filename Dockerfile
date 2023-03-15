@@ -12,6 +12,9 @@ RUN ./gradlew bootJar
 
 FROM openjdk:17
 WORKDIR /app
-COPY --from=build /work/build/libs/eventsignup-1.0-SNAPSHOT.jar .
+COPY --from=build /work/build/libs/eventsignup.jar .
 
-ENTRYPOINT ["java","-jar","eventsignup-1.0-SNAPSHOT.jar"]
+ENTRYPOINT ["java","-jar","eventsignup.jar"]
+
+# add image to repository
+LABEL org.opencontainers.image.source https://github.com/asteriskiry/eventsignup_backend

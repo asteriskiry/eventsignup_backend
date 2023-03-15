@@ -27,12 +27,13 @@ repositories {
 
 node {
     download = true
+    nodeProjectDir = file("${project.projectDir}/typesPlugin")
 }
 
 openApi {
     apiDocsUrl.set("http://localhost:8080/api-docs")
     customBootRun {
-        args.set(["--spring.profiles.active=dev"])
+        args.set(["--spring.profiles.active=special"])
     }
 }
 
@@ -48,9 +49,9 @@ dependencies {
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.13.4'
     implementation 'org.springdoc:springdoc-openapi-ui:1.6.11'
     implementation 'org.springdoc:springdoc-openapi-security:1.6.11'
-    implementation 'io.jsonwebtoken:jjwt:0.9.1'
     // Unfortunately not maintained. See https://github.com/michaelklishin/quartz-mongodb
     implementation "com.novemberain:quartz-mongodb:2.2.0-rc2"
+    implementation 'org.keycloak:keycloak-spring-boot-starter:21.0.0'
     compileOnly 'org.projectlombok:lombok:1.18.24'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
@@ -65,11 +66,19 @@ tasks.named('test') {
 }
 
 bootJar {
-    baseName = 'eventsignup'
+    archiveFileName = 'eventsignup.jar'
 }
 
 task generateTsTypes(type: NpxTask) {
     dependsOn('generateOpenApiDocs')
     command = "openapi-typescript"
     args = ["${project.projectDir}/build/openapi.json", "--output", "${project.projectDir}/typesPlugin/src/generated/events-types.ts"]
+}
+
+task generateTypesVersionNumber(type: NpmTask) {
+    args = ["version", new Date().format('yyyyMMdd')+".0.0"]
+}
+
+task publishTypesPlugin(type: NpmTask) {
+    args = ["publish"]
 }

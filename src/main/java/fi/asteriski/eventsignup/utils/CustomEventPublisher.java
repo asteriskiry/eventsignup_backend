@@ -6,12 +6,12 @@ package fi.asteriski.eventsignup.utils;
 
 import fi.asteriski.eventsignup.domain.Event;
 import fi.asteriski.eventsignup.domain.Participant;
-import fi.asteriski.eventsignup.domain.User;
 import fi.asteriski.eventsignup.event.SavedEventSpringEvent;
 import fi.asteriski.eventsignup.signup.SignupCancelledSpringEvent;
 import fi.asteriski.eventsignup.signup.SignupSuccessfulSpringEvent;
 import lombok.AllArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
 import java.time.ZoneId;
@@ -23,7 +23,7 @@ public class CustomEventPublisher {
 
     private ApplicationEventPublisher applicationEventPublisher;
 
-    public void publishSavedEventEvent(final Event event, final User loggedInUser, Locale usersLocale, ZoneId userTimeZone) {
+    public void publishSavedEventEvent(final Event event, final Authentication loggedInUser, Locale usersLocale, ZoneId userTimeZone) {
         SavedEventSpringEvent savedEventSpringEvent = new SavedEventSpringEvent(this, event, loggedInUser, usersLocale, userTimeZone);
         applicationEventPublisher.publishEvent(savedEventSpringEvent);
     }

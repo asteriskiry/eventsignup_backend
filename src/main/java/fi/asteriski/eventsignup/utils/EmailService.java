@@ -6,13 +6,13 @@ package fi.asteriski.eventsignup.utils;
 
 import fi.asteriski.eventsignup.domain.Event;
 import fi.asteriski.eventsignup.domain.Participant;
-import fi.asteriski.eventsignup.domain.User;
 import fi.asteriski.eventsignup.event.SavedEventSpringEvent;
 import fi.asteriski.eventsignup.signup.SignupCancelledSpringEvent;
 import fi.asteriski.eventsignup.signup.SignupSuccessfulSpringEvent;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.keycloak.adapters.RefreshableKeycloakSecurityContext;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.context.event.EventListener;
@@ -22,6 +22,7 @@ import org.springframework.mail.MailSendException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
 import javax.mail.MessagingException;
@@ -91,10 +92,12 @@ public class EmailService {
     @Async
     @EventListener
     public void onSavedEventSpringEvent(SavedEventSpringEvent savedEventSpringEvent) {
-        User loggedInUser = savedEventSpringEvent.getLoggedInUser();
+        Authentication loggedInUser = savedEventSpringEvent.getLoggedInUser();
         Event event = savedEventSpringEvent.getEvent();
+        RefreshableKeycloakSecurityContext ctx = (RefreshableKeycloakSecurityContext) loggedInUser.getCredentials();
+        String email = ctx.getToken().getEmail();
         try {
-            sendEmail(loggedInUser.getEmail(), defaultSender,
+            sendEmail(email, defaultSender,
                 String.format(MAIL_SUBJECT_EVENT_TEMPLATE, event.getName()),
                 String.format(MAIL_MESSAGE_EVENT_TEMPLATE, messageSource.getMessage("email.message.body.event", null, savedEventSpringEvent.getUsersLocale()), event.getName(), event.getStartDate(), event.getDescription()));
         } catch (MessagingException messagingException) {
