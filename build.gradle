@@ -51,7 +51,7 @@ dependencies {
     implementation 'org.springdoc:springdoc-openapi-security:1.6.11'
     // Unfortunately not maintained. See https://github.com/michaelklishin/quartz-mongodb
     implementation "com.novemberain:quartz-mongodb:2.2.0-rc2"
-    implementation group: 'org.keycloak', name: 'keycloak-spring-boot-starter', version: '21.0.0'
+    implementation 'org.keycloak:keycloak-spring-boot-starter:21.0.0'
     compileOnly 'org.projectlombok:lombok:1.18.24'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
