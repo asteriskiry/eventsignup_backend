@@ -6,16 +6,6 @@
       "description": "Root path for all banner images."
     },
     {
-      "name": "redirect.url.after.login",
-      "type": "java.lang.String",
-      "description": "URL to redirect after successful login."
-    },
-    {
-      "name": "default.days.until.password.expire",
-      "type": "java.lang.Integer",
-      "description": "Default amount of days a newly created password is valid."
-    },
-    {
       "name": "default.email.sender.address",
       "type": "java.lang.String",
       "description": "Default sender address in emails."

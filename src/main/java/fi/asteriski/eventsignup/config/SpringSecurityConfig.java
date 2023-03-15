@@ -4,42 +4,51 @@ Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
  */
 package fi.asteriski.eventsignup.config;
 
-import fi.asteriski.eventsignup.filter.JwtFilter;
-import fi.asteriski.eventsignup.user.UserService;
-import lombok.AllArgsConstructor;
+import org.keycloak.adapters.KeycloakConfigResolver;
+import org.keycloak.adapters.springboot.KeycloakSpringBootConfigResolver;
+import org.keycloak.adapters.springsecurity.KeycloakConfiguration;
+import org.keycloak.adapters.springsecurity.authentication.KeycloakAuthenticationProvider;
+import org.keycloak.adapters.springsecurity.config.KeycloakWebSecurityConfigurerAdapter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpMethod;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.core.authority.mapping.SimpleAuthorityMapper;
+import org.springframework.security.core.session.SessionRegistry;
+import org.springframework.security.core.session.SessionRegistryImpl;
+import org.springframework.security.web.authentication.session.NullAuthenticatedSessionStrategy;
+import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import javax.servlet.http.HttpServletResponse;
 import java.util.Arrays;
 import java.util.Collections;
 
-@Configuration
+
 public class SpringSecurityConfig {
 
-    @EnableWebSecurity
-    @AllArgsConstructor
-    @Profile("!dev")
-    public static class Authenticated extends WebSecurityConfigurerAdapter {
+    @Profile("!dev & !special")
+    @KeycloakConfiguration
+    public static class Authenticated extends KeycloakWebSecurityConfigurerAdapter {
 
-        private final UserService userService;
+        @Autowired
+        public void configureGlobal(AuthenticationManagerBuilder auth) {
+            KeycloakAuthenticationProvider keycloakAuthenticationProvider =
+                keycloakAuthenticationProvider();
+            keycloakAuthenticationProvider.setGrantedAuthoritiesMapper(new SimpleAuthorityMapper());
+            auth.authenticationProvider(keycloakAuthenticationProvider);
+        }
 
-        private final BCryptPasswordEncoder bCryptPasswordEncoder;
-        protected JwtFilter jwtFilter;
+        @Bean
+        @Override
+        protected SessionAuthenticationStrategy sessionAuthenticationStrategy() {
+            return new NullAuthenticatedSessionStrategy();
+        }
 
         /**
          * Configures end point security.
@@ -48,12 +57,12 @@ public class SpringSecurityConfig {
          */
         @Override
         protected void configure(HttpSecurity http) throws Exception {
+            super.configure(http);
             http
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .cors().configurationSource(corsConfigurationSource())
                 .and()
-                .exceptionHandling().authenticationEntryPoint(((request, response, authException) -> {
-                    response.sendError(HttpServletResponse.SC_UNAUTHORIZED, authException.getMessage());
-                }))
+                .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
                 .antMatchers(HttpMethod.GET, "/api/admin/**").hasRole("ADMIN")
@@ -68,16 +77,13 @@ public class SpringSecurityConfig {
                 .antMatchers(HttpMethod.PUT, "/api/event/edit/**").hasAnyRole("ADMIN", "USER")
                 .antMatchers(HttpMethod.DELETE, "/api/event/remove/**").hasAnyRole("ADMIN", "USER")
                 .antMatchers(HttpMethod.GET, "/api/event/**").hasAnyRole("ADMIN", "USER")
+                .antMatchers(HttpMethod.GET, "/api/signup/**").permitAll()
+                .antMatchers(HttpMethod.POST, "/api/signup/**").permitAll()
+                .antMatchers(HttpMethod.DELETE, "/api/signup/**").permitAll()
                 .antMatchers(HttpMethod.GET, "/swagger-ui/**").hasRole("ADMIN")
                 .antMatchers(HttpMethod.GET, "/api-docs/**").hasRole("ADMIN")
                 .antMatchers(HttpMethod.GET, "/api-docs.yaml").hasRole("ADMIN")
-                .antMatchers(HttpMethod.GET, "/api-docs.json").hasRole("ADMIN")
-                .antMatchers(HttpMethod.GET, "/api/signup/**").permitAll()
-                .antMatchers(HttpMethod.POST, "/api/auth/**").permitAll()
-                .antMatchers(HttpMethod.GET, "/api/auth/**").permitAll()
-                .and()
-                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
-                .cors().configurationSource(corsConfigurationSource());
+                .antMatchers(HttpMethod.GET, "/api-docs.json").hasRole("ADMIN");
         }
 
         protected CorsConfiguration getCorsConfs() {
@@ -98,31 +104,17 @@ public class SpringSecurityConfig {
         }
 
 
-        /**
-         * Configures to use custom service for user management and password encrypting method..
-         * @param auth Builtin AuthenticationManagerBuilder entity.
-         * @throws Exception
-         */
-        @Autowired
-        public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-            auth.userDetailsService(userService)
-                .passwordEncoder(bCryptPasswordEncoder);
-        }
 
-        @Override @Bean
-        public AuthenticationManager authenticationManagerBean() throws Exception {
-            return super.authenticationManagerBean();
+
+         @Bean
+        public SessionRegistry buildSessionRegistry() {
+            return new SessionRegistryImpl();
         }
     }
 
-    @EnableWebSecurity
-    @Profile("dev")
+    @Profile({"dev", "special"})
+    @KeycloakConfiguration
     public static class DevAuths extends Authenticated {
-
-        public DevAuths(UserService userService, BCryptPasswordEncoder bCryptPasswordEncoder, JwtFilter jwtFilter) {
-            super(userService, bCryptPasswordEncoder, jwtFilter);
-        }
-
         @Override
         protected CorsConfiguration getCorsConfs() {
             CorsConfiguration configuration = super.getCorsConfs();
@@ -144,5 +136,14 @@ public class SpringSecurityConfig {
 
         }
     }
+
 }
 
+@Configuration
+class ApplicationConfiguration {
+
+    @Bean
+    public KeycloakConfigResolver KeycloakConfigResolver() {
+        return new KeycloakSpringBootConfigResolver();
+    }
+}

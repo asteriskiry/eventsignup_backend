@@ -6,7 +6,6 @@ package fi.asteriski.eventsignup.admin;
 
 import fi.asteriski.eventsignup.domain.Event;
 import fi.asteriski.eventsignup.domain.Participant;
-import fi.asteriski.eventsignup.domain.User;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -15,7 +14,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.AllArgsConstructor;
 import org.springframework.http.MediaType;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -38,7 +37,7 @@ public class AdminController {
                 schema = @Schema(implementation = Event.class))})
     })
     @GetMapping("event/all")
-    public List<Event> getAllEvents(@AuthenticationPrincipal User loggedInUser) {
+    public List<Event> getAllEvents(Authentication loggedInUser) {
         return adminService.getAllEvents();
     }
 
@@ -50,7 +49,7 @@ public class AdminController {
                 schema = @Schema(implementation = Event.class))})
     })
     @GetMapping("event/{userId}")
-    public List<Event> getAllEventsForUser(@PathVariable String userId, @AuthenticationPrincipal User loggedInUser) {
+    public List<Event> getAllEventsForUser(@PathVariable String userId, Authentication loggedInUser) {
         return adminService.getAllEventsForUser(userId);
     }
 
@@ -62,7 +61,7 @@ public class AdminController {
                 schema = @Schema(implementation = Participant.class))})
     })
     @GetMapping("participants/all")
-    public List<Participant> getAllParticipants(@AuthenticationPrincipal User loggedInUser) {
+    public List<Participant> getAllParticipants(Authentication loggedInUser) {
         return adminService.getAllParticipants();
     }
 
@@ -75,7 +74,7 @@ public class AdminController {
                 schema = @Schema(implementation = Participant.class))})
     })
     @GetMapping("participants/{eventId}")
-    public List<Participant> getAllParticipantsForEvent(@PathVariable String eventId, @AuthenticationPrincipal User loggedInUser) {
+    public List<Participant> getAllParticipantsForEvent(@PathVariable String eventId, Authentication loggedInUser) {
         return adminService.getAllParticipantsForEvent(eventId);
     }
 }

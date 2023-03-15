@@ -11,6 +11,7 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.context.MessageSource;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -52,13 +53,13 @@ public class EventService {
         return participantRepository.findAllByEvent(eventId);
     }
 
-    public Event createNewEvent(Event event, User loggedInUser, Locale usersLocale, ZoneId userTimeZone) {
-        event.setOwner(loggedInUser.getUsername());
+    public Event createNewEvent(Event event, Authentication loggedInUser, Locale usersLocale, ZoneId userTimeZone) {
+        event.setOwner(loggedInUser.getName());
         if (StringUtils.hasText(event.getBannerImg())) {
-            event.setBannerImg(String.format("%s_%s", loggedInUser.getUsername(), event.getBannerImg()));
+            event.setBannerImg(String.format("%s_%s", loggedInUser.getName(), event.getBannerImg()));
         }
         if (event.getForm().getUserCreated() == null) {
-            event.getForm().setUserCreated(loggedInUser.getUsername());
+            event.getForm().setUserCreated(loggedInUser.getName());
         }
         if (event.getForm().getDateCreated() == null) {
             event.getForm().setDateCreated(Instant.now());
@@ -67,7 +68,7 @@ public class EventService {
         return eventRepository.save(event.toDto()).toEvent();
     }
 
-    public Event editExistingEvent(Event newEvent, User loggedInUser, Locale usersLocale, ZoneId userTimeZone) {
+    public Event editExistingEvent(Event newEvent, Authentication loggedInUser, Locale usersLocale, ZoneId userTimeZone) {
         Event oldEvent = eventRepository.findById(newEvent.getId()).orElseThrow(() -> {
             log.error(String.format("%s Unable to edit Existing event. Old event with id <%s> was not found!", LOG_PREFIX, newEvent.getId()));
             throw new EventNotFoundException(newEvent.getId());

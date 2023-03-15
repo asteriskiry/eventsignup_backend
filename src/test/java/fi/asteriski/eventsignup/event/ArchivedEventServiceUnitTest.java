@@ -6,8 +6,6 @@ package fi.asteriski.eventsignup.event;
 
 import fi.asteriski.eventsignup.ParticipantRepository;
 import fi.asteriski.eventsignup.domain.ArchivedEvent;
-import fi.asteriski.eventsignup.user.UserRepository;
-import fi.asteriski.eventsignup.user.UserService;
 import fi.asteriski.eventsignup.utils.TestUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -18,7 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.MessageSource;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -44,13 +41,6 @@ class ArchivedEventServiceUnitTest {
     MessageSource messageSource;
     @MockBean
     EventService eventService;
-    // These mock beans are needed since they are declared in EventsignupApplication class.
-    @MockBean
-    UserRepository userRepository;
-    @MockBean
-    BCryptPasswordEncoder bCryptPasswordEncoder;
-    @MockBean
-    UserService userService;
     private final String testUser = "testUser";
     private final Locale defaultLocale = Locale.getDefault();
 
