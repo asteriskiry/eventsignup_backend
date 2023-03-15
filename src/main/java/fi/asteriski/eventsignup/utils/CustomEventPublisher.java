@@ -6,7 +6,6 @@ package fi.asteriski.eventsignup.utils;
 
 import fi.asteriski.eventsignup.domain.Event;
 import fi.asteriski.eventsignup.domain.Participant;
-import fi.asteriski.eventsignup.domain.User;
 import fi.asteriski.eventsignup.event.SavedEventSpringEvent;
 import fi.asteriski.eventsignup.signup.SignupCancelledSpringEvent;
 import fi.asteriski.eventsignup.signup.SignupSuccessfulSpringEvent;
