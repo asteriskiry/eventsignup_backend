@@ -78,6 +78,8 @@ public class SpringSecurityConfig {
                 .antMatchers(HttpMethod.DELETE, "/api/event/remove/**").hasAnyRole("ADMIN", "USER")
                 .antMatchers(HttpMethod.GET, "/api/event/**").hasAnyRole("ADMIN", "USER")
                 .antMatchers(HttpMethod.GET, "/api/signup/**").permitAll()
+                .antMatchers(HttpMethod.POST, "/api/signup/**").permitAll()
+                .antMatchers(HttpMethod.DELETE, "/api/signup/**").permitAll()
                 .antMatchers(HttpMethod.GET, "/swagger-ui/**").hasRole("ADMIN")
                 .antMatchers(HttpMethod.GET, "/api-docs/**").hasRole("ADMIN")
                 .antMatchers(HttpMethod.GET, "/api-docs.yaml").hasRole("ADMIN")
