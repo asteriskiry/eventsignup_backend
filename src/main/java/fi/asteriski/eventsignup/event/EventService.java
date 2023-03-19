@@ -17,10 +17,12 @@ import org.springframework.util.StringUtils;
 
 import java.time.Instant;
 import java.time.ZoneId;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 @Log4j2
 @RequiredArgsConstructor
@@ -48,7 +50,9 @@ public class EventService {
     }
 
     public List<Event> getAllEventsForUser(String user) {
-        return eventRepository.findAllByOwner(user);
+        return eventRepository.findAllByOwner(user).stream()
+            .map(EventDto::toEvent)
+            .collect(Collectors.toCollection(LinkedList::new));
     }
 
     public List<Participant> getParticipants(String eventId) {
