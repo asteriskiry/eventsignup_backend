@@ -28,6 +28,7 @@ import java.util.function.Supplier;
 public class EventService {
 
     private static final String LOG_PREFIX = "[EventService]";
+    private static Supplier<EventNotFoundException> defaultErrorSupplier;
 
     @NonNull
     private EventRepository eventRepository;
@@ -39,10 +40,11 @@ public class EventService {
     private MessageSource messageSource;
 
     public Event getEvent(String id, Locale usersLocale, Optional<Supplier<? extends RuntimeException>> errorSupplier) {
-        Supplier<EventNotFoundException> defaultErrorSupplier = () ->
-            new EventNotFoundException(String.format(messageSource.getMessage("event.not.found.message", null, usersLocale), id));
-        return eventRepository.findById(id).orElseThrow(errorSupplier.isPresent() ? errorSupplier.get() : defaultErrorSupplier)
-            .toEvent();
+        if (defaultErrorSupplier == null) {
+            defaultErrorSupplier = () ->
+                new EventNotFoundException(String.format(messageSource.getMessage("event.not.found.message", null, usersLocale), id));
+        }
+        return eventRepository.findById(id).orElseThrow(errorSupplier.orElse(defaultErrorSupplier)).toEvent();
     }
 
     public List<Event> getAllEventsForUser(String user) {
