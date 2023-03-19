@@ -32,21 +32,21 @@ class ImageControllerUnitTest {
     @Test
     @DisplayName("Get the path to a file that was saved.")
     void getBannerImagePath() {
-        assertInstanceOf(Map.class, imageController.getBannerImagePath("123", null));
+        assertInstanceOf(Map.class, imageController.getBannerImagePath("123"));
     }
 
     @Test
     @DisplayName("Get an existing banner image file (i.e. byte array).")
     void getBannerImageThatExists() {
         when(imageService.getBannerImage("123")).thenReturn(new byte[10]);
-        assertInstanceOf(byte[].class, imageController.getBannerImage("123", null));
+        assertInstanceOf(byte[].class, imageController.getBannerImage("123"));
     }
 
     @Test
     @DisplayName("Try to get a non existent banner image file.")
     void getNonExistentBannerImage() {
         when(imageService.getBannerImage("not/exist")).thenThrow(new ImageNotFoundException("not found"));
-        assertThrows(ImageNotFoundException.class, () -> imageController.getBannerImage("not_exist", null));
+        assertThrows(ImageNotFoundException.class, () -> imageController.getBannerImage("not_exist"));
         verify(imageService).getBannerImage("not/exist");
     }
 
@@ -54,8 +54,8 @@ class ImageControllerUnitTest {
     @DisplayName("Add an image (i.e. a byte array).")
     void addBannerImg() throws IOException {
         byte[] bytes = getImageDataAsBytes(rootPath);
-        when(imageService.addBannerImage(bytes, "testUser")).thenReturn("value");
-        assertInstanceOf(RedirectView.class, imageController.addBannerImg(bytes, null));
-        verify(imageService).addBannerImage(bytes, "testUser");
+        when(imageService.addBannerImage(bytes)).thenReturn("value");
+        assertInstanceOf(RedirectView.class, imageController.addBannerImg(bytes));
+        verify(imageService).addBannerImage(bytes);
     }
 }

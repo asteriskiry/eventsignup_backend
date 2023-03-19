@@ -8,6 +8,7 @@ import fi.asteriski.eventsignup.utils.Utils;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import javax.imageio.ImageIO;
@@ -41,7 +42,9 @@ public class ImageService {
         return returnValue;
     }
 
-    public String addBannerImage(byte[] file, String userName) {
+    public String addBannerImage(byte[] file) {
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+        var userName = authentication != null ? authentication.getName() : "testUser";
         if (isInputFileNonValidImage(file)) {
             log.info(String.format("%s %s", LOG_PREFIX, "Input file is not a valid image. Throwing exception."));
             throw new InvalidImageFileException("Provided file is not a valid image file.");
