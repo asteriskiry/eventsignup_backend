@@ -42,14 +42,14 @@ class AdminService {
 
     /**
      * Fetches all events belonging to a particular user.
-     * @param userId Id of the user.
+     * @param userId ID of the user.
      * @return List of events ordered by starting date.
      */
     List<Event> getAllEventsForUser(String userId) {
         log.info(String.format("%s In %s.getAllEventsForUser(). User: %s", LOG_PREFIX, this.getClass().getSimpleName(), userId));
-        List<Event> events = eventService.getAllEventsForUser(userId);
-        events.sort(Comparator.comparing(Event::getStartDate));
-        return events;
+        return eventService.getAllEventsForUser(userId).stream()
+            .sorted(Comparator.comparing(Event::getStartDate))
+            .collect(Collectors.toCollection(LinkedList::new));
     }
 
     /**

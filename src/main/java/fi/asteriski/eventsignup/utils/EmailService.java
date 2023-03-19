@@ -75,6 +75,11 @@ public class EmailService {
         %s: <a href=%s/signup/cancel/%s/%s target="_blank">%s/signup/cancel/%s/%s</a>
         </html>
         """;
+    /*
+    Format:
+    email.message.body.signup.cancelled
+    Name of the event
+     */
     private static final String MAIL_MESSAGE_SIGNUP_CANCELLED_TEMPLATE = """
         <html>
         %s %s.
@@ -87,7 +92,7 @@ public class EmailService {
     private static final String MAIL_SUBJECT_EVENT_TEMPLATE = "[Event signup] %s";
     /*
     Format:
-    Name of event
+    Thrown exception
      */
     private static final String LOG_ERROR_MESSAGE_TEMPLATE = "Error with email. Error was: %s";
 
