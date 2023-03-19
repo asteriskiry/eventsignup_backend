@@ -27,8 +27,6 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 
@@ -91,27 +89,24 @@ public class SpringSecurityConfig {
                 .antMatchers(HttpMethod.GET, "/api-docs.json").hasRole("ADMIN");
         }
 
-        protected CorsConfiguration getCorsConfs() {
+        protected CorsConfiguration getCorsConfiguration() {
             CorsConfiguration configuration = new CorsConfiguration();
             configuration.setAllowedOrigins(List.of(allowedCorsOrigin));
-            configuration.setAllowedMethods(Arrays.asList("GET","POST", "PUT", "DELETE"));
-            configuration.setAllowedHeaders(Collections.singletonList("*"));
+            configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE"));
+            configuration.setAllowedHeaders(List.of("*"));
             configuration.setAllowCredentials(true);
             return configuration;
         }
 
         @Bean
         CorsConfigurationSource corsConfigurationSource() {
-            CorsConfiguration configuration = getCorsConfs();
+            CorsConfiguration configuration = getCorsConfiguration();
             UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
             source.registerCorsConfiguration("/**", configuration);
             return source;
         }
 
-
-
-
-         @Bean
+        @Bean
         public SessionRegistry buildSessionRegistry() {
             return new SessionRegistryImpl();
         }
@@ -121,8 +116,8 @@ public class SpringSecurityConfig {
     @KeycloakConfiguration
     public static class DevAuths extends Authenticated {
         @Override
-        protected CorsConfiguration getCorsConfs() {
-            CorsConfiguration configuration = super.getCorsConfs();
+        protected CorsConfiguration getCorsConfiguration() {
+            CorsConfiguration configuration = super.getCorsConfiguration();
             configuration.addAllowedOrigin("http://localhost:3000");
             return configuration;
         }
@@ -138,10 +133,8 @@ public class SpringSecurityConfig {
                 .antMatchers(HttpMethod.GET, "/api-docs.json").permitAll()
                 .and()
                 .csrf().disable();
-
         }
     }
-
 }
 
 @Configuration
