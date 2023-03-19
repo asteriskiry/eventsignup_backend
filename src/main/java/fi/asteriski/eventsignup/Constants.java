@@ -9,4 +9,6 @@ public final class Constants {
     public static final String API_PATH_ADMIN = "/api/admin";
     public static final String API_PATH_EVENT = "/api/event";
     public static final String API_PATH_SIGNUP = "/api/signup";
+    public static final String USE_UTC_TIME_ZONE = "Z";
+
 }

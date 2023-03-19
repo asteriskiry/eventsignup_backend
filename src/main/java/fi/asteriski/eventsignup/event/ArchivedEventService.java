@@ -46,10 +46,16 @@ public class ArchivedEventService {
         });
         Event oldEvent = eventService.getEvent(eventId, usersLocale, Optional.of(errorSupplier));
         long numberOfParticipants = participantRepository.countAllByEvent(eventId);
-        ArchivedEventDto archivedEventDto = new ArchivedEventDto(oldEvent.toDto(), Instant.now(), numberOfParticipants, oldEvent.getOwner());
-        archivedEventDto = archivedEventRepository.save(archivedEventDto);
+        var archivedEvent = ArchivedEvent.builder()
+            .id(oldEvent.getId())
+            .originalEvent(oldEvent.toDto())
+            .dateArchived(Instant.now())
+            .numberOfParticipants(numberOfParticipants)
+            .originalOwner(oldEvent.getOwner())
+            .build();
+        archivedEvent = archivedEventRepository.save(archivedEvent);
         eventService.removeEventAndParticipants(eventId);
-        return archivedEventDto.toArchivedEvent();
+        return archivedEvent;
     }
 
     public void archivePastEvents() {
@@ -65,21 +71,25 @@ public class ArchivedEventService {
         archivedEventRepository.saveAll(events.stream()
             .map(event -> {
                 long numberOfParticipants = participantRepository.countAllByEvent(event.getId());
-                return new ArchivedEventDto(event.toDto(), now, numberOfParticipants, event.getOwner());
+                return ArchivedEvent.builder()
+                    .id(event.getId())
+                    .originalEvent(event.toDto())
+                    .dateArchived(now)
+                    .numberOfParticipants(numberOfParticipants)
+                    .originalOwner(event.getOwner())
+                    .build();
             }).collect(Collectors.toCollection(LinkedList::new)));
         participantRepository.deleteAllByEventIn(eventIds);
     }
 
     List<ArchivedEventResponse> getAllArchivedEvents() {
-        var archivedEvents = archivedEventRepository.findAll().parallelStream()
-            .map(ArchivedEventDto::toArchivedEvent)
-            .toList();
-        var eventMap = new HashMap<String, List<ArchivedEvent>>((int) Math.round(1.2 *  archivedEvents.size()), 0.9f);
+        var archivedEvents = archivedEventRepository.findAll();
+        var eventMap = new HashMap<String, List<ArchivedEventDto>>((int) Math.round(1.2 *  archivedEvents.size()), 0.9f);
         for (var archivedEvent: archivedEvents) {
             if (!eventMap.containsKey(archivedEvent.getOriginalOwner())) {
                 eventMap.put(archivedEvent.getOriginalOwner(), new LinkedList<>());
             }
-            eventMap.get(archivedEvent.getOriginalOwner()).add(archivedEvent);
+            eventMap.get(archivedEvent.getOriginalOwner()).add(archivedEvent.toDto());
         }
         var returnValue = new LinkedList<ArchivedEventResponse>();
         for (var key: eventMap.keySet()) {
@@ -88,10 +98,10 @@ public class ArchivedEventService {
         return returnValue;
     }
 
-    List<ArchivedEvent> getAllArchivedEventsForUser(String userId) {
+    List<ArchivedEventDto> getAllArchivedEventsForUser(String userId) {
         return archivedEventRepository.findAllByOriginalOwner(userId).stream()
-            .map(ArchivedEventDto::toArchivedEvent)
-            .sorted(Comparator.comparing(ArchivedEvent::getDateArchived))
+            .map(ArchivedEvent::toDto)
+            .sorted(Comparator.comparing(ArchivedEventDto::dateArchived))
             .collect(Collectors.toList());
     }
 

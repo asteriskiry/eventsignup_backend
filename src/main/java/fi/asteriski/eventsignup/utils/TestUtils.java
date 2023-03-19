@@ -19,12 +19,18 @@ import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
+import java.util.function.Supplier;
 
 /**
  * Class for utility methods used in testing.
  */
 public final class TestUtils {
+
+    private static final Supplier<Instant> defaultDateArchivedSupplier = () -> {
+        return Instant.now().minus(new Random().nextInt(10, 400), ChronoUnit.DAYS);
+    };
 
     // To prevent instantiation of the class.
     private TestUtils(){}
@@ -97,19 +103,24 @@ public final class TestUtils {
         return file;
     }
 
-    public static List<ArchivedEvent> getRandomArchivedEvents(String owner) {
+    public static List<ArchivedEvent> getRandomArchivedEvents(String owner, Optional<Supplier<Instant>> dateArchivedSupplier) {
         var random = new Random();
         var events = new LinkedList<ArchivedEvent>();
         for (int i = 0; i < random.nextInt(200, 1001); i++) {
-            events.add(createRandomArchivedEvent(owner));
+            events.add(createRandomArchivedEvent(owner, dateArchivedSupplier));
         }
         return events;
     }
 
-    public static ArchivedEvent createRandomArchivedEvent(String owner) {
+    public static ArchivedEvent createRandomArchivedEvent(String owner, Optional<Supplier<Instant>> dateArchivedSupplier) {
         var random = new Random();
         var event = createRandomEvent(owner);
-        var dateArchived = Instant.now().minus(random.nextInt(10, 400), ChronoUnit.DAYS);
-        return new ArchivedEvent(event.getId(), event, dateArchived, random.nextLong(20,200), owner);
+        var dateArchived = dateArchivedSupplier.orElse(defaultDateArchivedSupplier).get();
+        return ArchivedEvent.builder()
+            .originalEvent(event.toDto())
+            .dateArchived(dateArchived)
+            .numberOfParticipants(random.nextLong(20,200))
+            .originalOwner(owner)
+            .build();
     }
 }

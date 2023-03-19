@@ -4,27 +4,42 @@ Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
  */
 package fi.asteriski.eventsignup.domain;
 
-import lombok.AllArgsConstructor;
+import fi.asteriski.eventsignup.Constants;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NonNull;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 
-@AllArgsConstructor
+@Document()
 @Data
+@Builder
 public class ArchivedEvent {
 
+    @Id
     private String id;
     @NonNull
-    private Event originalEvent;
+    private final EventDto originalEvent;
     @NonNull
-    private Instant dateArchived;
+    private final Instant dateArchived;
     @NonNull
-    private Long numberOfParticipants;
+    private final Long numberOfParticipants;
     @NonNull
-    private String originalOwner;
+    @Indexed
+    private final String originalOwner;
 
     public ArchivedEventDto toDto() {
-        return new ArchivedEventDto(originalEvent.toDto(), dateArchived, numberOfParticipants, originalOwner);
+        return ArchivedEventDto.builder()
+            .id(id)
+            .originalEvent(originalEvent)
+            .dateArchived(ZonedDateTime.ofInstant(this.dateArchived, ZoneId.of(Constants.USE_UTC_TIME_ZONE)))
+            .numberOfParticipants(numberOfParticipants)
+            .originalOwner(originalOwner)
+            .build();
     }
 }

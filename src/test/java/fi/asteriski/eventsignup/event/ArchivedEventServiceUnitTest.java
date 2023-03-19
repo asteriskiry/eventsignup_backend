@@ -20,6 +20,7 @@ import org.springframework.context.MessageSource;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -60,8 +61,8 @@ class ArchivedEventServiceUnitTest {
     @Test
     @DisplayName("Archive an existing event with no participants.")
     void archiveExistingEventWithNoParticipants() {
-        var event = eventRepository.save(TestUtils.createRandomEvent(testUser).toDto()).toEvent();
-        when(eventService.getEvent(eq(event.getId()), eq(defaultLocale), any())).thenReturn(event);
+        var event = eventRepository.save(TestUtils.createRandomEvent(testUser).toDto());
+        when(eventService.getEvent(eq(event.getId()), eq(defaultLocale), any())).thenReturn(event.toEvent());
         var result = archivedEventService.archiveEvent(event.getId(), defaultLocale);
 
         verify(eventService).getEvent(anyString(), any(Locale.class), any());
@@ -72,10 +73,10 @@ class ArchivedEventServiceUnitTest {
     }
 
     @Test
-    @DisplayName("Archive an existing event with no participants.")
+    @DisplayName("Archive an existing event with participants.")
     void archiveExistingEventWithParticipants() {
-        var event = eventRepository.save(TestUtils.createRandomEvent(testUser).toDto()).toEvent();
-        when(eventService.getEvent(eq(event.getId()), eq(defaultLocale), any())).thenReturn(event);
+        var event = eventRepository.save(TestUtils.createRandomEvent(testUser).toDto());
+        when(eventService.getEvent(eq(event.getId()), eq(defaultLocale), any())).thenReturn(event.toEvent());
         var participants = TestUtils.getRandomParticipants(event.getId());
         participantRepository.saveAll(participants);
         var result = archivedEventService.archiveEvent(event.getId(), defaultLocale);
@@ -101,11 +102,11 @@ class ArchivedEventServiceUnitTest {
     @Test
     @DisplayName("Get all archived events when there are some.")
     void getAllArchivedEventsWhenThereAreSome() {
-        var archivedEvents = TestUtils.getRandomArchivedEvents(testUser);
-        var archivedEvents2 = TestUtils.getRandomArchivedEvents("otherTestUser");
+        var archivedEvents = TestUtils.getRandomArchivedEvents(testUser, Optional.empty());
+        var archivedEvents2 = TestUtils.getRandomArchivedEvents("otherTestUser", Optional.empty());
         archivedEventRepository.saveAll(
-            Stream.concat(archivedEvents.stream().map(ArchivedEvent::toDto),
-                archivedEvents2.stream().map(ArchivedEvent::toDto))
+            Stream.concat(archivedEvents.stream(),
+                archivedEvents2.stream())
                 .toList()
         );
         var result = archivedEventService.getAllArchivedEvents();
@@ -127,35 +128,33 @@ class ArchivedEventServiceUnitTest {
     @Test
     @DisplayName("Get all archived events for 'testUser'.")
     void getAllArchivedEventsForUser() {
-        var archivedEvents = TestUtils.getRandomArchivedEvents(testUser);
-        var archivedEvents2 = TestUtils.getRandomArchivedEvents("otherTestUser");
+        var archivedEvents = TestUtils.getRandomArchivedEvents(testUser, Optional.empty());
+        var archivedEvents2 = TestUtils.getRandomArchivedEvents("otherTestUser", Optional.empty());
         archivedEventRepository.saveAll(
-            Stream.concat(archivedEvents.stream().map(ArchivedEvent::toDto),
-                archivedEvents2.stream().map(ArchivedEvent::toDto))
+            Stream.concat(archivedEvents.stream(),
+                archivedEvents2.stream())
                 .toList()
         );
         var result = archivedEventService.getAllArchivedEventsForUser(testUser);
 
         assertEquals(result.size(), archivedEvents.size());
         assertNotEquals(result.size(), archivedEventRepository.count());
-        assertTrue(() -> result.stream().allMatch(archivedEvent -> Objects.equals(archivedEvent.getOriginalOwner(), testUser)));
+        assertTrue(() -> result.stream().allMatch(archivedEvent -> Objects.equals(archivedEvent.originalOwner(), testUser)));
     }
 
     @Test
     @DisplayName("Try to remove archived events that were archived more than 100 days ago when there are some to archive.")
     void removeArchivedEventsBeforeDateWhenThereAreSome() {
-        var archivedEvents = TestUtils.getRandomArchivedEvents(testUser);
         var now = Instant.now();
+        Supplier<Instant> moreThanHundredDaysAgoSupplier = () -> now.minus(120, ChronoUnit.DAYS);
+        Supplier<Instant> lessThanHundredDaysAgoSupplier = () -> now.minus(60, ChronoUnit.DAYS);
+        var archivedEvents = TestUtils.getRandomArchivedEvents(testUser, Optional.of(moreThanHundredDaysAgoSupplier));
+        archivedEvents.addAll(TestUtils.getRandomArchivedEvents(testUser, Optional.of(lessThanHundredDaysAgoSupplier)));
         var dateLimit = now.minus(100, ChronoUnit.DAYS);
-        for (int i = 0; i < archivedEvents.size(); i++) {
-            if (i % 3 == 0) {
-                archivedEvents.get(i).setDateArchived(now.minus(120, ChronoUnit.DAYS));
-            }
-        }
         var numberOfEventsToRemove = archivedEvents.stream()
                 .filter(archivedEvent -> archivedEvent.getDateArchived().isBefore(dateLimit))
                 .count();
-        archivedEventRepository.saveAll(archivedEvents.stream().map(ArchivedEvent::toDto).toList());
+        archivedEventRepository.saveAll(archivedEvents);
         var countBefore = archivedEventRepository.count();
         archivedEventService.removeArchivedEventsBeforeDate(dateLimit);
         var countAfter = archivedEventRepository.count();
@@ -167,16 +166,14 @@ class ArchivedEventServiceUnitTest {
     @Test
     @DisplayName("Try to remove archived events that were archived more than 100 days ago when there none to remove.")
     void removeArchivedEventsBeforeDateWhenThereAreNone() {
-        var archivedEvents = TestUtils.getRandomArchivedEvents(testUser);
         var now = Instant.now();
+        Supplier<Instant> lessThanHundredDaysAgoSupplier = () -> now.minus(60, ChronoUnit.DAYS);
+        var archivedEvents = TestUtils.getRandomArchivedEvents(testUser, Optional.of(lessThanHundredDaysAgoSupplier));
         var dateLimit = now.minus(100, ChronoUnit.DAYS);
-        for (var archivedEvent : archivedEvents) {
-            archivedEvent.setDateArchived(now.minus(90, ChronoUnit.DAYS));
-        }
         var numberOfEventsToRemove = archivedEvents.stream()
             .filter(archivedEvent -> archivedEvent.getDateArchived().isBefore(dateLimit))
             .count();
-        archivedEventRepository.saveAll(archivedEvents.stream().map(ArchivedEvent::toDto).toList());
+        archivedEventRepository.saveAll(archivedEvents);
         var countBefore = archivedEventRepository.count();
         archivedEventService.removeArchivedEventsBeforeDate(dateLimit);
         var countAfter = archivedEventRepository.count();
@@ -188,7 +185,7 @@ class ArchivedEventServiceUnitTest {
     @Test
     @DisplayName("Remove a specific archived event which exists.")
     void removeArchivedEventThatExists() {
-        var archivedEvent = archivedEventRepository.save(TestUtils.createRandomArchivedEvent(testUser).toDto()).toArchivedEvent();
+        var archivedEvent = archivedEventRepository.save(TestUtils.createRandomArchivedEvent(testUser, Optional.empty()));
 
         var countBefore = archivedEventRepository.count();
         archivedEventService.removeArchivedEvent(archivedEvent.getId());
@@ -201,7 +198,7 @@ class ArchivedEventServiceUnitTest {
     @Test
     @DisplayName("Remove a specific archived event that doesn't exist.")
     void removeNonExistentArchivedEvent() {
-        archivedEventRepository.save(TestUtils.createRandomArchivedEvent(testUser).toDto());
+        archivedEventRepository.save(TestUtils.createRandomArchivedEvent(testUser, Optional.empty()));
         var eventIdToTest = "123";
         var countBefore = archivedEventRepository.count();
         archivedEventService.removeArchivedEvent(eventIdToTest);

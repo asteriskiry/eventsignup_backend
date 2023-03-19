@@ -46,11 +46,11 @@ public class ArchivedEventController {
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "All archived events for the requested user. List can be empty.",
             content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                schema = @Schema(implementation = ArchivedEvent.class))}),
+                schema = @Schema(implementation = ArchivedEventDto.class))}),
         @ApiResponse(responseCode = "401", description = "Unauthorized")
     })
     @GetMapping("get/{userId}")
-    public List<ArchivedEvent> getAllArchivedEventsForUser(@PathVariable String userId) {
+    public List<ArchivedEventDto> getAllArchivedEventsForUser(@PathVariable String userId) {
         return archivedEventService.getAllArchivedEventsForUser(userId);
     }
 
