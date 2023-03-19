@@ -4,8 +4,11 @@ Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
  */
 package fi.asteriski.eventsignup.event;
 
+import fi.asteriski.eventsignup.domain.BannerImageUploadSuccessResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.AllArgsConstructor;
@@ -13,8 +16,6 @@ import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
-
-import java.util.Map;
 
 @AllArgsConstructor
 @RestController
@@ -27,12 +28,14 @@ public class ImageController {
         {@Parameter(name = "fileName", description = "Filename generated when saving an image."),
             @Parameter(name = "loggedInUser", description = "Not required. Automatically added currently logged in user.")})
     @ApiResponses(
-        @ApiResponse(responseCode = "200", description = "Json: {'fileName': fileName}")
+        @ApiResponse(responseCode = "200", description = "Final path of the uploaded image file wrapped in json.",
+            content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                schema = @Schema(implementation = BannerImageUploadSuccessResponse.class))})
     )
     @GetMapping("banner/{fileName}")
     @ResponseBody
-    public Map<String, String> getBannerImagePath(@PathVariable String fileName, Authentication loggedInUser) {
-        return Map.of("fileName", fileName);
+    public BannerImageUploadSuccessResponse getBannerImagePath(@PathVariable String fileName, Authentication loggedInUser) {
+        return BannerImageUploadSuccessResponse.builder().fileName(fileName).build();
     }
 
     @Operation(summary = "Get a banner image.", parameters = {
