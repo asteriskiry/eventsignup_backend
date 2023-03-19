@@ -5,10 +5,7 @@ Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
 package fi.asteriski.eventsignup.event;
 
 import fi.asteriski.eventsignup.ParticipantRepository;
-import fi.asteriski.eventsignup.domain.ArchivedEvent;
-import fi.asteriski.eventsignup.domain.ArchivedEventDto;
-import fi.asteriski.eventsignup.domain.ArchivedEventResponse;
-import fi.asteriski.eventsignup.domain.Event;
+import fi.asteriski.eventsignup.domain.*;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -58,7 +55,9 @@ public class ArchivedEventService {
     public void archivePastEvents() {
         Instant now = Instant.now();
         Instant dateLimit = now.minus(defaultDaysToArchivePastEvents, ChronoUnit.DAYS);
-        List<Event> events = eventRepository.findAllByStartDateIsBeforeOrEndDateIsBefore(dateLimit, dateLimit);
+        List<Event> events = eventRepository.findAllByStartDateIsBeforeOrEndDateIsBefore(dateLimit, dateLimit).stream()
+            .map(EventDto::toEvent)
+            .toList();
         log.info(String.format("Archiving %s events that had startDate or endDate %s days ago i.e. on %s.", events.size(), defaultDaysToArchivePastEvents, dateLimit));
         List<String> eventIds = events.stream().map(Event::getId).collect(Collectors.toCollection(LinkedList::new));
         // TODO delete banner img. or move it to another directory and fix path in event (or add path to ArchivedEvent)
