@@ -30,52 +30,48 @@ public class AdminController {
 
     private AdminService adminService;
 
-    @Operation(summary = "Gets all events for admin view.",
-        parameters = {@Parameter(name = "loggedInUser", description = "Not required. Automatically added currently logged in user.")})
+    @Operation(summary = "Gets all events for admin view.")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "All events.",
             content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                 schema = @Schema(implementation = Event.class))})
     })
     @GetMapping("event/all")
-    public List<Event> getAllEvents(Authentication loggedInUser) {
+    public List<Event> getAllEvents() {
         return adminService.getAllEvents();
     }
 
-    @Operation(summary = "Get all events of a specific user to admin view.",
-        parameters = {@Parameter(name = "loggedInUser", description = "Not required. Automatically added currently logged in user.")})
+    @Operation(summary = "Get all events of a specific user to admin view.")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "All events for the specific user.",
             content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                 schema = @Schema(implementation = Event.class))})
     })
     @GetMapping("event/{userId}")
-    public List<Event> getAllEventsForUser(@PathVariable String userId, Authentication loggedInUser) {
+    public List<Event> getAllEventsForUser(@PathVariable String userId) {
         return adminService.getAllEventsForUser(userId);
     }
 
-    @Operation(summary = "Gets all participants for admin view.",
-        parameters = {@Parameter(name = "loggedInUser", description = "Not required. Automatically added currently logged in user.")})
+    @Operation(summary = "Gets all participants for admin view.")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "All participants in all events.",
             content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                 schema = @Schema(implementation = Participant.class))})
     })
     @GetMapping("participants/all")
-    public List<Participant> getAllParticipants(Authentication loggedInUser) {
+    public List<Participant> getAllParticipants() {
         return adminService.getAllParticipants();
     }
 
     @Operation(summary = "Gets all participants for a specific event.", parameters =
-        {@Parameter(name = "eventId", description = "Event's id."),
-            @Parameter(name = "loggedInUser", description = "Not required. Automatically added currently logged in user.")})
+        {@Parameter(name = "eventId", description = "Event's id.")})
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "All participants in the specific event.",
             content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                 schema = @Schema(implementation = Participant.class))})
     })
     @GetMapping("participants/{eventId}")
-    public List<Participant> getAllParticipantsForEvent(@PathVariable String eventId, Authentication loggedInUser) {
+    public List<Participant> getAllParticipantsForEvent(@PathVariable String eventId) {
         return adminService.getAllParticipantsForEvent(eventId);
     }
 }

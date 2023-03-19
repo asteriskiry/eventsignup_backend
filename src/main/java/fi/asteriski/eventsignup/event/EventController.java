@@ -41,7 +41,7 @@ public class EventController {
         @ApiResponse(responseCode = "404", description = "Event not found.")
     })
     @GetMapping("get/{eventId}")
-    public Event getEvent(@PathVariable String eventId, Authentication loggedInUser, Locale usersLocale, ZoneId userTimeZone) {
+    public Event getEvent(@PathVariable String eventId, Locale usersLocale, ZoneId userTimeZone) {
         return eventService.getEvent(eventId, usersLocale, Optional.empty());
     }
 
@@ -54,7 +54,7 @@ public class EventController {
         @ApiResponse(responseCode = "401", description = "Unauthorized.")
     })
     @GetMapping("all/{user}")
-    public List<Event> getAllEventsForUser(@PathVariable String user, Authentication loggedInUser) {
+    public List<Event> getAllEventsForUser(@PathVariable String user) {
         return eventService.getAllEventsForUser(user);
     }
 
@@ -68,13 +68,12 @@ public class EventController {
         @ApiResponse(responseCode = "401", description = "Unauthorized.")
     })
     @GetMapping("participants/{eventId}")
-    public List<Participant> getParticipants(@PathVariable String eventId, Authentication loggedInUser) {
+    public List<Participant> getParticipants(@PathVariable String eventId) {
         return eventService.getParticipants(eventId);
     }
 
     @Operation(summary = "Create a new event.", parameters =
-        {@Parameter(name = "loggedInUser", description = "Not required. Automatically added currently logged in user."),
-            @Parameter(name = "usersLocale", description = "Automatically inserted based on request headers."),
+        {@Parameter(name = "usersLocale", description = "Automatically inserted based on request headers."),
             @Parameter(name = "userTimeZone", description = "Automatically inserted based on request headers.")},
     requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content =
         {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = Event.class))}))
@@ -83,14 +82,12 @@ public class EventController {
         @ApiResponse(responseCode = "401", description = "Unauthorized.")
     })
     @PostMapping(value = "create", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void createEvent(@RequestBody Event event, Authentication loggedInUser, Locale usersLocale, ZoneId userTimeZone) {
-        // During testing loggedInUser will be null.
-        eventService.createNewEvent(event, loggedInUser, usersLocale, userTimeZone);
+    public void createEvent(@RequestBody Event event, Locale usersLocale, ZoneId userTimeZone) {
+        eventService.createNewEvent(event, usersLocale, userTimeZone);
     }
 
     @Operation(summary = "Edit an existing event.", parameters =
-        {@Parameter(name = "loggedInUser", description = "Not required. Automatically added currently logged in user."),
-            @Parameter(name = "usersLocale", description = "Automatically inserted based on request headers."),
+        {@Parameter(name = "usersLocale", description = "Automatically inserted based on request headers."),
             @Parameter(name = "userTimeZone", description = "Automatically inserted based on request headers.")},
     requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content =
         {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = Event.class))}))
@@ -100,8 +97,8 @@ public class EventController {
         @ApiResponse(responseCode = "404", description = "Unable to edit. Old event not found.")
     })
     @PutMapping("edit")
-    public void editEvent(@RequestBody Event event, Authentication loggedInUser, Locale usersLocale, ZoneId userTimeZone) {
-        eventService.editExistingEvent(event, loggedInUser, usersLocale, userTimeZone);
+    public void editEvent(@RequestBody Event event, Locale usersLocale, ZoneId userTimeZone) {
+        eventService.editExistingEvent(event, usersLocale, userTimeZone);
     }
 
     @Operation(summary = "Delete an event.", parameters =
@@ -112,7 +109,7 @@ public class EventController {
         @ApiResponse(responseCode = "401", description = "Unauthorized.")
     })
     @DeleteMapping("remove/{eventId}")
-    public void removeEvent(@PathVariable String eventId, Authentication loggedInUser) {
+    public void removeEvent(@PathVariable String eventId) {
         eventService.removeEventAndParticipants(eventId);
     }
 }

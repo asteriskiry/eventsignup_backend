@@ -36,7 +36,7 @@ public class ArchivedEventController {
         @ApiResponse(responseCode = "401", description = "Unauthorized.")
     })
     @GetMapping("get/all")
-    public List<ArchivedEventResponse> getAllArchiveEvents(Authentication loggedInUser) {
+    public List<ArchivedEventResponse> getAllArchiveEvents() {
         return archivedEventService.getAllArchivedEvents();
     }
 
@@ -50,7 +50,7 @@ public class ArchivedEventController {
         @ApiResponse(responseCode = "401", description = "Unauthorized")
     })
     @GetMapping("get/{userId}")
-    public List<ArchivedEvent> getAllArchivedEventsForUser(@PathVariable String userId, Authentication loggedinUser) {
+    public List<ArchivedEvent> getAllArchivedEventsForUser(@PathVariable String userId) {
         return archivedEventService.getAllArchivedEventsForUser(userId);
     }
 
@@ -62,7 +62,7 @@ public class ArchivedEventController {
         @ApiResponse(responseCode = "401", description = "Unauthorized")
     })
     @DeleteMapping("remove/all")
-    public void removeArchivedEvents(@RequestBody RemoveArchivedEventsRequest request, Authentication loggedinUser) {
+    public void removeArchivedEvents(@RequestBody RemoveArchivedEventsRequest request) {
         archivedEventService.removeArchivedEventsBeforeDate(request.dateLimit().toInstant());
     }
 
@@ -74,7 +74,7 @@ public class ArchivedEventController {
         @ApiResponse(responseCode = "401", description = "Unauthorized")
     })
     @DeleteMapping("remove")
-    public void removeArchivedEvent(@RequestBody ArchiveEventRequest request, Authentication loggedinUSer) {
+    public void removeArchivedEvent(@RequestBody ArchiveEventRequest request) {
         archivedEventService.removeArchivedEvent(request.archivedEventId());
     }
 
@@ -88,7 +88,7 @@ public class ArchivedEventController {
         @ApiResponse(responseCode = "404", description = "Unable to archive event. Event was not found.")
     })
     @PutMapping("event")
-    public void archiveEvent(@RequestBody ArchiveEventRequest request, Authentication loggedInUser, Locale usersLocale) {
+    public void archiveEvent(@RequestBody ArchiveEventRequest request, Locale usersLocale) {
         archivedEventService.archiveEvent(request.archivedEventId(), usersLocale);
     }
 }

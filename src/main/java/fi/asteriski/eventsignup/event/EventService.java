@@ -10,7 +10,7 @@ import fi.asteriski.eventsignup.utils.CustomEventPublisher;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.context.MessageSource;
-import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -54,28 +54,30 @@ public class EventService {
         return participantRepository.findAllByEvent(eventId);
     }
 
-    public Event createNewEvent(Event event, Authentication loggedInUser, Locale usersLocale, ZoneId userTimeZone) {
-        event.setOwner(loggedInUser.getName());
+    public Event createNewEvent(Event event, Locale usersLocale, ZoneId userTimeZone) {
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+        event.setOwner(authentication.getName());
         if (StringUtils.hasText(event.getBannerImg())) {
-            event.setBannerImg(String.format("%s_%s", loggedInUser.getName(), event.getBannerImg()));
+            event.setBannerImg(String.format("%s_%s", authentication.getName(), event.getBannerImg()));
         }
         if (event.getForm().getUserCreated() == null) {
-            event.getForm().setUserCreated(loggedInUser.getName());
+            event.getForm().setUserCreated(authentication.getName());
         }
         if (event.getForm().getDateCreated() == null) {
             event.getForm().setDateCreated(Instant.now());
         }
-        customEventPublisher.publishSavedEventEvent(event, loggedInUser, usersLocale, userTimeZone);
+        customEventPublisher.publishSavedEventEvent(event, authentication, usersLocale, userTimeZone);
         return eventRepository.save(event.toDto()).toEvent();
     }
 
-    public Event editExistingEvent(Event newEvent, Authentication loggedInUser, Locale usersLocale, ZoneId userTimeZone) {
+    public Event editExistingEvent(Event newEvent, Locale usersLocale, ZoneId userTimeZone) {
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
         Event oldEvent = eventRepository.findById(newEvent.getId()).orElseThrow(() -> {
             log.error(String.format("%s Unable to edit Existing event. Old event with id <%s> was not found!", LOG_PREFIX, newEvent.getId()));
             throw new EventNotFoundException(newEvent.getId());
         }).toEvent();
         newEvent.setId(oldEvent.getId());
-        customEventPublisher.publishSavedEventEvent(newEvent, loggedInUser, usersLocale, userTimeZone);
+        customEventPublisher.publishSavedEventEvent(newEvent, authentication, usersLocale, userTimeZone);
         return eventRepository.save(newEvent.toDto()).toEvent();
     }
 

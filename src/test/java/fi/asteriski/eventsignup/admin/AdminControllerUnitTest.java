@@ -39,7 +39,7 @@ class AdminControllerUnitTest {
     @DisplayName("Get all events.")
     void getAllEvents() {
         when(adminService.getAllEvents()).thenReturn(events);
-        assertInstanceOf(List.class, adminController.getAllEvents(null));
+        assertInstanceOf(List.class, adminController.getAllEvents());
     }
 
     @Test
@@ -48,7 +48,7 @@ class AdminControllerUnitTest {
         var user = "testUser";
         var valueCapture = ArgumentCaptor.forClass(String.class);
         when(adminService.getAllEventsForUser(valueCapture.capture())).thenReturn(events);
-        adminController.getAllEventsForUser(user, null);
+        adminController.getAllEventsForUser(user);
         verify(adminService).getAllEventsForUser(user);
         assertEquals(user, valueCapture.getValue());
     }
@@ -57,7 +57,7 @@ class AdminControllerUnitTest {
     @DisplayName("Get all participants regardless of event.")
     void getAllParticipants() {
         when(adminService.getAllParticipants()).thenReturn(participants);
-        assertInstanceOf(List.class, adminController.getAllParticipants(null));
+        assertInstanceOf(List.class, adminController.getAllParticipants());
     }
 
     @Test
@@ -66,7 +66,7 @@ class AdminControllerUnitTest {
         var eventId = "123";
         var valueCapture = ArgumentCaptor.forClass(String.class);
         when(adminService.getAllParticipantsForEvent(valueCapture.capture())).thenReturn(participants);
-        adminController.getAllParticipantsForEvent(eventId, null);
+        adminController.getAllParticipantsForEvent(eventId);
         verify(adminService).getAllParticipantsForEvent(eventId);
         assertEquals(eventId, valueCapture.getValue());
     }
