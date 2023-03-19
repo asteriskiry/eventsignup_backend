@@ -37,6 +37,8 @@ public class EmailService {
 
     @Value("${default.email.sender.address}")
     private String defaultSender;
+    @Value("${fi.asteriski.config.email.baseUrl}")
+    private String baseUrl;
     @NonNull
     private JavaMailSender javaMailSender;
     @NonNull
@@ -64,13 +66,13 @@ public class EmailService {
     Format:
     email.message.body.signup.success
     Event name date (format as locale specific string)
-    email.message.body.signup.success.to.cancel Event's id User's id, Event's id User's id
+    email.message.body.signup.success.to.cancel Base url Event's id User's id, Base url Event's id User's id
      */
     private static final String MAIL_MESSAGE_SIGNUP_SUCCESSFUL_TEMPLATE = """
         <html>
         %s %s %s.
         <br>
-        %s: <a href=https://ilmot.asteriski.fi/signup/cancel/%s/%s target="_blank">https://ilmot.asteriski.fi/signup/cancel/%s/%s</a>
+        %s: <a href=%s/signup/cancel/%s/%s target="_blank">%s/signup/cancel/%s/%s</a>
         </html>
         """;
     private static final String MAIL_MESSAGE_SIGNUP_CANCELLED_TEMPLATE = """
@@ -119,7 +121,9 @@ public class EmailService {
                     messageSource.getMessage("email.message.body.signup.success", null, signupSuccessfulSpringEvent.getUserLocale()),
                     event.getName(), formattedDateTime,
                     messageSource.getMessage("email.message.body.signup.success.to.cancel", null, signupSuccessfulSpringEvent.getUserLocale()),
+                    baseUrl,
                     event.getId(), participant.getId(),
+                    baseUrl,
                     event.getId(), participant.getId()));
         } catch (MessagingException messagingException) {
             log.error(String.format(LOG_ERROR_MESSAGE_TEMPLATE, messagingException));
