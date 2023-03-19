@@ -7,8 +7,7 @@ package fi.asteriski.eventsignup.event;
 import fi.asteriski.eventsignup.ParticipantRepository;
 import fi.asteriski.eventsignup.domain.*;
 import fi.asteriski.eventsignup.utils.CustomEventPublisher;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.context.MessageSource;
 import org.springframework.security.core.Authentication;
@@ -25,20 +24,16 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 @Log4j2
-@RequiredArgsConstructor
+@AllArgsConstructor
 @Service
 public class EventService {
 
     private static final String LOG_PREFIX = "[EventService]";
     private static Supplier<EventNotFoundException> defaultErrorSupplier;
 
-    @NonNull
     private EventRepository eventRepository;
-    @NonNull
     private ParticipantRepository participantRepository;
-    @NonNull
     private CustomEventPublisher customEventPublisher;
-    @NonNull
     private MessageSource messageSource;
 
     public Event getEvent(String id, Locale usersLocale, Optional<Supplier<? extends RuntimeException>> errorSupplier) {
