@@ -1,5 +1,6 @@
 package fi.asteriski.eventsignup.event;
 
+import fi.asteriski.eventsignup.domain.BannerImageUploadSuccessResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -8,11 +9,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.servlet.view.RedirectView;
 
 import java.io.IOException;
-import java.util.Map;
 
 import static fi.asteriski.eventsignup.utils.TestUtils.getImageDataAsBytes;
-import static org.junit.jupiter.api.Assertions.assertInstanceOf;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -32,8 +31,9 @@ class ImageControllerUnitTest {
     @Test
     @DisplayName("Get the path to a file that was saved.")
     void getBannerImagePath() {
-        assertInstanceOf(Map.class, imageController.getBannerImagePath("123"));
-    }
+        var instance = imageController.getBannerImagePath("123");
+        assertInstanceOf(BannerImageUploadSuccessResponse.class, instance);
+        assertEquals("123", instance.fileName());    }
 
     @Test
     @DisplayName("Get an existing banner image file (i.e. byte array).")
