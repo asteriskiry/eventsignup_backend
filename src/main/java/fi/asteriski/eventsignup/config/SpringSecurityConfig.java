@@ -10,6 +10,7 @@ import org.keycloak.adapters.springsecurity.KeycloakConfiguration;
 import org.keycloak.adapters.springsecurity.authentication.KeycloakAuthenticationProvider;
 import org.keycloak.adapters.springsecurity.config.KeycloakWebSecurityConfigurerAdapter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -28,6 +29,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 
 public class SpringSecurityConfig {
@@ -35,6 +37,9 @@ public class SpringSecurityConfig {
     @Profile("!dev & !special")
     @KeycloakConfiguration
     public static class Authenticated extends KeycloakWebSecurityConfigurerAdapter {
+
+        @Value("${fi.asteriski.config.security.allowedCorsDomain}")
+        private String allowedCorsOrigin;
 
         @Autowired
         public void configureGlobal(AuthenticationManagerBuilder auth) {
@@ -88,7 +93,7 @@ public class SpringSecurityConfig {
 
         protected CorsConfiguration getCorsConfs() {
             CorsConfiguration configuration = new CorsConfiguration();
-            configuration.setAllowedOrigins(Arrays.asList("https://asteriski.fi")); // should read from configs
+            configuration.setAllowedOrigins(List.of(allowedCorsOrigin));
             configuration.setAllowedMethods(Arrays.asList("GET","POST", "PUT", "DELETE"));
             configuration.setAllowedHeaders(Collections.singletonList("*"));
             configuration.setAllowCredentials(true);
