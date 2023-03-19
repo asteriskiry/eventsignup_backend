@@ -4,6 +4,7 @@ Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
  */
 package fi.asteriski.eventsignup.signup;
 
+import fi.asteriski.eventsignup.Constants;
 import fi.asteriski.eventsignup.domain.Participant;
 import fi.asteriski.eventsignup.domain.SignupEvent;
 import io.swagger.v3.oas.annotations.Operation;
@@ -22,7 +23,7 @@ import java.util.Locale;
 
 @AllArgsConstructor
 @RestController
-@RequestMapping("/api/signup")
+@RequestMapping(Constants.API_PATH_SIGNUP)
 public class SignupController {
 
     private SignupService signupService;
