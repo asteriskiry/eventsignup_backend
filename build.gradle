@@ -76,7 +76,7 @@ task generateTsTypes(type: NpxTask) {
 }
 
 task generateTypesVersionNumber(type: NpmTask) {
-    args = ["version", new Date().format('yyyyMMdd')+".0.0"]
+    args = ["version", new Date().format('yyyyMMdd')+"." + new Date().format('HHmm') + ".0"]
 }
 
 task publishTypesPlugin(type: NpmTask) {
