@@ -5,17 +5,17 @@ Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
 package fi.asteriski.eventsignup.jobs;
 
 import fi.asteriski.eventsignup.event.ArchivedEventService;
+import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 
 import java.time.LocalDateTime;
 
 @Log4j2
 @NoArgsConstructor
+@AllArgsConstructor
 public class RemoveOldArchiveEventsJob {
-    @Autowired
     private ArchivedEventService archivedEventService;
 
     @Scheduled(cron = "@yearly")

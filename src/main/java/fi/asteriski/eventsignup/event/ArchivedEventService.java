@@ -39,14 +39,14 @@ public class ArchivedEventService {
     @NonNull
     private MessageSource messageSource;
 
-    ArchivedEvent archiveEvent(String eventId, Locale usersLocale) {
+    ArchivedEventDto archiveEvent(String eventId, Locale usersLocale) {
         Supplier<EventNotFoundException> errorSupplier = (() -> {
             log.error(String.format("%s Unable to archive event. Old event with id <%s> was not found!", LOG_PREFIX, eventId));
-            throw new EventNotFoundException(String.format(messageSource.getMessage("event.not.found.message", null, usersLocale), eventId));
+            return new EventNotFoundException(String.format(messageSource.getMessage("event.not.found.message", null, usersLocale), eventId));
         });
-        Event oldEvent = eventService.getEvent(eventId, usersLocale, Optional.of(errorSupplier));
+        var oldEvent = eventService.getEvent(eventId, usersLocale, Optional.of(errorSupplier));
         long numberOfParticipants = participantRepository.countAllByEvent(eventId);
-        var archivedEvent = ArchivedEvent.builder()
+        var archivedEvent = ArchivedEventEntity.builder()
             .id(oldEvent.getId())
             .originalEvent(oldEvent.toDto())
             .dateArchived(Instant.now())
@@ -55,30 +55,30 @@ public class ArchivedEventService {
             .build();
         archivedEvent = archivedEventRepository.save(archivedEvent);
         eventService.removeEventAndParticipants(eventId);
-        return archivedEvent;
+        return archivedEvent.toDto();
     }
 
     public void archivePastEvents() {
-        Instant now = Instant.now();
-        Instant dateLimit = now.minus(defaultDaysToArchivePastEvents, ChronoUnit.DAYS);
-        List<Event> events = eventRepository.findAllByStartDateIsBeforeOrEndDateIsBefore(dateLimit, dateLimit).stream()
+        var now = Instant.now();
+        var dateLimit = now.minus(defaultDaysToArchivePastEvents, ChronoUnit.DAYS);
+        var events = eventRepository.findAllByStartDateIsBeforeOrEndDateIsBefore(dateLimit, dateLimit).stream()
             .map(EventDto::toEvent)
             .toList();
         log.info(String.format("Archiving %s events that had startDate or endDate %s days ago i.e. on %s.", events.size(), defaultDaysToArchivePastEvents, dateLimit));
-        List<String> eventIds = events.stream().map(Event::getId).collect(Collectors.toCollection(LinkedList::new));
-        // TODO delete banner img. or move it to another directory and fix path in event (or add path to ArchivedEvent)
+        var eventIds = events.stream().map(Event::getId).collect(Collectors.toCollection(LinkedList::new));
+        // TODO delete banner img. or move it to another directory and fix path in event (or add path to ArchivedEventEntity)
         eventRepository.deleteAllById(eventIds);
         archivedEventRepository.saveAll(events.stream()
             .map(event -> {
                 long numberOfParticipants = participantRepository.countAllByEvent(event.getId());
-                return ArchivedEvent.builder()
+                return ArchivedEventEntity.builder()
                     .id(event.getId())
                     .originalEvent(event.toDto())
                     .dateArchived(now)
                     .numberOfParticipants(numberOfParticipants)
                     .originalOwner(event.getOwner())
                     .build();
-            }).collect(Collectors.toCollection(LinkedList::new)));
+            }).toList());
         participantRepository.deleteAllByEventIn(eventIds);
     }
 
@@ -91,18 +91,16 @@ public class ArchivedEventService {
             }
             eventMap.get(archivedEvent.getOriginalOwner()).add(archivedEvent.toDto());
         }
-        var returnValue = new LinkedList<ArchivedEventResponse>();
-        for (var key: eventMap.keySet()) {
-            returnValue.add(new ArchivedEventResponse(key, eventMap.get(key)));
-        }
-        return returnValue;
+        return eventMap.keySet().stream()
+            .map(key -> new ArchivedEventResponse(key, eventMap.get(key)))
+            .toList();
     }
 
     List<ArchivedEventDto> getAllArchivedEventsForUser(String userId) {
         return archivedEventRepository.findAllByOriginalOwner(userId).stream()
-            .map(ArchivedEvent::toDto)
+            .map(ArchivedEventEntity::toDto)
             .sorted(Comparator.comparing(ArchivedEventDto::dateArchived))
-            .collect(Collectors.toList());
+            .toList();
     }
 
     void removeArchivedEventsBeforeDate(Instant dateLimit) {

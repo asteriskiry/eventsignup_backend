@@ -7,6 +7,7 @@ package fi.asteriski.eventsignup.utils;
 import fi.asteriski.eventsignup.domain.*;
 import org.apache.commons.io.IOUtils;
 
+import javax.validation.constraints.NotNull;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -103,20 +104,20 @@ public final class TestUtils {
         return file;
     }
 
-    public static List<ArchivedEvent> getRandomArchivedEvents(String owner, Optional<Supplier<Instant>> dateArchivedSupplier) {
+    public static List<ArchivedEventEntity> getRandomArchivedEvents(@NotNull String owner, Optional<Supplier<Instant>> dateArchivedSupplier) {
         var random = new Random();
-        var events = new LinkedList<ArchivedEvent>();
+        var events = new LinkedList<ArchivedEventEntity>();
         for (int i = 0; i < random.nextInt(200, 1001); i++) {
             events.add(createRandomArchivedEvent(owner, dateArchivedSupplier));
         }
         return events;
     }
 
-    public static ArchivedEvent createRandomArchivedEvent(String owner, Optional<Supplier<Instant>> dateArchivedSupplier) {
+    public static ArchivedEventEntity createRandomArchivedEvent(@NotNull String owner, Optional<Supplier<Instant>> dateArchivedSupplier) {
         var random = new Random();
         var event = createRandomEvent(owner);
         var dateArchived = dateArchivedSupplier.orElse(defaultDateArchivedSupplier).get();
-        return ArchivedEvent.builder()
+        return ArchivedEventEntity.builder()
             .originalEvent(event.toDto())
             .dateArchived(dateArchived)
             .numberOfParticipants(random.nextLong(20,200))

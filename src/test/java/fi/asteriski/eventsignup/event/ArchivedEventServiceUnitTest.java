@@ -5,11 +5,11 @@ Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
 package fi.asteriski.eventsignup.event;
 
 import fi.asteriski.eventsignup.ParticipantRepository;
-import fi.asteriski.eventsignup.domain.ArchivedEvent;
+import fi.asteriski.eventsignup.domain.ArchivedEventDto;
+import fi.asteriski.eventsignup.domain.EventDto;
 import fi.asteriski.eventsignup.utils.TestUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +19,10 @@ import org.springframework.context.MessageSource;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.*;
+import java.util.List;
+import java.util.Locale;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
@@ -32,18 +35,19 @@ import static org.mockito.Mockito.when;
 class ArchivedEventServiceUnitTest {
 
     @Autowired
-    EventRepository eventRepository;
+    private EventRepository eventRepository;
     @Autowired
-    ParticipantRepository participantRepository;
+    private ParticipantRepository participantRepository;
     @Autowired
-    ArchivedEventRepository archivedEventRepository;
-    ArchivedEventService archivedEventService;
+    private ArchivedEventRepository archivedEventRepository;
+    private ArchivedEventService archivedEventService;
     @Autowired
-    MessageSource messageSource;
+    private MessageSource messageSource;
     @MockBean
-    EventService eventService;
+    private EventService eventService;
     private final String testUser = "testUser";
     private final Locale defaultLocale = Locale.getDefault();
+    private final Supplier<Instant> lessThanHundredDaysAgoSupplier = () -> Instant.now().minus(60, ChronoUnit.DAYS);
 
     @BeforeEach
     void setUp() {
@@ -59,49 +63,44 @@ class ArchivedEventServiceUnitTest {
     }
 
     @Test
-    @DisplayName("Archive an existing event with no participants.")
-    void archiveExistingEventWithNoParticipants() {
+    void archiveEvent_whenEventExistAndHasNoParticipants_expectArchivedEventDtoWithNoParticipants() {
         var event = eventRepository.save(TestUtils.createRandomEvent(testUser).toDto());
-        when(eventService.getEvent(eq(event.getId()), eq(defaultLocale), any())).thenReturn(event.toEvent());
+        mockEventServiceGetEvent(event);
+
         var result = archivedEventService.archiveEvent(event.getId(), defaultLocale);
 
         verify(eventService).getEvent(anyString(), any(Locale.class), any());
-        assertInstanceOf(ArchivedEvent.class, result);
-        assertNotNull(result.getId());
-        assertEquals(event, result.getOriginalEvent());
-        assertEquals(result.getNumberOfParticipants(), 0L);
+        assertInstanceOf(ArchivedEventDto.class, result);
+        assertNotNull(result.id());
+        assertEquals(event, result.originalEvent());
+        assertEquals(0L, result.numberOfParticipants());
     }
 
     @Test
-    @DisplayName("Archive an existing event with participants.")
-    void archiveExistingEventWithParticipants() {
+    void archiveEvent_whenEventExistAndHasNoParticipants_expectArchivedEventDtoWithParticipants() {
         var event = eventRepository.save(TestUtils.createRandomEvent(testUser).toDto());
-        when(eventService.getEvent(eq(event.getId()), eq(defaultLocale), any())).thenReturn(event.toEvent());
+        mockEventServiceGetEvent(event);
         var participants = TestUtils.getRandomParticipants(event.getId());
         participantRepository.saveAll(participants);
+
         var result = archivedEventService.archiveEvent(event.getId(), defaultLocale);
 
         verify(eventService).getEvent(eq(event.getId()), eq(defaultLocale), any());
-        assertInstanceOf(ArchivedEvent.class, result);
-        assertNotNull(result.getId());
-        assertEquals(event, result.getOriginalEvent());
-        assertEquals(result.getNumberOfParticipants(), Long.valueOf(participants.size()));
+        assertInstanceOf(ArchivedEventDto.class, result);
+        assertNotNull(result.id());
+        assertEquals(event, result.originalEvent());
+        assertEquals(result.numberOfParticipants(), participants.size());
     }
 
     @Test
-    @DisplayName("Try to archive a non existent event.")
-    void tryToArchiveNonExistentEvent() {
+    void archiveEvent_whenEventDoesNotExist_throwsEventNotFoundException() {
         when(eventService.getEvent(any(String.class), eq(defaultLocale), any())).thenThrow(new EventNotFoundException("not found"));
+
         assertThrows(EventNotFoundException.class, () -> archivedEventService.archiveEvent("not-exist", defaultLocale));
     }
 
     @Test
-    void archivePastEvents() {
-    }
-
-    @Test
-    @DisplayName("Get all archived events when there are some.")
-    void getAllArchivedEventsWhenThereAreSome() {
+    void getAllArchivedEvents_givenThereAreSomeInDb_expectNonEmptyList() {
         var archivedEvents = TestUtils.getRandomArchivedEvents(testUser, Optional.empty());
         var archivedEvents2 = TestUtils.getRandomArchivedEvents("otherTestUser", Optional.empty());
         archivedEventRepository.saveAll(
@@ -109,25 +108,25 @@ class ArchivedEventServiceUnitTest {
                 archivedEvents2.stream())
                 .toList()
         );
+
         var result = archivedEventService.getAllArchivedEvents();
 
         assertInstanceOf(List.class, result);
-        assertEquals(result.size(), 2);
+        assertEquals(2, result.size());
         assertTrue(() -> result.stream().allMatch(Objects::nonNull));
         assertEquals(archivedEvents.size(), result.get(0).events().size());
         assertEquals(archivedEvents2.size(), result.get(1).events().size());
     }
 
     @Test
-    @DisplayName("Get all archived events when there are none.")
-    void getAllArchivedEventWhenThereAreNone() {
+    void getAllArchivedEvents_givenThereIsNothingInDb_expectEmptyList() {
         var result = archivedEventService.getAllArchivedEvents();
+
         assertTrue(result.isEmpty());
     }
 
     @Test
-    @DisplayName("Get all archived events for 'testUser'.")
-    void getAllArchivedEventsForUser() {
+    void getAllArchivedEventsForUser_givenDbHasArchivedEventsForMultipleUsers_expectAListForJustOneUser() {
         var archivedEvents = TestUtils.getRandomArchivedEvents(testUser, Optional.empty());
         var archivedEvents2 = TestUtils.getRandomArchivedEvents("otherTestUser", Optional.empty());
         archivedEventRepository.saveAll(
@@ -135,6 +134,7 @@ class ArchivedEventServiceUnitTest {
                 archivedEvents2.stream())
                 .toList()
         );
+
         var result = archivedEventService.getAllArchivedEventsForUser(testUser);
 
         assertEquals(result.size(), archivedEvents.size());
@@ -143,18 +143,17 @@ class ArchivedEventServiceUnitTest {
     }
 
     @Test
-    @DisplayName("Try to remove archived events that were archived more than 100 days ago when there are some to archive.")
-    void removeArchivedEventsBeforeDateWhenThereAreSome() {
+    void removeArchivedEventsBeforeDate_giveThereAreArchivedEventsBeforeAndAfterTheDate_expectCountIsNotEqualToFullAmount() {
         var now = Instant.now();
         Supplier<Instant> moreThanHundredDaysAgoSupplier = () -> now.minus(120, ChronoUnit.DAYS);
-        Supplier<Instant> lessThanHundredDaysAgoSupplier = () -> now.minus(60, ChronoUnit.DAYS);
         var archivedEvents = TestUtils.getRandomArchivedEvents(testUser, Optional.of(moreThanHundredDaysAgoSupplier));
         archivedEvents.addAll(TestUtils.getRandomArchivedEvents(testUser, Optional.of(lessThanHundredDaysAgoSupplier)));
         var dateLimit = now.minus(100, ChronoUnit.DAYS);
         var numberOfEventsToRemove = archivedEvents.stream()
-                .filter(archivedEvent -> archivedEvent.getDateArchived().isBefore(dateLimit))
+                .filter(archivedEventEntity -> archivedEventEntity.getDateArchived().isBefore(dateLimit))
                 .count();
         archivedEventRepository.saveAll(archivedEvents);
+
         var countBefore = archivedEventRepository.count();
         archivedEventService.removeArchivedEventsBeforeDate(dateLimit);
         var countAfter = archivedEventRepository.count();
@@ -164,16 +163,15 @@ class ArchivedEventServiceUnitTest {
     }
 
     @Test
-    @DisplayName("Try to remove archived events that were archived more than 100 days ago when there none to remove.")
-    void removeArchivedEventsBeforeDateWhenThereAreNone() {
+    void removeArchivedEventsBeforeDate_givenThereAreNoneToRemove_expectNothingIsRemovedFromDatabase() {
         var now = Instant.now();
-        Supplier<Instant> lessThanHundredDaysAgoSupplier = () -> now.minus(60, ChronoUnit.DAYS);
         var archivedEvents = TestUtils.getRandomArchivedEvents(testUser, Optional.of(lessThanHundredDaysAgoSupplier));
         var dateLimit = now.minus(100, ChronoUnit.DAYS);
         var numberOfEventsToRemove = archivedEvents.stream()
-            .filter(archivedEvent -> archivedEvent.getDateArchived().isBefore(dateLimit))
+            .filter(archivedEventEntity -> archivedEventEntity.getDateArchived().isBefore(dateLimit))
             .count();
         archivedEventRepository.saveAll(archivedEvents);
+
         var countBefore = archivedEventRepository.count();
         archivedEventService.removeArchivedEventsBeforeDate(dateLimit);
         var countAfter = archivedEventRepository.count();
@@ -183,8 +181,7 @@ class ArchivedEventServiceUnitTest {
     }
 
     @Test
-    @DisplayName("Remove a specific archived event which exists.")
-    void removeArchivedEventThatExists() {
+    void removeArchivedEvent_givenThatTheEventExists_expectItToBeDeletedFromDatabase() {
         var archivedEvent = archivedEventRepository.save(TestUtils.createRandomArchivedEvent(testUser, Optional.empty()));
 
         var countBefore = archivedEventRepository.count();
@@ -196,14 +193,18 @@ class ArchivedEventServiceUnitTest {
     }
 
     @Test
-    @DisplayName("Remove a specific archived event that doesn't exist.")
-    void removeNonExistentArchivedEvent() {
+    void removeArchivedEvent_givenThatTheEventDoesNotExist_expectNothingIsRemovedFromDatabase() {
         archivedEventRepository.save(TestUtils.createRandomArchivedEvent(testUser, Optional.empty()));
         var eventIdToTest = "123";
+
         var countBefore = archivedEventRepository.count();
         archivedEventService.removeArchivedEvent(eventIdToTest);
         var countAfter = archivedEventRepository.count();
 
         assertEquals(countBefore, countAfter);
+    }
+
+    private void mockEventServiceGetEvent(EventDto event) {
+        when(eventService.getEvent(eq(event.getId()), eq(defaultLocale), any())).thenReturn(event.toEvent());
     }
 }

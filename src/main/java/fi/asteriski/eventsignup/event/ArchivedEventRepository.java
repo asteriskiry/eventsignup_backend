@@ -4,13 +4,13 @@ Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
  */
 package fi.asteriski.eventsignup.event;
 
-import fi.asteriski.eventsignup.domain.ArchivedEvent;
+import fi.asteriski.eventsignup.domain.ArchivedEventEntity;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.time.Instant;
 import java.util.List;
 
-public interface ArchivedEventRepository extends MongoRepository<ArchivedEvent, String> {
-    List<ArchivedEvent> findAllByOriginalOwner(String owner);
+public interface ArchivedEventRepository extends MongoRepository<ArchivedEventEntity, String> {
+    List<ArchivedEventEntity> findAllByOriginalOwner(String owner);
     void deleteAllByDateArchivedIsBefore(Instant dateLimit);
 }

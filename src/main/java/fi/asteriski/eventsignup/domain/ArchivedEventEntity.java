@@ -16,10 +16,10 @@ import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
-@Document()
+@Document(collection = "ArchivedEvent")
 @Data
 @Builder
-public class ArchivedEvent {
+public class ArchivedEventEntity {
 
     @Id
     private String id;
