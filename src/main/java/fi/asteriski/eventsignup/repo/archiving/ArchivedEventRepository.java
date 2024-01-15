@@ -2,9 +2,9 @@
 Copyright Juhani Vähä-Mäkilä (juhani@fmail.co.uk) 2022.
 Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
  */
-package fi.asteriski.eventsignup.event;
+package fi.asteriski.eventsignup.repo.archiving;
 
-import fi.asteriski.eventsignup.domain.ArchivedEventEntity;
+import fi.asteriski.eventsignup.domain.archiving.ArchivedEventEntity;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.time.Instant;

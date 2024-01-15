@@ -1,11 +1,19 @@
 /*
-Copyright Juhani Vähä-Mäkilä (juhani@fmail.co.uk) 2023.
+Copyright Juhani Vähä-Mäkilä (juhani@fmail.co.uk) 2024.
 Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
  */
-package fi.asteriski.eventsignup.event;
+package fi.asteriski.eventsignup.service.archiving;
 
 import fi.asteriski.eventsignup.ParticipantRepository;
-import fi.asteriski.eventsignup.domain.*;
+import fi.asteriski.eventsignup.domain.Event;
+import fi.asteriski.eventsignup.domain.EventDto;
+import fi.asteriski.eventsignup.domain.archiving.ArchivedEventDto;
+import fi.asteriski.eventsignup.domain.archiving.ArchivedEventEntity;
+import fi.asteriski.eventsignup.domain.archiving.ArchivedEventResponse;
+import fi.asteriski.eventsignup.event.EventNotFoundException;
+import fi.asteriski.eventsignup.event.EventRepository;
+import fi.asteriski.eventsignup.event.EventService;
+import fi.asteriski.eventsignup.repo.archiving.ArchivedEventRepository;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -17,7 +25,6 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -39,7 +46,7 @@ public class ArchivedEventService {
     @NonNull
     private MessageSource messageSource;
 
-    ArchivedEventDto archiveEvent(String eventId, Locale usersLocale) {
+    public ArchivedEventDto archiveEvent(String eventId, Locale usersLocale) {
         Supplier<EventNotFoundException> errorSupplier = (() -> {
             log.error(String.format("%s Unable to archive event. Old event with id <%s> was not found!", LOG_PREFIX, eventId));
             return new EventNotFoundException(String.format(messageSource.getMessage("event.not.found.message", null, usersLocale), eventId));
@@ -65,7 +72,7 @@ public class ArchivedEventService {
             .map(EventDto::toEvent)
             .toList();
         log.info(String.format("Archiving %s events that had startDate or endDate %s days ago i.e. on %s.", events.size(), defaultDaysToArchivePastEvents, dateLimit));
-        var eventIds = events.stream().map(Event::getId).collect(Collectors.toCollection(LinkedList::new));
+        var eventIds = events.stream().map(Event::getId).toList();
         // TODO delete banner img. or move it to another directory and fix path in event (or add path to ArchivedEventEntity)
         eventRepository.deleteAllById(eventIds);
         archivedEventRepository.saveAll(events.stream()
@@ -82,32 +89,32 @@ public class ArchivedEventService {
         participantRepository.deleteAllByEventIn(eventIds);
     }
 
-    List<ArchivedEventResponse> getAllArchivedEvents() {
+    public List<ArchivedEventResponse> getAllArchivedEvents() {
         var archivedEvents = archivedEventRepository.findAll();
-        var eventMap = new HashMap<String, List<ArchivedEventDto>>((int) Math.round(1.2 *  archivedEvents.size()), 0.9f);
-        for (var archivedEvent: archivedEvents) {
+        var eventMap = new HashMap<String, List<ArchivedEventDto>>((int) Math.round(1.2 * archivedEvents.size()), 0.9f);
+        for (var archivedEvent : archivedEvents) {
             if (!eventMap.containsKey(archivedEvent.getOriginalOwner())) {
                 eventMap.put(archivedEvent.getOriginalOwner(), new LinkedList<>());
             }
             eventMap.get(archivedEvent.getOriginalOwner()).add(archivedEvent.toDto());
         }
-        return eventMap.keySet().stream()
-            .map(key -> new ArchivedEventResponse(key, eventMap.get(key)))
+        return eventMap.entrySet().stream()
+            .map(entry -> new ArchivedEventResponse(entry.getKey(), entry.getValue()))
             .toList();
     }
 
-    List<ArchivedEventDto> getAllArchivedEventsForUser(String userId) {
+    public List<ArchivedEventDto> getAllArchivedEventsForUser(String userId) {
         return archivedEventRepository.findAllByOriginalOwner(userId).stream()
             .map(ArchivedEventEntity::toDto)
             .sorted(Comparator.comparing(ArchivedEventDto::dateArchived))
             .toList();
     }
 
-    void removeArchivedEventsBeforeDate(Instant dateLimit) {
+    public void removeArchivedEventsBeforeDate(Instant dateLimit) {
         archivedEventRepository.deleteAllByDateArchivedIsBefore(dateLimit);
     }
 
-    void removeArchivedEvent(String archivedEventId) {
+    public void removeArchivedEvent(String archivedEventId) {
         archivedEventRepository.deleteById(archivedEventId);
     }
 

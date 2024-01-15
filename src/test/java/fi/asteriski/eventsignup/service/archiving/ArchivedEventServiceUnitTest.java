@@ -1,12 +1,16 @@
 /*
-Copyright Juhani Vähä-Mäkilä (juhani@fmail.co.uk) 2023.
+Copyright Juhani Vähä-Mäkilä (juhani@fmail.co.uk) 2024.
 Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
  */
-package fi.asteriski.eventsignup.event;
+package fi.asteriski.eventsignup.service.archiving;
 
 import fi.asteriski.eventsignup.ParticipantRepository;
-import fi.asteriski.eventsignup.domain.ArchivedEventDto;
 import fi.asteriski.eventsignup.domain.EventDto;
+import fi.asteriski.eventsignup.domain.archiving.ArchivedEventDto;
+import fi.asteriski.eventsignup.event.EventNotFoundException;
+import fi.asteriski.eventsignup.event.EventRepository;
+import fi.asteriski.eventsignup.event.EventService;
+import fi.asteriski.eventsignup.repo.archiving.ArchivedEventRepository;
 import fi.asteriski.eventsignup.utils.TestUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -105,7 +109,7 @@ class ArchivedEventServiceUnitTest {
         var archivedEvents2 = TestUtils.getRandomArchivedEvents("otherTestUser", Optional.empty());
         archivedEventRepository.saveAll(
             Stream.concat(archivedEvents.stream(),
-                archivedEvents2.stream())
+                    archivedEvents2.stream())
                 .toList()
         );
 
@@ -131,7 +135,7 @@ class ArchivedEventServiceUnitTest {
         var archivedEvents2 = TestUtils.getRandomArchivedEvents("otherTestUser", Optional.empty());
         archivedEventRepository.saveAll(
             Stream.concat(archivedEvents.stream(),
-                archivedEvents2.stream())
+                    archivedEvents2.stream())
                 .toList()
         );
 
@@ -150,15 +154,15 @@ class ArchivedEventServiceUnitTest {
         archivedEvents.addAll(TestUtils.getRandomArchivedEvents(testUser, Optional.of(lessThanHundredDaysAgoSupplier)));
         var dateLimit = now.minus(100, ChronoUnit.DAYS);
         var numberOfEventsToRemove = archivedEvents.stream()
-                .filter(archivedEventEntity -> archivedEventEntity.getDateArchived().isBefore(dateLimit))
-                .count();
+            .filter(archivedEventEntity -> archivedEventEntity.getDateArchived().isBefore(dateLimit))
+            .count();
         archivedEventRepository.saveAll(archivedEvents);
 
         var countBefore = archivedEventRepository.count();
         archivedEventService.removeArchivedEventsBeforeDate(dateLimit);
         var countAfter = archivedEventRepository.count();
 
-        assertNotEquals(countBefore,  countAfter);
+        assertNotEquals(countBefore, countAfter);
         assertEquals(countBefore - countAfter, numberOfEventsToRemove);
     }
 
