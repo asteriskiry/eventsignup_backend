@@ -21,10 +21,7 @@ import java.nio.file.StandardCopyOption;
 import java.time.Instant;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Random;
+import java.util.*;
 import java.util.function.Supplier;
 
 import static fi.asteriski.eventsignup.Constants.UTC_TIME_ZONE;
