@@ -4,16 +4,14 @@ Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
  */
 package fi.asteriski.eventsignup.service.archiving;
 
-import fi.asteriski.eventsignup.ParticipantRepository;
+import fi.asteriski.eventsignup.dao.archiving.ArchivedEventDao;
 import fi.asteriski.eventsignup.domain.Event;
-import fi.asteriski.eventsignup.domain.EventDto;
 import fi.asteriski.eventsignup.domain.archiving.ArchivedEventDto;
-import fi.asteriski.eventsignup.domain.archiving.ArchivedEventEntity;
 import fi.asteriski.eventsignup.domain.archiving.ArchivedEventResponse;
 import fi.asteriski.eventsignup.event.EventNotFoundException;
-import fi.asteriski.eventsignup.event.EventRepository;
 import fi.asteriski.eventsignup.event.EventService;
-import fi.asteriski.eventsignup.repo.archiving.ArchivedEventRepository;
+import fi.asteriski.eventsignup.event.ImageService;
+import fi.asteriski.eventsignup.service.signup.ParticipantService;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -22,9 +20,12 @@ import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
+import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.function.Supplier;
+
+import static fi.asteriski.eventsignup.Constants.UTC_TIME_ZONE;
 
 @Service
 @RequiredArgsConstructor
@@ -36,13 +37,13 @@ public class ArchivedEventService {
     @Value("${default.days.to.archive.past.events}")
     private Integer defaultDaysToArchivePastEvents;
     @NonNull
-    private EventRepository eventRepository;
+    private ParticipantService participantService;
     @NonNull
-    private ParticipantRepository participantRepository;
-    @NonNull
-    private ArchivedEventRepository archivedEventRepository;
+    private ArchivedEventDao archivedEventDao;
     @NonNull
     private EventService eventService;
+    @NonNull
+    private ImageService imageService;
     @NonNull
     private MessageSource messageSource;
 
@@ -52,51 +53,50 @@ public class ArchivedEventService {
             return new EventNotFoundException(String.format(messageSource.getMessage("event.not.found.message", null, usersLocale), eventId));
         });
         var oldEvent = eventService.getEvent(eventId, usersLocale, Optional.of(errorSupplier));
-        long numberOfParticipants = participantRepository.countAllByEvent(eventId);
-        var archivedEvent = ArchivedEventEntity.builder()
+        var numberOfParticipants = participantService.countAllByEvent(eventId);
+        var archivedEvent = ArchivedEventDto.builder()
             .id(oldEvent.getId())
             .originalEvent(oldEvent.toDto())
-            .dateArchived(Instant.now())
+            .dateArchived(ZonedDateTime.ofInstant(Instant.now(), UTC_TIME_ZONE))
             .numberOfParticipants(numberOfParticipants)
             .originalOwner(oldEvent.getOwner())
             .build();
-        archivedEvent = archivedEventRepository.save(archivedEvent);
+        archivedEvent = archivedEventDao.save(archivedEvent);
         eventService.removeEventAndParticipants(eventId);
-        return archivedEvent.toDto();
+        return archivedEvent;
     }
 
     public void archivePastEvents() {
         var now = Instant.now();
         var dateLimit = now.minus(defaultDaysToArchivePastEvents, ChronoUnit.DAYS);
-        var events = eventRepository.findAllByStartDateIsBeforeOrEndDateIsBefore(dateLimit, dateLimit).stream()
-            .map(EventDto::toEvent)
-            .toList();
+        var events = eventService.findAllByStartDateIsBeforeOrEndDateIsBefore(dateLimit, dateLimit);
         log.info(String.format("Archiving %s events that had startDate or endDate %s days ago i.e. on %s.", events.size(), defaultDaysToArchivePastEvents, dateLimit));
         var eventIds = events.stream().map(Event::getId).toList();
-        // TODO delete banner img. or move it to another directory and fix path in event (or add path to ArchivedEventEntity)
-        eventRepository.deleteAllById(eventIds);
-        archivedEventRepository.saveAll(events.stream()
+        eventService.deleteAllById(eventIds);
+        archivedEventDao.saveAll(events.stream()
             .map(event -> {
-                long numberOfParticipants = participantRepository.countAllByEvent(event.getId());
-                return ArchivedEventEntity.builder()
+                long numberOfParticipants = participantService.countAllByEvent(event.getId());
+                var newBannerImagePath = imageService.moveBannerImage(event.getBannerImg());
+                return ArchivedEventDto.builder()
                     .id(event.getId())
                     .originalEvent(event.toDto())
-                    .dateArchived(now)
+                    .dateArchived(ZonedDateTime.ofInstant(now, UTC_TIME_ZONE))
                     .numberOfParticipants(numberOfParticipants)
                     .originalOwner(event.getOwner())
+                    .bannerImage(newBannerImagePath)
                     .build();
             }).toList());
-        participantRepository.deleteAllByEventIn(eventIds);
+        participantService.deleteAllByEventIn(eventIds);
     }
 
     public List<ArchivedEventResponse> getAllArchivedEvents() {
-        var archivedEvents = archivedEventRepository.findAll();
+        var archivedEvents = archivedEventDao.findAll();
         var eventMap = new HashMap<String, List<ArchivedEventDto>>((int) Math.round(1.2 * archivedEvents.size()), 0.9f);
         for (var archivedEvent : archivedEvents) {
-            if (!eventMap.containsKey(archivedEvent.getOriginalOwner())) {
-                eventMap.put(archivedEvent.getOriginalOwner(), new LinkedList<>());
+            if (!eventMap.containsKey(archivedEvent.originalOwner())) {
+                eventMap.put(archivedEvent.originalOwner(), new LinkedList<>());
             }
-            eventMap.get(archivedEvent.getOriginalOwner()).add(archivedEvent.toDto());
+            eventMap.get(archivedEvent.originalOwner()).add(archivedEvent);
         }
         return eventMap.entrySet().stream()
             .map(entry -> new ArchivedEventResponse(entry.getKey(), entry.getValue()))
@@ -104,18 +104,17 @@ public class ArchivedEventService {
     }
 
     public List<ArchivedEventDto> getAllArchivedEventsForUser(String userId) {
-        return archivedEventRepository.findAllByOriginalOwner(userId).stream()
-            .map(ArchivedEventEntity::toDto)
+        return archivedEventDao.findAllByOriginalOwner(userId).stream()
             .sorted(Comparator.comparing(ArchivedEventDto::dateArchived))
             .toList();
     }
 
     public void removeArchivedEventsBeforeDate(Instant dateLimit) {
-        archivedEventRepository.deleteAllByDateArchivedIsBefore(dateLimit);
+        archivedEventDao.deleteAllByDateArchivedIsBefore(dateLimit);
     }
 
     public void removeArchivedEvent(String archivedEventId) {
-        archivedEventRepository.deleteById(archivedEventId);
+        archivedEventDao.deleteById(archivedEventId);
     }
 
     public void removeArchivedEventsOlderThanOneYear() {

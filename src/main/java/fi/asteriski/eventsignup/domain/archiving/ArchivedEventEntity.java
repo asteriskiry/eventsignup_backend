@@ -4,7 +4,6 @@ Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
  */
 package fi.asteriski.eventsignup.domain.archiving;
 
-import fi.asteriski.eventsignup.Constants;
 import fi.asteriski.eventsignup.domain.EventDto;
 import lombok.Builder;
 import lombok.Data;
@@ -14,8 +13,9 @@ import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.Instant;
-import java.time.ZoneId;
 import java.time.ZonedDateTime;
+
+import static fi.asteriski.eventsignup.Constants.UTC_TIME_ZONE;
 
 @Document(collection = "ArchivedEvent")
 @Data
@@ -33,14 +33,16 @@ public class ArchivedEventEntity {
     @NonNull
     @Indexed
     private final String originalOwner;
+    private final String bannerImage;
 
     public ArchivedEventDto toDto() {
         return ArchivedEventDto.builder()
             .id(id)
             .originalEvent(originalEvent)
-            .dateArchived(ZonedDateTime.ofInstant(this.dateArchived, ZoneId.of(Constants.USE_UTC_TIME_ZONE)))
+            .dateArchived(ZonedDateTime.ofInstant(this.dateArchived, UTC_TIME_ZONE))
             .numberOfParticipants(numberOfParticipants)
             .originalOwner(originalOwner)
+            .bannerImage(bannerImage)
             .build();
     }
 }

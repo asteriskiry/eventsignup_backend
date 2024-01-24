@@ -7,7 +7,7 @@ package fi.asteriski.eventsignup.admin;
 import fi.asteriski.eventsignup.ParticipantRepository;
 import fi.asteriski.eventsignup.domain.Event;
 import fi.asteriski.eventsignup.domain.EventDto;
-import fi.asteriski.eventsignup.domain.Participant;
+import fi.asteriski.eventsignup.domain.signup.Participant;
 import fi.asteriski.eventsignup.event.EventRepository;
 import fi.asteriski.eventsignup.event.EventService;
 import lombok.AllArgsConstructor;
@@ -15,9 +15,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Log4j2
 @Service

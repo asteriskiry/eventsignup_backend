@@ -14,5 +14,17 @@ public record ArchivedEventDto(String id,
                                EventDto originalEvent,
                                ZonedDateTime dateArchived,
                                Long numberOfParticipants,
-                               String originalOwner) {
+                               String originalOwner,
+                               String bannerImage
+) {
+    public ArchivedEventEntity toEntity() {
+        return ArchivedEventEntity.builder()
+            .id(id)
+            .originalEvent(originalEvent)
+            .dateArchived(dateArchived.toInstant())
+            .numberOfParticipants(numberOfParticipants)
+            .originalOwner(originalOwner)
+            .bannerImage(bannerImage)
+            .build();
+    }
 }

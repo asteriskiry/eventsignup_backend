@@ -4,7 +4,10 @@ Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
  */
 package fi.asteriski.eventsignup.utils;
 
-import fi.asteriski.eventsignup.domain.*;
+import fi.asteriski.eventsignup.domain.Event;
+import fi.asteriski.eventsignup.domain.Form;
+import fi.asteriski.eventsignup.domain.archiving.ArchivedEventDto;
+import fi.asteriski.eventsignup.domain.signup.Participant;
 import org.apache.commons.io.IOUtils;
 
 import javax.validation.constraints.NotNull;
@@ -23,6 +26,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 import java.util.function.Supplier;
+
+import static fi.asteriski.eventsignup.Constants.UTC_TIME_ZONE;
 
 /**
  * Class for utility methods used in testing.
@@ -104,24 +109,25 @@ public final class TestUtils {
         return file;
     }
 
-    public static List<ArchivedEventEntity> getRandomArchivedEvents(@NotNull String owner, Optional<Supplier<Instant>> dateArchivedSupplier) {
+    public static List<ArchivedEventDto> getRandomArchivedEvents(@NotNull String owner, Optional<Supplier<Instant>> dateArchivedSupplier) {
         var random = new Random();
-        var events = new LinkedList<ArchivedEventEntity>();
+        var events = new ArrayList<ArchivedEventDto>();
         for (int i = 0; i < random.nextInt(200, 1001); i++) {
             events.add(createRandomArchivedEvent(owner, dateArchivedSupplier));
         }
         return events;
     }
 
-    public static ArchivedEventEntity createRandomArchivedEvent(@NotNull String owner, Optional<Supplier<Instant>> dateArchivedSupplier) {
+    public static ArchivedEventDto createRandomArchivedEvent(@NotNull String owner, Optional<Supplier<Instant>> dateArchivedSupplier) {
         var random = new Random();
         var event = createRandomEvent(owner);
         var dateArchived = dateArchivedSupplier.orElse(defaultDateArchivedSupplier).get();
-        return ArchivedEventEntity.builder()
+        return ArchivedEventDto.builder()
             .originalEvent(event.toDto())
-            .dateArchived(dateArchived)
+            .dateArchived(ZonedDateTime.ofInstant(dateArchived, UTC_TIME_ZONE))
             .numberOfParticipants(random.nextLong(20,200))
             .originalOwner(owner)
+            .bannerImage("test_test")
             .build();
     }
 }

@@ -6,8 +6,8 @@ package fi.asteriski.eventsignup.signup;
 
 import fi.asteriski.eventsignup.ParticipantRepository;
 import fi.asteriski.eventsignup.domain.Event;
-import fi.asteriski.eventsignup.domain.Participant;
 import fi.asteriski.eventsignup.domain.SignupEvent;
+import fi.asteriski.eventsignup.domain.signup.Participant;
 import fi.asteriski.eventsignup.event.EventNotFoundException;
 import fi.asteriski.eventsignup.event.EventRepository;
 import fi.asteriski.eventsignup.event.EventService;
@@ -22,11 +22,9 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Log4j2
 @AllArgsConstructor

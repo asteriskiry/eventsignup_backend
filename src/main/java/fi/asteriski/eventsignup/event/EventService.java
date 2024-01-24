@@ -5,7 +5,9 @@ Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
 package fi.asteriski.eventsignup.event;
 
 import fi.asteriski.eventsignup.ParticipantRepository;
-import fi.asteriski.eventsignup.domain.*;
+import fi.asteriski.eventsignup.domain.Event;
+import fi.asteriski.eventsignup.domain.EventDto;
+import fi.asteriski.eventsignup.domain.signup.Participant;
 import fi.asteriski.eventsignup.utils.CustomEventPublisher;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -16,7 +18,6 @@ import org.springframework.util.StringUtils;
 
 import java.time.Instant;
 import java.time.ZoneId;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
@@ -88,5 +89,15 @@ public class EventService {
 
     public boolean eventExists(String eventId) {
         return eventRepository.existsById(eventId);
+    }
+
+    public List<Event> findAllByStartDateIsBeforeOrEndDateIsBefore(Instant dateLimit, Instant dateLimit1) {
+        return eventRepository.findAllByStartDateIsBeforeOrEndDateIsBefore(dateLimit, dateLimit1).stream()
+            .map(EventDto::toEvent)
+            .toList();
+    }
+
+    public void deleteAllById(List<String> eventIds) {
+        eventRepository.deleteAllById(eventIds);
     }
 }
