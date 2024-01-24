@@ -8,6 +8,8 @@ import fi.asteriski.eventsignup.ParticipantRepository;
 import fi.asteriski.eventsignup.domain.Event;
 import fi.asteriski.eventsignup.domain.EventDto;
 import fi.asteriski.eventsignup.domain.signup.Participant;
+import fi.asteriski.eventsignup.exception.EventNotFoundException;
+import fi.asteriski.eventsignup.exception.EventSignupException;
 import fi.asteriski.eventsignup.utils.CustomEventPublisher;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -38,7 +40,7 @@ public class EventService {
     private CustomEventPublisher customEventPublisher;
     private MessageSource messageSource;
 
-    public Event getEvent(String id, Locale usersLocale, Optional<Supplier<? extends RuntimeException>> errorSupplier) {
+    public Event getEvent(String id, Locale usersLocale, Optional<Supplier<? extends EventSignupException>> errorSupplier) {
         if (defaultErrorSupplier == null) {
             defaultErrorSupplier = () ->
                 new EventNotFoundException(String.format(messageSource.getMessage("event.not.found.message", null, usersLocale), id));

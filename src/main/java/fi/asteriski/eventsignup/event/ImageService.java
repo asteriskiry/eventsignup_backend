@@ -4,6 +4,9 @@ Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
  */
 package fi.asteriski.eventsignup.event;
 
+import fi.asteriski.eventsignup.exception.ImageDirectoryCreationFailedException;
+import fi.asteriski.eventsignup.exception.ImageNotFoundException;
+import fi.asteriski.eventsignup.exception.InvalidImageFileException;
 import fi.asteriski.eventsignup.utils.Utils;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.io.IOUtils;

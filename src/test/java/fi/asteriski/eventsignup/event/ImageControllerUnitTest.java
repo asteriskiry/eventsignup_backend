@@ -1,6 +1,7 @@
 package fi.asteriski.eventsignup.event;
 
 import fi.asteriski.eventsignup.domain.BannerImageUploadSuccessResponse;
+import fi.asteriski.eventsignup.exception.ImageNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
