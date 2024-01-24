@@ -31,17 +31,15 @@ import static fi.asteriski.eventsignup.Constants.UTC_TIME_ZONE;
  */
 public final class TestUtils {
 
-    private static final Supplier<Instant> defaultDateArchivedSupplier = () -> {
-        return Instant.now().minus(new Random().nextInt(10, 400), ChronoUnit.DAYS);
-    };
+    private static final Random random = new Random();
+    private static final Supplier<Instant> defaultDateArchivedSupplier = () -> Instant.now().minus(random.nextInt(10, 400), ChronoUnit.DAYS);
 
     // To prevent instantiation of the class.
     private TestUtils(){}
 
     public static Event createRandomEvent(String owner) {
-        var random = new Random();
         var form = new Form();
-        var instant = random.nextBoolean() ? ZonedDateTime.now().minus(random.nextLong(10, 100), ChronoUnit.DAYS) : ZonedDateTime.now().plus(random.nextLong(10, 100), ChronoUnit.DAYS);
+        var instant = random.nextBoolean() ? ZonedDateTime.now().minusDays(random.nextLong(10, 100)) : ZonedDateTime.now().plusDays(random.nextLong(10, 100));
         var event = Event.builder()
             .name(Utils.generateRandomString(random.nextInt(5, 15)))
             .startDate(instant)
@@ -57,7 +55,6 @@ public final class TestUtils {
 
     public static List<Event> getRandomEvents(String owner) {
         List<Event> returnValue = new LinkedList<>();
-        var random = new Random();
         for (int i = 0; i < random.nextInt(10, 101); i++) {
             returnValue.add(createRandomEvent(owner));
         }
@@ -66,7 +63,6 @@ public final class TestUtils {
 
     public static List<Participant> getRandomParticipants(String eventId) {
         List<Participant> returnValue = new LinkedList<>();
-        var random = new Random();
         for (int i = 0; i < random.nextInt(10, 101); i++) {
             returnValue.add(createRandomParticipant(eventId));
         }
@@ -74,7 +70,6 @@ public final class TestUtils {
     }
 
     public static Participant createRandomParticipant(String eventId) {
-        var random = new Random();
         eventId = eventId != null ? eventId : Utils.generateRandomString(random.nextInt(5, 15));
         return new Participant(
             Utils.generateRandomString(random.nextInt(5, 15)),
@@ -93,7 +88,7 @@ public final class TestUtils {
     public static byte[] getImageDataAsBytes(String rootPath) throws IOException {
         byte[] file = new byte[20];
         if (rootPath == null) {
-            new Random().nextBytes(file);
+            random.nextBytes(file);
             return file;
         }
         Files.copy(Path.of("./testData/testFile.jpg"), Path.of(rootPath + "/testFile.jpg"), StandardCopyOption.REPLACE_EXISTING);

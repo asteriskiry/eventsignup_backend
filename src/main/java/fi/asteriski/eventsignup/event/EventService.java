@@ -20,12 +20,10 @@ import org.springframework.util.StringUtils;
 
 import java.time.Instant;
 import java.time.ZoneId;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 @Log4j2
 @AllArgsConstructor
@@ -51,7 +49,7 @@ public class EventService {
     public List<Event> getAllEventsForUser(String user) {
         return eventRepository.findAllByOwner(user).stream()
             .map(EventDto::toEvent)
-            .collect(Collectors.toCollection(LinkedList::new));
+            .toList();
     }
 
     public List<Participant> getParticipants(String eventId) {
@@ -78,7 +76,7 @@ public class EventService {
         var authentication = SecurityContextHolder.getContext().getAuthentication();
         Event oldEvent = eventRepository.findById(newEvent.getId()).orElseThrow(() -> {
             log.error(String.format("%s Unable to edit Existing event. Old event with id <%s> was not found!", LOG_PREFIX, newEvent.getId()));
-            throw new EventNotFoundException(newEvent.getId());
+            return new EventNotFoundException(newEvent.getId());
         }).toEvent();
         newEvent.setId(oldEvent.getId());
         customEventPublisher.publishSavedEventEvent(newEvent, authentication, usersLocale, userTimeZone);
