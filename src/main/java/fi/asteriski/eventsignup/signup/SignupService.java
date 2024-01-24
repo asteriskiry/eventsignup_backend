@@ -6,8 +6,8 @@ package fi.asteriski.eventsignup.signup;
 
 import fi.asteriski.eventsignup.ParticipantRepository;
 import fi.asteriski.eventsignup.domain.Event;
-import fi.asteriski.eventsignup.domain.Participant;
 import fi.asteriski.eventsignup.domain.SignupEvent;
+import fi.asteriski.eventsignup.domain.signup.Participant;
 import fi.asteriski.eventsignup.event.EventNotFoundException;
 import fi.asteriski.eventsignup.event.EventRepository;
 import fi.asteriski.eventsignup.event.EventService;

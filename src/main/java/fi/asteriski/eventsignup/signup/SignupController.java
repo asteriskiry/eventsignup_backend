@@ -5,8 +5,8 @@ Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
 package fi.asteriski.eventsignup.signup;
 
 import fi.asteriski.eventsignup.Constants;
-import fi.asteriski.eventsignup.domain.Participant;
 import fi.asteriski.eventsignup.domain.SignupEvent;
+import fi.asteriski.eventsignup.domain.signup.Participant;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;

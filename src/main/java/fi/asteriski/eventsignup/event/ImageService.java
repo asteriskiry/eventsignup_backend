@@ -16,6 +16,7 @@ import javax.imageio.stream.ImageOutputStream;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.nio.file.Files;
+import java.nio.file.Path;
 
 @Log4j2
 @Service
@@ -72,6 +73,30 @@ public class ImageService {
             log.info(String.format("IOException occurred: %s", e.getMessage()));
         }
         return String.format("%s_%s", userName, fileName);
+    }
+
+    public String moveBannerImage(final String originalPath) {
+        var archivedDirectory = new File(String.format("%s/archived/", rootPath));
+        var targetDirectory = String.format("%s/archived/%s", rootPath, originalPath.replace("_", "/"));
+        var sourceDirectory = String.format("%s/%s", rootPath, originalPath.replace("_", "/"));
+        if (!archivedDirectory.exists() && archivedDirectory.isDirectory()) {
+            try {
+                Files.createDirectories(archivedDirectory.toPath());
+            } catch (IOException e) {
+                var errorMessage = String.format("Target directory <%s> creation failed.", archivedDirectory);
+                log.error(errorMessage);
+                throw new ImageDirectoryCreationFailedException(errorMessage, e);
+            }
+        }
+        try {
+            Files.move(Path.of(sourceDirectory), Path.of(targetDirectory));
+        } catch (IOException e) {
+            var errorMessage = String.format("Failed to move banner image <%s> to archive.", originalPath.replace("_", "/"));
+            log.error(errorMessage);
+            throw new FileMoveNotSuccessfulException(errorMessage, e);
+        }
+
+        return targetDirectory;
     }
 
     private boolean isInputFileNonValidImage(byte[] inputFile) {

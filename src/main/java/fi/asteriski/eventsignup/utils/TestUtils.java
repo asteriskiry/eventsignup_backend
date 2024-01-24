@@ -4,9 +4,13 @@ Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
  */
 package fi.asteriski.eventsignup.utils;
 
-import fi.asteriski.eventsignup.domain.*;
+import fi.asteriski.eventsignup.domain.Event;
+import fi.asteriski.eventsignup.domain.Form;
+import fi.asteriski.eventsignup.domain.archiving.ArchivedEventDto;
+import fi.asteriski.eventsignup.domain.signup.Participant;
 import org.apache.commons.io.IOUtils;
 
+import javax.validation.constraints.NotNull;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -17,14 +21,19 @@ import java.nio.file.StandardCopyOption;
 import java.time.Instant;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
+import java.util.function.Supplier;
+
+import static fi.asteriski.eventsignup.Constants.UTC_TIME_ZONE;
 
 /**
  * Class for utility methods used in testing.
  */
 public final class TestUtils {
+
+    private static final Supplier<Instant> defaultDateArchivedSupplier = () -> {
+        return Instant.now().minus(new Random().nextInt(10, 400), ChronoUnit.DAYS);
+    };
 
     // To prevent instantiation of the class.
     private TestUtils(){}
@@ -97,19 +106,25 @@ public final class TestUtils {
         return file;
     }
 
-    public static List<ArchivedEvent> getRandomArchivedEvents(String owner) {
+    public static List<ArchivedEventDto> getRandomArchivedEvents(@NotNull String owner, Optional<Supplier<Instant>> dateArchivedSupplier) {
         var random = new Random();
-        var events = new LinkedList<ArchivedEvent>();
+        var events = new ArrayList<ArchivedEventDto>();
         for (int i = 0; i < random.nextInt(200, 1001); i++) {
-            events.add(createRandomArchivedEvent(owner));
+            events.add(createRandomArchivedEvent(owner, dateArchivedSupplier));
         }
         return events;
     }
 
-    public static ArchivedEvent createRandomArchivedEvent(String owner) {
+    public static ArchivedEventDto createRandomArchivedEvent(@NotNull String owner, Optional<Supplier<Instant>> dateArchivedSupplier) {
         var random = new Random();
         var event = createRandomEvent(owner);
-        var dateArchived = Instant.now().minus(random.nextInt(10, 400), ChronoUnit.DAYS);
-        return new ArchivedEvent(event.getId(), event, dateArchived, random.nextLong(20,200), owner);
+        var dateArchived = dateArchivedSupplier.orElse(defaultDateArchivedSupplier).get();
+        return ArchivedEventDto.builder()
+            .originalEvent(event.toDto())
+            .dateArchived(ZonedDateTime.ofInstant(dateArchived, UTC_TIME_ZONE))
+            .numberOfParticipants(random.nextLong(20,200))
+            .originalOwner(owner)
+            .bannerImage("test_test")
+            .build();
     }
 }
