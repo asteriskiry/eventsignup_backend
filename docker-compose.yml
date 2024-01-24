@@ -4,7 +4,7 @@ services:
     image: event
     build: .
     ports:
-      - 8080:8080
+      - "8080:8080"
     depends_on:
       - db
       - keycloak
@@ -24,7 +24,7 @@ services:
       KEYCLOAK_ADMIN: admin
       KEYCLOAK_ADMIN_PASSWORD: admin
     ports:
-      - 9090:8080
+      - "9090:8080"
     volumes:
       - ./keycloak/realm:/opt/keycloak/data/import
       - ./keycloak/themes:/opt/keycloak/themes

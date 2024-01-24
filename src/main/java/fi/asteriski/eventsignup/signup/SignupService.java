@@ -22,11 +22,9 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Log4j2
 @AllArgsConstructor
@@ -95,6 +93,6 @@ public class SignupService {
         var daysToGet = Integer.parseInt(days);
         return eventRepository.findAllByStartDateIsBetween(today, today.plus(daysToGet, ChronoUnit.DAYS)).stream()
             .map(eventDto -> new SignupEvent(eventDto.toEvent()))
-            .collect(Collectors.toCollection(LinkedList::new));
+            .toList();
     }
 }

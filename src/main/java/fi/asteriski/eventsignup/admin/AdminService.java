@@ -15,9 +15,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Log4j2
 @Service
@@ -37,7 +35,7 @@ class AdminService {
     List<Event> getAllEvents() {
         return eventRepository.findAll().stream()
             .map(EventDto::toEvent)
-            .collect(Collectors.toCollection(LinkedList::new));
+            .toList();
     }
 
     /**
@@ -49,11 +47,11 @@ class AdminService {
         log.info(String.format("%s In %s.getAllEventsForUser(). User: %s", LOG_PREFIX, this.getClass().getSimpleName(), userId));
         return eventService.getAllEventsForUser(userId).stream()
             .sorted(Comparator.comparing(Event::getStartDate))
-            .collect(Collectors.toCollection(LinkedList::new));
+            .toList();
     }
 
     /**
-     * Fetched all participants from database.
+     * Fetches all participants from database.
      * @return List of participants in no particular order.
      */
     List<Participant> getAllParticipants() {

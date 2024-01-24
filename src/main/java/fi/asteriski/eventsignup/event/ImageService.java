@@ -8,6 +8,8 @@ import fi.asteriski.eventsignup.exception.ImageDirectoryCreationFailedException;
 import fi.asteriski.eventsignup.exception.ImageNotFoundException;
 import fi.asteriski.eventsignup.exception.InvalidImageFileException;
 import fi.asteriski.eventsignup.utils.Utils;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,15 +25,18 @@ import java.nio.file.Path;
 
 @Log4j2
 @Service
+@AllArgsConstructor
+@NoArgsConstructor
 public class ImageService {
 
     private static final String LOG_PREFIX = "[ImageService]";
+    private static final String FILE_PATH_TEMPLATE = "%s/%s";
 
     @Value("${root.path.bannerimg}")
     private String rootPath;
 
     public byte[] getBannerImage(String fileName) {
-        File filePath = new File(String.format("%s/%s", rootPath, fileName));
+        File filePath = new File(String.format(FILE_PATH_TEMPLATE, rootPath, fileName));
         if (!filePath.canRead()) {
             log.info(String.format("%s Requested file %s doesn't exist and/or cannot be read.", LOG_PREFIX, fileName));
             throw new ImageNotFoundException(fileName.substring(fileName.lastIndexOf("/") + 1));
@@ -39,7 +44,7 @@ public class ImageService {
         byte[] returnValue;
         try (InputStream inputStream = new FileInputStream(filePath.toString())) {
             returnValue = IOUtils.toByteArray(inputStream);
-        } catch (IOException ioException) {
+        } catch (IOException | IllegalArgumentException ioException) {
             log.error(String.format("%s IOError while reading file <%s>", LOG_PREFIX, fileName));
             throw new ImageNotFoundException(fileName.substring(fileName.lastIndexOf("/") + 1), ioException);
         }
@@ -48,7 +53,7 @@ public class ImageService {
 
     public String addBannerImage(byte[] file) {
         var authentication = SecurityContextHolder.getContext().getAuthentication();
-        var userName = authentication != null ? authentication.getName() : "testUser";
+        var userName = authentication.getName();
         if (isInputFileNonValidImage(file)) {
             log.info(String.format("%s %s", LOG_PREFIX, "Input file is not a valid image. Throwing exception."));
             throw new InvalidImageFileException("Provided file is not a valid image file.");
@@ -67,7 +72,7 @@ public class ImageService {
         File finalFile;
         do {
             fileName = Utils.generateRandomString(30);
-            finalFile = new File(String.format("%s/%s", targetDirectory, fileName));
+            finalFile = new File(String.format(FILE_PATH_TEMPLATE, targetDirectory, fileName));
         } while (finalFile.exists());
         // TODO check image size!
         try (ImageOutputStream imageOutputStream = ImageIO.createImageOutputStream(finalFile)) {
@@ -103,10 +108,10 @@ public class ImageService {
     }
 
     private boolean isInputFileNonValidImage(byte[] inputFile) {
-        BufferedImage final_buffered_image = null;
-        try (ByteArrayInputStream input_stream= new ByteArrayInputStream(inputFile)) {
-            final_buffered_image = ImageIO.read(input_stream);
+        BufferedImage finalBufferedImage = null;
+        try (ByteArrayInputStream inputStream= new ByteArrayInputStream(inputFile)) {
+            finalBufferedImage = ImageIO.read(inputStream);
         } catch (IOException ignored) {}
-        return final_buffered_image == null;
+        return finalBufferedImage == null;
     }
 }
