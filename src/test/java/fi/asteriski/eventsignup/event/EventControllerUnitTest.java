@@ -2,6 +2,7 @@ package fi.asteriski.eventsignup.event;
 
 import fi.asteriski.eventsignup.domain.Event;
 import fi.asteriski.eventsignup.domain.signup.Participant;
+import fi.asteriski.eventsignup.exception.EventNotFoundException;
 import fi.asteriski.eventsignup.utils.TestUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

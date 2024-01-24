@@ -4,6 +4,9 @@ Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
  */
 package fi.asteriski.eventsignup.signup;
 
+import fi.asteriski.eventsignup.exception.EventFullException;
+import fi.asteriski.eventsignup.exception.SignupEndedException;
+import fi.asteriski.eventsignup.exception.SignupNotStartedException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
