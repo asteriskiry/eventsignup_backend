@@ -2,7 +2,7 @@
 Copyright Juhani Vähä-Mäkilä (juhani@fmail.co.uk) 2022.
 Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
  */
-package fi.asteriski.eventsignup.domain;
+package fi.asteriski.eventsignup.domain.event;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -17,7 +17,7 @@ public class Form {
     /*
     NOTE!
     Fields must not have @NonNull annotation.
-    Otherwise, conversion from incoming json to Event in EventController will fail!
+    Otherwise, conversion from incoming json to EventDto in EventController will fail!
      */
     private Instant dateCreated;
 

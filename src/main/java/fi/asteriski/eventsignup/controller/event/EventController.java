@@ -2,11 +2,12 @@
 Copyright Juhani Vähä-Mäkilä (juhani@fmail.co.uk) 2022.
 Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
  */
-package fi.asteriski.eventsignup.event;
+package fi.asteriski.eventsignup.controller.event;
 
 import fi.asteriski.eventsignup.Constants;
-import fi.asteriski.eventsignup.domain.Event;
+import fi.asteriski.eventsignup.domain.event.EventDto;
 import fi.asteriski.eventsignup.domain.signup.Participant;
+import fi.asteriski.eventsignup.service.event.EventService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -35,12 +36,12 @@ public class EventController {
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Requested event.",
             content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                schema = @Schema(implementation = Event.class))}),
+                schema = @Schema(implementation = EventDto.class))}),
         @ApiResponse(responseCode = "401", description = "Unauthorized."),
         @ApiResponse(responseCode = "404", description = "Event not found.")
     })
     @GetMapping("get/{eventId}")
-    public Event getEvent(@PathVariable String eventId, Locale usersLocale, ZoneId userTimeZone) {
+    public EventDto getEvent(@PathVariable String eventId, Locale usersLocale, ZoneId userTimeZone) {
         return eventService.getEvent(eventId, usersLocale, Optional.empty());
     }
 
@@ -49,17 +50,17 @@ public class EventController {
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "All events of the user. List can be empty.",
             content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                schema = @Schema(implementation = Event.class))}),
+                schema = @Schema(implementation = EventDto.class))}),
         @ApiResponse(responseCode = "401", description = "Unauthorized.")
     })
     @GetMapping("all/{user}")
-    public List<Event> getAllEventsForUser(@PathVariable String user) {
+    public List<EventDto> getAllEventsForUser(@PathVariable String user) {
         return eventService.getAllEventsForUser(user);
     }
 
     @Operation(summary = "Get participants for an event by event's id.", parameters =
         {@Parameter(name = "eventId", description = "Event's id."),
-        @Parameter(name = "loggedInUser", description = "Not required. Automatically added currently logged in user.")})
+            @Parameter(name = "loggedInUser", description = "Not required. Automatically added currently logged in user.")})
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Participants of the requested event. List can be empty.",
             content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
@@ -74,30 +75,30 @@ public class EventController {
     @Operation(summary = "Create a new event.", parameters =
         {@Parameter(name = "usersLocale", description = "Automatically inserted based on request headers."),
             @Parameter(name = "userTimeZone", description = "Automatically inserted based on request headers.")},
-    requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content =
-        {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = Event.class))}))
+        requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content =
+            {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = EventDto.class))}))
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Event creation successful."),
         @ApiResponse(responseCode = "401", description = "Unauthorized.")
     })
     @PostMapping(value = "create", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void createEvent(@RequestBody Event event, Locale usersLocale, ZoneId userTimeZone) {
-        eventService.createNewEvent(event, usersLocale, userTimeZone);
+    public void createEvent(@RequestBody EventDto eventDto, Locale usersLocale, ZoneId userTimeZone) {
+        eventService.createNewEvent(eventDto, usersLocale, userTimeZone);
     }
 
     @Operation(summary = "Edit an existing event.", parameters =
         {@Parameter(name = "usersLocale", description = "Automatically inserted based on request headers."),
             @Parameter(name = "userTimeZone", description = "Automatically inserted based on request headers.")},
-    requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content =
-        {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = Event.class))}))
+        requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content =
+            {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = EventDto.class))}))
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Event editing successful."),
         @ApiResponse(responseCode = "401", description = "Unauthorized."),
         @ApiResponse(responseCode = "404", description = "Unable to edit. Old event not found.")
     })
     @PutMapping("edit")
-    public void editEvent(@RequestBody Event event, Locale usersLocale, ZoneId userTimeZone) {
-        eventService.editExistingEvent(event, usersLocale, userTimeZone);
+    public void editEvent(@RequestBody EventDto eventDto, Locale usersLocale, ZoneId userTimeZone) {
+        eventService.editExistingEvent(eventDto, usersLocale, userTimeZone);
     }
 
     @Operation(summary = "Delete an event.", parameters =

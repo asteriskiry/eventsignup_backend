@@ -4,8 +4,8 @@ Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
  */
 package fi.asteriski.eventsignup.signup;
 
-import fi.asteriski.eventsignup.domain.Event;
 import fi.asteriski.eventsignup.domain.SignupEvent;
+import fi.asteriski.eventsignup.domain.event.EventDto;
 import fi.asteriski.eventsignup.domain.signup.Participant;
 import fi.asteriski.eventsignup.exception.EventFullException;
 import fi.asteriski.eventsignup.exception.EventNotFoundException;
@@ -29,20 +29,20 @@ class SignupControllerUnitTest {
     private SignupService signupService;
     private SignupController signupController;
     private Participant participant;
-    private Event event;
+    private EventDto eventDto;
 
     @BeforeEach
     void setUp() {
         signupService = Mockito.mock(SignupService.class);
         signupController = new SignupController(signupService);
         participant = TestUtils.createRandomParticipant(null);
-        event = TestUtils.createRandomEvent(null);
+        eventDto = TestUtils.createRandomEvent(null);
     }
 
     @Test
     @DisplayName("Get an existing event for signup.")
     void getExistingEventForSignup() {
-        when(signupService.getEventForSignUp(eq("123"), any(Locale.class), any(ZoneId.class))).thenReturn(new SignupEvent(this.event));
+        when(signupService.getEventForSignUp(eq("123"), any(Locale.class), any(ZoneId.class))).thenReturn(eventDto.toSignupEvent());
         assertInstanceOf(SignupEvent.class, signupController.getEventForSignup("123", Locale.getDefault(), ZoneId.systemDefault()));
     }
 

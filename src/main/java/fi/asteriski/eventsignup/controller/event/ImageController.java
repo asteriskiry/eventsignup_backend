@@ -2,10 +2,11 @@
 Copyright Juhani Vähä-Mäkilä (juhani@fmail.co.uk) 2022.
 Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
  */
-package fi.asteriski.eventsignup.event;
+package fi.asteriski.eventsignup.controller.event;
 
 import fi.asteriski.eventsignup.Constants;
-import fi.asteriski.eventsignup.domain.BannerImageUploadSuccessResponse;
+import fi.asteriski.eventsignup.domain.event.BannerImageUploadSuccessResponse;
+import fi.asteriski.eventsignup.service.event.ImageService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -14,7 +15,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.AllArgsConstructor;
 import org.springframework.http.MediaType;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
 
@@ -33,7 +33,6 @@ public class ImageController {
                 schema = @Schema(implementation = BannerImageUploadSuccessResponse.class))})
     )
     @GetMapping("banner/{fileName}")
-    @ResponseBody
     public BannerImageUploadSuccessResponse getBannerImagePath(@PathVariable String fileName) {
         return BannerImageUploadSuccessResponse.builder().fileName(fileName).build();
     }
