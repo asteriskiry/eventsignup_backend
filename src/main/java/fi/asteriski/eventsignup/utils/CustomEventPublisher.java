@@ -4,7 +4,7 @@ Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
  */
 package fi.asteriski.eventsignup.utils;
 
-import fi.asteriski.eventsignup.domain.Event;
+import fi.asteriski.eventsignup.domain.event.EventDto;
 import fi.asteriski.eventsignup.domain.signup.Participant;
 import fi.asteriski.eventsignup.event.SavedEventSpringEvent;
 import fi.asteriski.eventsignup.signup.SignupCancelledSpringEvent;
@@ -23,18 +23,18 @@ public class CustomEventPublisher {
 
     private ApplicationEventPublisher applicationEventPublisher;
 
-    public void publishSavedEventEvent(final Event event, final Authentication loggedInUser, Locale usersLocale, ZoneId userTimeZone) {
-        SavedEventSpringEvent savedEventSpringEvent = new SavedEventSpringEvent(this, event, loggedInUser, usersLocale, userTimeZone);
+    public void publishSavedEventEvent(final EventDto eventDto, final Authentication loggedInUser, Locale usersLocale, ZoneId userTimeZone) {
+        SavedEventSpringEvent savedEventSpringEvent = new SavedEventSpringEvent(this, eventDto, loggedInUser, usersLocale, userTimeZone);
         applicationEventPublisher.publishEvent(savedEventSpringEvent);
     }
 
-    public void publishSignupSuccessfulEvent(final Event event, final Participant participant, Locale usersLocale, ZoneId userTimeZone) {
-        SignupSuccessfulSpringEvent signupSuccessfulSpringEvent = new SignupSuccessfulSpringEvent(this, event, participant, usersLocale, userTimeZone);
+    public void publishSignupSuccessfulEvent(final EventDto eventDto, final Participant participant, Locale usersLocale, ZoneId userTimeZone) {
+        SignupSuccessfulSpringEvent signupSuccessfulSpringEvent = new SignupSuccessfulSpringEvent(this, eventDto, participant, usersLocale, userTimeZone);
         applicationEventPublisher.publishEvent(signupSuccessfulSpringEvent);
     }
 
-    public void publishSignupCancelledEvent(final Event event, final Participant participant, Locale usersLocale, ZoneId userTimeZone) {
-        SignupCancelledSpringEvent signupCancelledSpringEvent = new SignupCancelledSpringEvent(this, event, participant, usersLocale, userTimeZone);
+    public void publishSignupCancelledEvent(final EventDto eventDto, final Participant participant, Locale usersLocale, ZoneId userTimeZone) {
+        SignupCancelledSpringEvent signupCancelledSpringEvent = new SignupCancelledSpringEvent(this, eventDto, participant, usersLocale, userTimeZone);
         applicationEventPublisher.publishEvent(signupCancelledSpringEvent);
     }
 }

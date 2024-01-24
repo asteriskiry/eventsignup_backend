@@ -4,7 +4,7 @@ Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
  */
 package fi.asteriski.eventsignup.admin;
 
-import fi.asteriski.eventsignup.domain.Event;
+import fi.asteriski.eventsignup.domain.event.EventDto;
 import fi.asteriski.eventsignup.domain.signup.Participant;
 import fi.asteriski.eventsignup.utils.TestUtils;
 import org.junit.jupiter.api.BeforeEach;
@@ -25,20 +25,20 @@ class AdminControllerUnitTest {
     private AdminController adminController;
     private AdminService adminService;
     private List<Participant> participants;
-    private List<Event> events;
+    private List<EventDto> eventDtos;
 
     @BeforeEach
     void setUp() {
         adminService = Mockito.mock(AdminService.class);
         adminController = new AdminController(adminService);
         participants = TestUtils.getRandomParticipants(null);
-        events = TestUtils.getRandomEvents(null);
+        eventDtos = TestUtils.getRandomEvents(null);
     }
 
     @Test
     @DisplayName("Get all events.")
     void getAllEvents() {
-        when(adminService.getAllEvents()).thenReturn(events);
+        when(adminService.getAllEvents()).thenReturn(eventDtos);
         assertInstanceOf(List.class, adminController.getAllEvents());
     }
 
@@ -47,7 +47,7 @@ class AdminControllerUnitTest {
     void getAllEventsForUser() {
         var user = "testUser";
         var valueCapture = ArgumentCaptor.forClass(String.class);
-        when(adminService.getAllEventsForUser(valueCapture.capture())).thenReturn(events);
+        when(adminService.getAllEventsForUser(valueCapture.capture())).thenReturn(eventDtos);
         adminController.getAllEventsForUser(user);
         verify(adminService).getAllEventsForUser(user);
         assertEquals(user, valueCapture.getValue());

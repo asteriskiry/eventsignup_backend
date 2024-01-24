@@ -2,7 +2,7 @@
 Copyright Juhani Vähä-Mäkilä (juhani@fmail.co.uk) 2022.
 Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
  */
-package fi.asteriski.eventsignup.event;
+package fi.asteriski.eventsignup.controller.event;
 
 import fi.asteriski.eventsignup.exception.EventNotFoundException;
 import org.springframework.http.HttpStatus;

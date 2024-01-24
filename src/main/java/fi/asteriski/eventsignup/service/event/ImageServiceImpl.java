@@ -1,9 +1,10 @@
 /*
-Copyright Juhani Vähä-Mäkilä (juhani@fmail.co.uk) 2022.
+Copyright Juhani Vähä-Mäkilä (juhani@fmail.co.uk) 2024.
 Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
  */
-package fi.asteriski.eventsignup.event;
+package fi.asteriski.eventsignup.service.event;
 
+import fi.asteriski.eventsignup.exception.FileMoveNotSuccessfulException;
 import fi.asteriski.eventsignup.exception.ImageDirectoryCreationFailedException;
 import fi.asteriski.eventsignup.exception.ImageNotFoundException;
 import fi.asteriski.eventsignup.exception.InvalidImageFileException;
@@ -27,14 +28,15 @@ import java.nio.file.Path;
 @Service
 @AllArgsConstructor
 @NoArgsConstructor
-public class ImageService {
+public class ImageServiceImpl implements ImageService {
 
-    private static final String LOG_PREFIX = "[ImageService]";
+    private static final String LOG_PREFIX = "[ImageServiceImpl]";
     private static final String FILE_PATH_TEMPLATE = "%s/%s";
 
     @Value("${root.path.bannerimg}")
     private String rootPath;
 
+    @Override
     public byte[] getBannerImage(String fileName) {
         File filePath = new File(String.format(FILE_PATH_TEMPLATE, rootPath, fileName));
         if (!filePath.canRead()) {
@@ -51,6 +53,7 @@ public class ImageService {
         return returnValue;
     }
 
+    @Override
     public String addBannerImage(byte[] file) {
         var authentication = SecurityContextHolder.getContext().getAuthentication();
         var userName = authentication.getName();
@@ -83,10 +86,11 @@ public class ImageService {
         return String.format("%s_%s", userName, fileName);
     }
 
+    @Override
     public String moveBannerImage(final String originalPath) {
         var archivedDirectory = new File(String.format("%s/archived/", rootPath));
         var targetDirectory = String.format("%s/archived/%s", rootPath, originalPath.replace("_", "/"));
-        var sourceDirectory = String.format("%s/%s", rootPath, originalPath.replace("_", "/"));
+        var sourceDirectory = String.format(FILE_PATH_TEMPLATE, rootPath, originalPath.replace("_", "/"));
         if (!archivedDirectory.exists() && archivedDirectory.isDirectory()) {
             try {
                 Files.createDirectories(archivedDirectory.toPath());

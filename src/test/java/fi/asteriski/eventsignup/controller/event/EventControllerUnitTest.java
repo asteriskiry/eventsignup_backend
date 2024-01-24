@@ -1,8 +1,9 @@
-package fi.asteriski.eventsignup.event;
+package fi.asteriski.eventsignup.controller.event;
 
-import fi.asteriski.eventsignup.domain.Event;
+import fi.asteriski.eventsignup.domain.event.EventDto;
 import fi.asteriski.eventsignup.domain.signup.Participant;
 import fi.asteriski.eventsignup.exception.EventNotFoundException;
+import fi.asteriski.eventsignup.service.event.EventServiceImpl;
 import fi.asteriski.eventsignup.utils.TestUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -21,28 +22,28 @@ import static org.mockito.Mockito.when;
 
 class EventControllerUnitTest {
 
-    private EventService eventService;
+    private EventServiceImpl eventService;
     private EventController eventController;
-    private Event event;
+    private EventDto eventDto;
 
     @BeforeEach
     void setUp() {
-        eventService = Mockito.mock(EventService.class);
+        eventService = Mockito.mock(EventServiceImpl.class);
         eventController = new EventController(eventService);
-        event = TestUtils.createRandomEvent(null);
+        eventDto = TestUtils.createRandomEvent(null);
     }
 
     @Test
     @DisplayName("Get an existing event.")
     void getExistingEvent() {
-        when(eventService.getEvent(eq("123"), any(Locale.class), any())).thenReturn(this.event);
-        assertInstanceOf(Event.class, eventController.getEvent("123", Locale.getDefault(), ZoneId.systemDefault()));
+        when(eventService.getEvent(eq("123"), any(Locale.class), any())).thenReturn(this.eventDto);
+        assertInstanceOf(EventDto.class, eventController.getEvent("123", Locale.getDefault(), ZoneId.systemDefault()));
     }
 
     @Test
     @DisplayName("Getting an existing event doesn't throw an exception")
     void getExistingEventWithNoExceptionThrown() {
-        when(eventService.getEvent(eq("123"), any(Locale.class), any())).thenReturn(this.event);
+        when(eventService.getEvent(eq("123"), any(Locale.class), any())).thenReturn(this.eventDto);
         assertDoesNotThrow(() -> eventController.getEvent("123", null, null));
     }
 
@@ -65,9 +66,9 @@ class EventControllerUnitTest {
     @DisplayName("Get a non-empty list of events for user with events.")
     void getAllEventsForUserWithEvents() {
         var user = "user";
-        List<Event> events = new LinkedList<>();
-        events.add(this.event);
-        when(eventService.getAllEventsForUser(user)).thenReturn(events);
+        List<EventDto> eventDtos = new LinkedList<>();
+        eventDtos.add(this.eventDto);
+        when(eventService.getAllEventsForUser(user)).thenReturn(eventDtos);
         assertFalse(eventController.getAllEventsForUser(user).isEmpty());
     }
 

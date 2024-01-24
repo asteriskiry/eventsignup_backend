@@ -4,7 +4,7 @@ Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
  */
 package fi.asteriski.eventsignup.domain.archiving;
 
-import fi.asteriski.eventsignup.domain.EventDto;
+import fi.asteriski.eventsignup.domain.event.EventEntity;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NonNull;
@@ -25,7 +25,7 @@ public class ArchivedEventEntity {
     @Id
     private String id;
     @NonNull
-    private final EventDto originalEvent;
+    private final EventEntity originalEvent;
     @NonNull
     private final Instant dateArchived;
     @NonNull
@@ -38,7 +38,7 @@ public class ArchivedEventEntity {
     public ArchivedEventDto toDto() {
         return ArchivedEventDto.builder()
             .id(id)
-            .originalEvent(originalEvent)
+            .originalEvent(originalEvent.toDto())
             .dateArchived(ZonedDateTime.ofInstant(this.dateArchived, UTC_TIME_ZONE))
             .numberOfParticipants(numberOfParticipants)
             .originalOwner(originalOwner)
