@@ -4,9 +4,9 @@ Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
  */
 package fi.asteriski.eventsignup.utils;
 
-import fi.asteriski.eventsignup.domain.Event;
-import fi.asteriski.eventsignup.domain.Form;
 import fi.asteriski.eventsignup.domain.archiving.ArchivedEventDto;
+import fi.asteriski.eventsignup.domain.event.EventDto;
+import fi.asteriski.eventsignup.domain.event.Form;
 import fi.asteriski.eventsignup.domain.signup.Participant;
 import org.apache.commons.io.IOUtils;
 
@@ -21,7 +21,10 @@ import java.nio.file.StandardCopyOption;
 import java.time.Instant;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.Random;
 import java.util.function.Supplier;
 
 import static fi.asteriski.eventsignup.Constants.UTC_TIME_ZONE;
@@ -37,12 +40,13 @@ public final class TestUtils {
     // To prevent instantiation of the class.
     private TestUtils(){}
 
-    public static Event createRandomEvent(String owner) {
+    public static EventDto createRandomEvent(String owner) {
         var form = new Form();
         var instant = random.nextBoolean() ? ZonedDateTime.now().minusDays(random.nextLong(10, 100)) : ZonedDateTime.now().plusDays(random.nextLong(10, 100));
-        var event = Event.builder()
+        var event = EventDto.builder()
             .name(Utils.generateRandomString(random.nextInt(5, 15)))
             .startDate(instant)
+            .endDate(instant.plusDays(random.nextLong(10, 100)))
             .place(Utils.generateRandomString(random.nextInt(5, 15)))
             .description(Utils.generateRandomString(random.nextInt(20, 50)))
             .form(form)
@@ -53,8 +57,8 @@ public final class TestUtils {
         return event;
     }
 
-    public static List<Event> getRandomEvents(String owner) {
-        List<Event> returnValue = new LinkedList<>();
+    public static List<EventDto> getRandomEvents(String owner) {
+        var returnValue = new ArrayList<EventDto>();
         for (int i = 0; i < random.nextInt(10, 101); i++) {
             returnValue.add(createRandomEvent(owner));
         }
@@ -62,7 +66,7 @@ public final class TestUtils {
     }
 
     public static List<Participant> getRandomParticipants(String eventId) {
-        List<Participant> returnValue = new LinkedList<>();
+        var returnValue = new ArrayList<Participant>();
         for (int i = 0; i < random.nextInt(10, 101); i++) {
             returnValue.add(createRandomParticipant(eventId));
         }
@@ -102,7 +106,6 @@ public final class TestUtils {
     }
 
     public static List<ArchivedEventDto> getRandomArchivedEvents(@NotNull String owner, Optional<Supplier<Instant>> dateArchivedSupplier) {
-        var random = new Random();
         var events = new ArrayList<ArchivedEventDto>();
         for (int i = 0; i < random.nextInt(200, 1001); i++) {
             events.add(createRandomArchivedEvent(owner, dateArchivedSupplier));
@@ -111,15 +114,21 @@ public final class TestUtils {
     }
 
     public static ArchivedEventDto createRandomArchivedEvent(@NotNull String owner, Optional<Supplier<Instant>> dateArchivedSupplier) {
-        var random = new Random();
         var event = createRandomEvent(owner);
         var dateArchived = dateArchivedSupplier.orElse(defaultDateArchivedSupplier).get();
         return ArchivedEventDto.builder()
-            .originalEvent(event.toDto())
+            .originalEvent(event)
             .dateArchived(ZonedDateTime.ofInstant(dateArchived, UTC_TIME_ZONE))
             .numberOfParticipants(random.nextLong(20,200))
             .originalOwner(owner)
             .bannerImage("test_test")
             .build();
+    }
+
+    public static List<String> createRandomIdList() {
+        return random.ints()
+            .limit(random.nextLong(20, 200))
+            .mapToObj(i -> Utils.generateRandomString(10))
+            .toList();
     }
 }

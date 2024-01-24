@@ -1,7 +1,8 @@
-package fi.asteriski.eventsignup.event;
+package fi.asteriski.eventsignup.controller.event;
 
-import fi.asteriski.eventsignup.domain.BannerImageUploadSuccessResponse;
+import fi.asteriski.eventsignup.domain.event.BannerImageUploadSuccessResponse;
 import fi.asteriski.eventsignup.exception.ImageNotFoundException;
+import fi.asteriski.eventsignup.service.event.ImageServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -20,12 +21,12 @@ class ImageControllerUnitTest {
 
     @Value("${root.path.bannerimg}")
     private String rootPath;
-    private ImageService imageService;
+    private ImageServiceImpl imageService;
     private ImageController imageController;
 
     @BeforeEach
     void setUp() {
-        imageService = Mockito.mock(ImageService.class);
+        imageService = Mockito.mock(ImageServiceImpl.class);
         imageController = new ImageController(imageService);
     }
 
@@ -34,7 +35,8 @@ class ImageControllerUnitTest {
     void getBannerImagePath() {
         var instance = imageController.getBannerImagePath("123");
         assertInstanceOf(BannerImageUploadSuccessResponse.class, instance);
-        assertEquals("123", instance.fileName());    }
+        assertEquals("123", instance.fileName());
+    }
 
     @Test
     @DisplayName("Get an existing banner image file (i.e. byte array).")

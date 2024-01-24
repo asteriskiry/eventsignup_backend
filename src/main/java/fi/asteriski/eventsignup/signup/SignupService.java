@@ -5,12 +5,13 @@ Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
 package fi.asteriski.eventsignup.signup;
 
 import fi.asteriski.eventsignup.ParticipantRepository;
-import fi.asteriski.eventsignup.domain.Event;
 import fi.asteriski.eventsignup.domain.SignupEvent;
+import fi.asteriski.eventsignup.domain.event.EventDto;
+import fi.asteriski.eventsignup.domain.event.EventEntity;
 import fi.asteriski.eventsignup.domain.signup.Participant;
-import fi.asteriski.eventsignup.event.EventRepository;
-import fi.asteriski.eventsignup.event.EventService;
 import fi.asteriski.eventsignup.exception.*;
+import fi.asteriski.eventsignup.repo.event.EventRepository;
+import fi.asteriski.eventsignup.service.event.EventService;
 import fi.asteriski.eventsignup.utils.CustomEventPublisher;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -39,30 +40,30 @@ public class SignupService {
 
 
     public SignupEvent getEventForSignUp(String eventId, Locale usersLocale, ZoneId userTimeZone) {
-        Event event = eventService.getEvent(eventId, usersLocale, Optional.empty());
+        var eventDto = eventService.getEvent(eventId, usersLocale, Optional.empty());
         ZonedDateTime now = ZonedDateTime.now();
-        if (event.getSignupStarts() != null && event.getSignupStarts().isAfter(now)) {
-            String formattedZonedDateTime = event.getSignupStarts().format(DateTimeFormatter.RFC_1123_DATE_TIME);
+        if (eventDto.getSignupStarts() != null && eventDto.getSignupStarts().isAfter(now)) {
+            String formattedZonedDateTime = eventDto.getSignupStarts().format(DateTimeFormatter.RFC_1123_DATE_TIME);
             String errorMsg = String.format(messageSource.getMessage("signup.not.started.error", null, usersLocale),
-                event.getName(), formattedZonedDateTime);
+                eventDto.getName(), formattedZonedDateTime);
             throw new SignupNotStartedException(errorMsg);
         }
-        if (event.getSignupEnds() != null && event.getSignupEnds().isBefore(now)) {
+        if (eventDto.getSignupEnds() != null && eventDto.getSignupEnds().isBefore(now)) {
             throw new SignupEndedException(String.format(messageSource.getMessage("signup.ended.error", null, usersLocale),
-                event.getName()));
+                eventDto.getName()));
         }
-        if (event.getStartDate().isBefore(now)) {
+        if (eventDto.getStartDate().isBefore(now)) {
             throw new EventNotFoundException(String.format(messageSource.getMessage("signup.event.already.held.error", null, usersLocale),
-                event.getName()));
+                eventDto.getName()));
         }
-        if (event.getMaxParticipants() != null) {
+        if (eventDto.getMaxParticipants() != null) {
             long numOfParticipants = participantRepository.countAllByEvent(eventId);
-            if (numOfParticipants >= event.getMaxParticipants()) {
+            if (numOfParticipants >= eventDto.getMaxParticipants()) {
                 throw new EventFullException(String.format(messageSource.getMessage("signup.event.full.error", null, usersLocale),
-                    event.getName()));
+                    eventDto.getName()));
             }
         }
-        return new SignupEvent(event);
+        return eventDto.toSignupEvent();
     }
 
     public Participant addParticipantToEvent(String eventId, Participant participant, Locale usersLocale, ZoneId userTimeZone) {
@@ -92,7 +93,8 @@ public class SignupService {
         var today = Instant.now();
         var daysToGet = Integer.parseInt(days);
         return eventRepository.findAllByStartDateIsBetween(today, today.plus(daysToGet, ChronoUnit.DAYS)).stream()
-            .map(eventDto -> new SignupEvent(eventDto.toEvent()))
+            .map(EventEntity::toDto)
+            .map(EventDto::toSignupEvent)
             .toList();
     }
 }

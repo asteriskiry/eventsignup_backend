@@ -5,7 +5,7 @@ Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
 package fi.asteriski.eventsignup.admin;
 
 import fi.asteriski.eventsignup.Constants;
-import fi.asteriski.eventsignup.domain.Event;
+import fi.asteriski.eventsignup.domain.event.EventDto;
 import fi.asteriski.eventsignup.domain.signup.Participant;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -33,10 +33,10 @@ public class AdminController {
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "All events.",
             content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                schema = @Schema(implementation = Event.class))})
+                schema = @Schema(implementation = EventDto.class))})
     })
     @GetMapping("event/all")
-    public List<Event> getAllEvents() {
+    public List<EventDto> getAllEvents() {
         return adminService.getAllEvents();
     }
 
@@ -44,10 +44,10 @@ public class AdminController {
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "All events for the specific user.",
             content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                schema = @Schema(implementation = Event.class))})
+                schema = @Schema(implementation = EventDto.class))})
     })
     @GetMapping("event/{userId}")
-    public List<Event> getAllEventsForUser(@PathVariable String userId) {
+    public List<EventDto> getAllEventsForUser(@PathVariable String userId) {
         return adminService.getAllEventsForUser(userId);
     }
 

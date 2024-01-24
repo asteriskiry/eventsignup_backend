@@ -6,13 +6,13 @@ package fi.asteriski.eventsignup.service.archiving;
 
 import fi.asteriski.eventsignup.ParticipantRepository;
 import fi.asteriski.eventsignup.dao.archiving.ArchivedEventDao;
-import fi.asteriski.eventsignup.domain.EventDto;
 import fi.asteriski.eventsignup.domain.archiving.ArchivedEventDto;
-import fi.asteriski.eventsignup.event.EventRepository;
-import fi.asteriski.eventsignup.event.EventService;
-import fi.asteriski.eventsignup.event.ImageService;
+import fi.asteriski.eventsignup.domain.event.EventDto;
 import fi.asteriski.eventsignup.exception.EventNotFoundException;
 import fi.asteriski.eventsignup.repo.archiving.ArchivedEventRepository;
+import fi.asteriski.eventsignup.repo.event.EventRepository;
+import fi.asteriski.eventsignup.service.event.EventServiceImpl;
+import fi.asteriski.eventsignup.service.event.ImageServiceImpl;
 import fi.asteriski.eventsignup.service.signup.ParticipantService;
 import fi.asteriski.eventsignup.utils.TestUtils;
 import org.junit.jupiter.api.AfterEach;
@@ -48,10 +48,10 @@ class ArchivedEventServiceIntegrationTest {
     @Autowired
     private MessageSource messageSource;
     @MockBean
-    private EventService eventService;
+    private EventServiceImpl eventService;
 
     @MockBean
-    private ImageService imageService;
+    private ImageServiceImpl imageService;
     @MockBean
     private ParticipantService participantService;
     private final String testUser = "testUser";
@@ -59,9 +59,9 @@ class ArchivedEventServiceIntegrationTest {
 
     @BeforeEach
     void setUp() {
-        eventService = Mockito.mock(EventService.class);
+        eventService = Mockito.mock(EventServiceImpl.class);
         var archivedEventDao = new ArchivedEventDao(archivedEventRepository);
-        imageService = Mockito.mock(ImageService.class);
+        imageService = Mockito.mock(ImageServiceImpl.class);
         archivedEventService = new ArchivedEventService(participantService, archivedEventDao, eventService, imageService, messageSource);
     }
 
@@ -74,7 +74,7 @@ class ArchivedEventServiceIntegrationTest {
 
     @Test
     void archiveEvent_whenEventExistAndHasNoParticipants_expectArchivedEventDtoWithNoParticipants() {
-        var event = eventRepository.save(TestUtils.createRandomEvent(testUser).toDto());
+        var event = eventRepository.save(TestUtils.createRandomEvent(testUser).toEntity()).toDto();
         mockEventServiceGetEvent(event);
         when(participantService.countAllByEvent(anyString())).thenReturn(0L);
 //        when(archivedEventDao.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
@@ -90,7 +90,7 @@ class ArchivedEventServiceIntegrationTest {
 
     @Test
     void archiveEvent_whenEventExistAndHasParticipants_expectArchivedEventDtoWithParticipants() {
-        var event = eventRepository.save(TestUtils.createRandomEvent(testUser).toDto());
+        var event = eventRepository.save(TestUtils.createRandomEvent(testUser).toEntity()).toDto();
         mockEventServiceGetEvent(event);
         var participants = TestUtils.getRandomParticipants(event.getId());
         participantRepository.saveAll(participants);
@@ -155,6 +155,6 @@ class ArchivedEventServiceIntegrationTest {
     }
 
     private void mockEventServiceGetEvent(EventDto event) {
-        when(eventService.getEvent(eq(event.getId()), eq(defaultLocale), any())).thenReturn(event.toEvent());
+        when(eventService.getEvent(eq(event.getId()), eq(defaultLocale), any())).thenReturn(event);
     }
 }

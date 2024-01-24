@@ -4,7 +4,7 @@ Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
  */
 package fi.asteriski.eventsignup.utils;
 
-import fi.asteriski.eventsignup.domain.Event;
+import fi.asteriski.eventsignup.domain.event.EventDto;
 import fi.asteriski.eventsignup.domain.signup.Participant;
 import fi.asteriski.eventsignup.event.SavedEventSpringEvent;
 import fi.asteriski.eventsignup.signup.SignupCancelledSpringEvent;
@@ -100,13 +100,13 @@ public class EmailService {
     @EventListener
     public void onSavedEventSpringEvent(SavedEventSpringEvent savedEventSpringEvent) {
         Authentication loggedInUser = savedEventSpringEvent.getLoggedInUser();
-        Event event = savedEventSpringEvent.getEvent();
+        var eventDto = savedEventSpringEvent.getEventDto();
         RefreshableKeycloakSecurityContext ctx = (RefreshableKeycloakSecurityContext) loggedInUser.getCredentials();
         String email = ctx.getToken().getEmail();
         try {
             sendEmail(email, defaultSender,
-                String.format(MAIL_SUBJECT_EVENT_TEMPLATE, event.getName()),
-                String.format(MAIL_MESSAGE_EVENT_TEMPLATE, messageSource.getMessage("email.message.body.event", null, savedEventSpringEvent.getUsersLocale()), event.getName(), event.getStartDate(), event.getDescription()));
+                String.format(MAIL_SUBJECT_EVENT_TEMPLATE, eventDto.getName()),
+                String.format(MAIL_MESSAGE_EVENT_TEMPLATE, messageSource.getMessage("email.message.body.event", null, savedEventSpringEvent.getUsersLocale()), eventDto.getName(), eventDto.getStartDate(), eventDto.getDescription()));
         } catch (MessagingException messagingException) {
             log.error(String.format(LOG_ERROR_MESSAGE_TEMPLATE, messagingException));
         }
@@ -116,20 +116,20 @@ public class EmailService {
     @EventListener
     public void onSignupSuccessfulEvent(SignupSuccessfulSpringEvent signupSuccessfulSpringEvent) {
         Participant participant = signupSuccessfulSpringEvent.getParticipant();
-        Event event = signupSuccessfulSpringEvent.getEvent();
-        String formattedDateTime = event.getStartDate().format(DateTimeFormatter.RFC_1123_DATE_TIME);
+        EventDto eventDto = signupSuccessfulSpringEvent.getEventDto();
+        String formattedDateTime = eventDto.getStartDate().format(DateTimeFormatter.RFC_1123_DATE_TIME);
         try {
             sendEmail(participant.getEmail(), defaultSender,
                 String.format(messageSource.getMessage("email.message.subject.signup.success", null, signupSuccessfulSpringEvent.getUserLocale()),
-                    event.getName()),
+                    eventDto.getName()),
                 String.format(MAIL_MESSAGE_SIGNUP_SUCCESSFUL_TEMPLATE,
                     messageSource.getMessage("email.message.body.signup.success", null, signupSuccessfulSpringEvent.getUserLocale()),
-                    event.getName(), formattedDateTime,
+                    eventDto.getName(), formattedDateTime,
                     messageSource.getMessage("email.message.body.signup.success.to.cancel", null, signupSuccessfulSpringEvent.getUserLocale()),
                     baseUrl,
-                    event.getId(), participant.getId(),
+                    eventDto.getId(), participant.getId(),
                     baseUrl,
-                    event.getId(), participant.getId()));
+                    eventDto.getId(), participant.getId()));
         } catch (MessagingException messagingException) {
             log.error(String.format(LOG_ERROR_MESSAGE_TEMPLATE, messagingException));
         }
@@ -139,14 +139,14 @@ public class EmailService {
     @EventListener
     public void onSignupCancelledEvent(SignupCancelledSpringEvent signupCancelledSpringEvent) {
         Participant participant = signupCancelledSpringEvent.getParticipant();
-        Event event = signupCancelledSpringEvent.getEvent();
+        var eventDto = signupCancelledSpringEvent.getEventDto();
         try {
             sendEmail(participant.getEmail(), defaultSender,
                 String.format(messageSource.getMessage("email.message.subject.signup.cancelled", null, signupCancelledSpringEvent.getUsersLocale()),
-                    event.getName()),
+                    eventDto.getName()),
                 String.format(MAIL_MESSAGE_SIGNUP_CANCELLED_TEMPLATE,
                     messageSource.getMessage("email.message.body.signup.cancelled", null, signupCancelledSpringEvent.getUsersLocale()),
-                    event.getName()));
+                    eventDto.getName()));
         } catch (MessagingException messagingException) {
             log.error(String.format(LOG_ERROR_MESSAGE_TEMPLATE, messagingException));
         }

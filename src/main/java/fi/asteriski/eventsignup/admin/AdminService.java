@@ -5,11 +5,11 @@ Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
 package fi.asteriski.eventsignup.admin;
 
 import fi.asteriski.eventsignup.ParticipantRepository;
-import fi.asteriski.eventsignup.domain.Event;
-import fi.asteriski.eventsignup.domain.EventDto;
+import fi.asteriski.eventsignup.domain.event.EventDto;
+import fi.asteriski.eventsignup.domain.event.EventEntity;
 import fi.asteriski.eventsignup.domain.signup.Participant;
-import fi.asteriski.eventsignup.event.EventRepository;
-import fi.asteriski.eventsignup.event.EventService;
+import fi.asteriski.eventsignup.repo.event.EventRepository;
+import fi.asteriski.eventsignup.service.event.EventService;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
@@ -32,9 +32,9 @@ class AdminService {
      * Fetches all event from database in no particular order.
      * @return List of events.
      */
-    List<Event> getAllEvents() {
+    List<EventDto> getAllEvents() {
         return eventRepository.findAll().stream()
-            .map(EventDto::toEvent)
+            .map(EventEntity::toDto)
             .toList();
     }
 
@@ -43,10 +43,10 @@ class AdminService {
      * @param userId ID of the user.
      * @return List of events ordered by starting date.
      */
-    List<Event> getAllEventsForUser(String userId) {
+    List<EventDto> getAllEventsForUser(String userId) {
         log.info(String.format("%s In %s.getAllEventsForUser(). User: %s", LOG_PREFIX, this.getClass().getSimpleName(), userId));
         return eventService.getAllEventsForUser(userId).stream()
-            .sorted(Comparator.comparing(Event::getStartDate))
+            .sorted(Comparator.comparing(EventDto::getStartDate))
             .toList();
     }
 

@@ -4,7 +4,7 @@ Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
  */
 package fi.asteriski.eventsignup;
 
-import fi.asteriski.eventsignup.event.EventRepository;
+import fi.asteriski.eventsignup.repo.event.EventRepository;
 import fi.asteriski.eventsignup.utils.TestUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -23,7 +23,7 @@ class MongoTest {
 
     @BeforeEach
     void setUp() {
-        eventRepository.save(TestUtils.createRandomEvent(null).toDto());
+        eventRepository.save(TestUtils.createRandomEvent(null).toEntity());
         participantRepository.save(TestUtils.createRandomParticipant(null));
     }
 

@@ -5,12 +5,12 @@ Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
 package fi.asteriski.eventsignup.service.archiving;
 
 import fi.asteriski.eventsignup.dao.archiving.ArchivedEventDao;
-import fi.asteriski.eventsignup.domain.Event;
 import fi.asteriski.eventsignup.domain.archiving.ArchivedEventDto;
 import fi.asteriski.eventsignup.domain.archiving.ArchivedEventResponse;
-import fi.asteriski.eventsignup.event.EventService;
-import fi.asteriski.eventsignup.event.ImageService;
+import fi.asteriski.eventsignup.domain.event.EventDto;
 import fi.asteriski.eventsignup.exception.EventNotFoundException;
+import fi.asteriski.eventsignup.service.event.EventService;
+import fi.asteriski.eventsignup.service.event.ImageService;
 import fi.asteriski.eventsignup.service.signup.ParticipantService;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -56,7 +56,7 @@ public class ArchivedEventService {
         var numberOfParticipants = participantService.countAllByEvent(eventId);
         var archivedEvent = ArchivedEventDto.builder()
             .id(oldEvent.getId())
-            .originalEvent(oldEvent.toDto())
+            .originalEvent(oldEvent)
             .dateArchived(ZonedDateTime.ofInstant(Instant.now(), UTC_TIME_ZONE))
             .numberOfParticipants(numberOfParticipants)
             .originalOwner(oldEvent.getOwner())
@@ -71,15 +71,15 @@ public class ArchivedEventService {
         var dateLimit = now.minus(defaultDaysToArchivePastEvents, ChronoUnit.DAYS);
         var events = eventService.findAllByStartDateIsBeforeOrEndDateIsBefore(dateLimit, dateLimit);
         log.info(String.format("Archiving %s events that had startDate or endDate %s days ago i.e. on %s.", events.size(), defaultDaysToArchivePastEvents, dateLimit));
-        var eventIds = events.stream().map(Event::getId).toList();
-        eventService.deleteAllById(eventIds);
+        var eventIds = events.stream().map(EventDto::getId).toList();
+        eventService.deleteAllByIds(eventIds);
         archivedEventDao.saveAll(events.stream()
             .map(event -> {
                 long numberOfParticipants = participantService.countAllByEvent(event.getId());
                 var newBannerImagePath = imageService.moveBannerImage(event.getBannerImg());
                 return ArchivedEventDto.builder()
                     .id(event.getId())
-                    .originalEvent(event.toDto())
+                    .originalEvent(event)
                     .dateArchived(ZonedDateTime.ofInstant(now, UTC_TIME_ZONE))
                     .numberOfParticipants(numberOfParticipants)
                     .originalOwner(event.getOwner())
