@@ -4,7 +4,7 @@ Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
  */
 package fi.asteriski.eventsignup;
 
-import fi.asteriski.eventsignup.domain.Participant;
+import fi.asteriski.eventsignup.domain.signup.Participant;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.util.List;

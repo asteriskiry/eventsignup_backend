@@ -5,7 +5,9 @@ Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
 package fi.asteriski.eventsignup.event;
 
 import fi.asteriski.eventsignup.ParticipantRepository;
-import fi.asteriski.eventsignup.domain.*;
+import fi.asteriski.eventsignup.domain.Event;
+import fi.asteriski.eventsignup.domain.EventDto;
+import fi.asteriski.eventsignup.domain.signup.Participant;
 import fi.asteriski.eventsignup.utils.CustomEventPublisher;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -88,5 +90,15 @@ public class EventService {
 
     public boolean eventExists(String eventId) {
         return eventRepository.existsById(eventId);
+    }
+
+    public List<Event> findAllByStartDateIsBeforeOrEndDateIsBefore(Instant dateLimit, Instant dateLimit1) {
+        return eventRepository.findAllByStartDateIsBeforeOrEndDateIsBefore(dateLimit, dateLimit1).stream()
+            .map(EventDto::toEvent)
+            .toList();
+    }
+
+    public void deleteAllById(List<String> eventIds) {
+        eventRepository.deleteAllById(eventIds);
     }
 }

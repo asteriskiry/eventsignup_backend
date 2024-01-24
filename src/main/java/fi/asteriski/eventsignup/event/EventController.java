@@ -6,7 +6,7 @@ package fi.asteriski.eventsignup.event;
 
 import fi.asteriski.eventsignup.Constants;
 import fi.asteriski.eventsignup.domain.Event;
-import fi.asteriski.eventsignup.domain.Participant;
+import fi.asteriski.eventsignup.domain.signup.Participant;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -15,7 +15,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.AllArgsConstructor;
 import org.springframework.http.MediaType;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.ZoneId;

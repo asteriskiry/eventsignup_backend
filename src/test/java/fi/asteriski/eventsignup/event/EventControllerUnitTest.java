@@ -1,8 +1,8 @@
 package fi.asteriski.eventsignup.event;
 
-import fi.asteriski.eventsignup.utils.TestUtils;
 import fi.asteriski.eventsignup.domain.Event;
-import fi.asteriski.eventsignup.domain.Participant;
+import fi.asteriski.eventsignup.domain.signup.Participant;
+import fi.asteriski.eventsignup.utils.TestUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
