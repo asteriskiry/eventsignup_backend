@@ -1,6 +1,9 @@
 # Eventsignup Backend
-Copyright Juhani Vähä-Mäkilä (juhani@fmail.co.uk) 2022.
+© Juhani Vähä-Mäkilä (juhani@fmail.co.uk) 2024.
+
 Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
+
+Backend microservice for event signup system. Includes Keycloak integration for authentication.
 
 ## Used technologies
 
@@ -11,6 +14,9 @@ Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
 - MongoDB 5.0.5
 - JUnit 5 & Mockito
 - Project lombok
+- Keycloak for authentication
+- Quartz scheduler
+- OpenApi
 - Spotless for code formatting
 
 ## Development
@@ -23,7 +29,7 @@ Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
 - OpenAPI swagger ui is available at http://localhost:8080/swagger-ui.html
 - All text which is visible to the end user (e.g. email) must use i18n translations (messages*.properties files)
 - All features and bug fixes are done in their own branches
-- All Pull Requests need to squash commits before merge so git history of develop (and master) remains clean and linear
+- All Pull Requests should squash commits before merge so git history of develop (and master) remains clean and linear
 
 Format code with Spotless:
 
@@ -34,4 +40,5 @@ To run:
     $ ./gradlew bootRun
 
 ## Other info
-- testFile.jpg is 'Imladris' by joewight (https://www.deviantart.com/joewight/art/Imladris-430740597). Distributed under  CC by-nc-nd (http://creativecommons.org/licenses/by-nc-nd/3.0/).
+- testFile.jpg is 'Imladris' by joewight (https://www.deviantart.com/joewight/art/Imladris-430740597). 
+Distributed under  CC by-nc-nd (http://creativecommons.org/licenses/by-nc-nd/3.0/).
