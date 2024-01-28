@@ -33,7 +33,7 @@ public class ArchivedEventServiceImpl implements ArchivedEventService {
 
     private static final String LOG_PREFIX = "[ArchivedEventServiceImpl]";
 
-    @Value("${default.days.to.archive.past.events}")
+    @Value("${fi.asteriski.config.archiving.days-to-archive-past-events}")
     private Integer defaultDaysToArchivePastEvents;
 
     @NonNull

@@ -32,7 +32,7 @@ public class ImageServiceImpl implements ImageService {
     private static final String LOG_PREFIX = "[ImageServiceImpl]";
     private static final String FILE_PATH_TEMPLATE = "%s/%s";
 
-    @Value("${root.path.bannerimg}")
+    @Value("${fi.asteriski.config.event.root-path-bannerimg}")
     private String rootPath;
 
     @Override

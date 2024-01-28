@@ -29,7 +29,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class EmailService {
 
-    @Value("${default.email.sender.address}")
+    @Value("${fi.asteriski.config.email.default-sender-address}")
     private String defaultSender;
 
     @Value("${fi.asteriski.config.email.baseUrl}")
