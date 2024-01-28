@@ -4,7 +4,7 @@ Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
  */
 package fi.asteriski.eventsignup.dao.archiving;
 
-import fi.asteriski.eventsignup.domain.archiving.ArchivedEventDto;
+import fi.asteriski.eventsignup.model.archiving.ArchivedEventDto;
 
 import javax.validation.constraints.NotNull;
 import java.time.Instant;

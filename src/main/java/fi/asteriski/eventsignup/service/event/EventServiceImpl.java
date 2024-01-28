@@ -5,10 +5,10 @@ Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
 package fi.asteriski.eventsignup.service.event;
 
 import fi.asteriski.eventsignup.dao.event.EventDao;
-import fi.asteriski.eventsignup.domain.event.EventDto;
-import fi.asteriski.eventsignup.domain.signup.ParticipantDto;
 import fi.asteriski.eventsignup.exception.EventNotFoundException;
 import fi.asteriski.eventsignup.exception.EventSignupException;
+import fi.asteriski.eventsignup.model.event.EventDto;
+import fi.asteriski.eventsignup.model.signup.ParticipantDto;
 import fi.asteriski.eventsignup.service.signup.ParticipantService;
 import fi.asteriski.eventsignup.utils.CustomEventPublisher;
 import lombok.AllArgsConstructor;

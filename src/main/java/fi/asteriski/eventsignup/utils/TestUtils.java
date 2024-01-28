@@ -4,10 +4,10 @@ Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
  */
 package fi.asteriski.eventsignup.utils;
 
-import fi.asteriski.eventsignup.domain.archiving.ArchivedEventDto;
-import fi.asteriski.eventsignup.domain.event.EventDto;
-import fi.asteriski.eventsignup.domain.event.Form;
-import fi.asteriski.eventsignup.domain.signup.ParticipantDto;
+import fi.asteriski.eventsignup.model.archiving.ArchivedEventDto;
+import fi.asteriski.eventsignup.model.event.EventDto;
+import fi.asteriski.eventsignup.model.event.Form;
+import fi.asteriski.eventsignup.model.signup.ParticipantDto;
 import org.apache.commons.io.IOUtils;
 
 import javax.validation.constraints.NotNull;

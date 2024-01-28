@@ -5,10 +5,10 @@ Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
 package fi.asteriski.eventsignup.service.archiving;
 
 import fi.asteriski.eventsignup.dao.archiving.ArchivedEventDao;
-import fi.asteriski.eventsignup.domain.archiving.ArchivedEventDto;
-import fi.asteriski.eventsignup.domain.archiving.ArchivedEventResponse;
-import fi.asteriski.eventsignup.domain.event.EventDto;
 import fi.asteriski.eventsignup.exception.EventNotFoundException;
+import fi.asteriski.eventsignup.model.archiving.ArchivedEventDto;
+import fi.asteriski.eventsignup.model.archiving.ArchivedEventResponse;
+import fi.asteriski.eventsignup.model.event.EventDto;
 import fi.asteriski.eventsignup.service.event.EventService;
 import fi.asteriski.eventsignup.service.event.ImageService;
 import fi.asteriski.eventsignup.service.signup.ParticipantService;

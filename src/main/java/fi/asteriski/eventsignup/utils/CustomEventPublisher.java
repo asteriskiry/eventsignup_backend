@@ -4,11 +4,11 @@ Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
  */
 package fi.asteriski.eventsignup.utils;
 
-import fi.asteriski.eventsignup.domain.event.EventDto;
-import fi.asteriski.eventsignup.domain.signup.ParticipantDto;
 import fi.asteriski.eventsignup.event.SavedEventSpringEvent;
 import fi.asteriski.eventsignup.event.SignupCancelledSpringEvent;
 import fi.asteriski.eventsignup.event.SignupSuccessfulSpringEvent;
+import fi.asteriski.eventsignup.model.event.EventDto;
+import fi.asteriski.eventsignup.model.signup.ParticipantDto;
 import lombok.AllArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.core.Authentication;

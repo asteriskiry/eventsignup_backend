@@ -4,7 +4,7 @@ Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
  */
 package fi.asteriski.eventsignup.dao.signup;
 
-import fi.asteriski.eventsignup.domain.signup.ParticipantDto;
+import fi.asteriski.eventsignup.model.signup.ParticipantDto;
 import fi.asteriski.eventsignup.repo.signup.ParticipantRepository;
 import fi.asteriski.eventsignup.utils.TestUtils;
 import org.junit.jupiter.api.AfterEach;

@@ -4,7 +4,7 @@ Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
  */
 package fi.asteriski.eventsignup.repo.archiving;
 
-import fi.asteriski.eventsignup.domain.archiving.ArchivedEventEntity;
+import fi.asteriski.eventsignup.model.archiving.ArchivedEventEntity;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.time.Instant;

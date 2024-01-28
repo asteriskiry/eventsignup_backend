@@ -4,8 +4,8 @@ Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
  */
 package fi.asteriski.eventsignup.service.archiving;
 
-import fi.asteriski.eventsignup.domain.archiving.ArchivedEventDto;
-import fi.asteriski.eventsignup.domain.archiving.ArchivedEventResponse;
+import fi.asteriski.eventsignup.model.archiving.ArchivedEventDto;
+import fi.asteriski.eventsignup.model.archiving.ArchivedEventResponse;
 
 import java.time.Instant;
 import java.util.List;

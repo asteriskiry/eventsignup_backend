@@ -5,8 +5,8 @@ Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
 package fi.asteriski.eventsignup.admin;
 
 import fi.asteriski.eventsignup.controller.admin.AdminController;
-import fi.asteriski.eventsignup.domain.event.EventDto;
-import fi.asteriski.eventsignup.domain.signup.ParticipantDto;
+import fi.asteriski.eventsignup.model.event.EventDto;
+import fi.asteriski.eventsignup.model.signup.ParticipantDto;
 import fi.asteriski.eventsignup.service.admin.AdminServiceImpl;
 import fi.asteriski.eventsignup.utils.TestUtils;
 import org.junit.jupiter.api.BeforeEach;

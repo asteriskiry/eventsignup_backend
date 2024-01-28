@@ -4,7 +4,7 @@ Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
  */
 package fi.asteriski.eventsignup.controller.event;
 
-import fi.asteriski.eventsignup.domain.event.BannerImageUploadSuccessResponse;
+import fi.asteriski.eventsignup.model.event.BannerImageUploadSuccessResponse;
 import fi.asteriski.eventsignup.service.event.ImageService;
 import fi.asteriski.eventsignup.utils.Constants;
 import io.swagger.v3.oas.annotations.Operation;

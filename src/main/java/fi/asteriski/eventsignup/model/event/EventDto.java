@@ -2,9 +2,9 @@
 Copyright Juhani Vähä-Mäkilä (juhani@fmail.co.uk) 2024.
 Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
  */
-package fi.asteriski.eventsignup.domain.event;
+package fi.asteriski.eventsignup.model.event;
 
-import fi.asteriski.eventsignup.domain.signup.SignupEvent;
+import fi.asteriski.eventsignup.model.signup.SignupEvent;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NonNull;

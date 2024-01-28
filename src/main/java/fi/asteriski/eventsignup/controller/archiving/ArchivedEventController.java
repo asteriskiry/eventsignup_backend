@@ -4,10 +4,10 @@ Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
  */
 package fi.asteriski.eventsignup.controller.archiving;
 
-import fi.asteriski.eventsignup.domain.archiving.ArchiveEventRequest;
-import fi.asteriski.eventsignup.domain.archiving.ArchivedEventDto;
-import fi.asteriski.eventsignup.domain.archiving.ArchivedEventResponse;
-import fi.asteriski.eventsignup.domain.archiving.RemoveArchivedEventsRequest;
+import fi.asteriski.eventsignup.model.archiving.ArchiveEventRequest;
+import fi.asteriski.eventsignup.model.archiving.ArchivedEventDto;
+import fi.asteriski.eventsignup.model.archiving.ArchivedEventResponse;
+import fi.asteriski.eventsignup.model.archiving.RemoveArchivedEventsRequest;
 import fi.asteriski.eventsignup.service.archiving.ArchivedEventService;
 import fi.asteriski.eventsignup.utils.Constants;
 import io.swagger.v3.oas.annotations.Operation;

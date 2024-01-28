@@ -4,8 +4,8 @@ Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
  */
 package fi.asteriski.eventsignup.service.signup;
 
-import fi.asteriski.eventsignup.domain.signup.ParticipantDto;
-import fi.asteriski.eventsignup.domain.signup.SignupEvent;
+import fi.asteriski.eventsignup.model.signup.ParticipantDto;
+import fi.asteriski.eventsignup.model.signup.SignupEvent;
 
 import java.time.ZoneId;
 import java.util.List;

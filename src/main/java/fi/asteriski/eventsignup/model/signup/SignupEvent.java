@@ -2,9 +2,9 @@
 Copyright Juhani Vähä-Mäkilä (juhani@fmail.co.uk) 2024.
 Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
  */
-package fi.asteriski.eventsignup.domain.signup;
+package fi.asteriski.eventsignup.model.signup;
 
-import fi.asteriski.eventsignup.domain.event.Form;
+import fi.asteriski.eventsignup.model.event.Form;
 import lombok.Builder;
 
 import java.time.ZonedDateTime;

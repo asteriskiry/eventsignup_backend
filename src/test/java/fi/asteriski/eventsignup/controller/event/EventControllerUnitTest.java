@@ -1,8 +1,8 @@
 package fi.asteriski.eventsignup.controller.event;
 
-import fi.asteriski.eventsignup.domain.event.EventDto;
-import fi.asteriski.eventsignup.domain.signup.ParticipantDto;
 import fi.asteriski.eventsignup.exception.EventNotFoundException;
+import fi.asteriski.eventsignup.model.event.EventDto;
+import fi.asteriski.eventsignup.model.signup.ParticipantDto;
 import fi.asteriski.eventsignup.service.event.EventServiceImpl;
 import fi.asteriski.eventsignup.utils.TestUtils;
 import org.junit.jupiter.api.BeforeEach;

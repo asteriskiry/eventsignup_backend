@@ -5,8 +5,8 @@ Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
 
 package fi.asteriski.eventsignup.dao.event;
 
-import fi.asteriski.eventsignup.domain.event.EventDto;
-import fi.asteriski.eventsignup.domain.event.EventEntity;
+import fi.asteriski.eventsignup.model.event.EventDto;
+import fi.asteriski.eventsignup.model.event.EventEntity;
 import fi.asteriski.eventsignup.repo.event.EventRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
