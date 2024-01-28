@@ -4,33 +4,23 @@ Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
  */
 package fi.asteriski.eventsignup.service.signup;
 
-import fi.asteriski.eventsignup.dao.signup.ParticipantDao;
-import fi.asteriski.eventsignup.domain.signup.Participant;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
+import fi.asteriski.eventsignup.domain.signup.ParticipantDto;
 
 import java.util.List;
+import java.util.Optional;
 
-@Service
-@RequiredArgsConstructor
-public class ParticipantService {
-    @NonNull
-    private ParticipantDao participantDao;
+public interface ParticipantService {
+    long countAllByEvent(String eventId);
 
-    public long countAllByEvent(String eventId) {
-        return participantDao.countAllByEvent(eventId);
-    }
+    void deleteAllByEventIn(List<String> eventIds);
 
-    public void deleteAllByEventIn(List<String> eventIds) {
-        participantDao.deleteAllByEventId(eventIds);
-    }
+    List<ParticipantDto> findAllByEvent(String eventId);
 
-    public List<Participant> findAllByEvent(String eventId){
-        return participantDao.findAllByEvent(eventId);
-    }
+    void deleteAllByEvent(String eventId);
 
-    public void deleteAllByEvent(String eventId) {
-        participantDao.deleteAllByEvent(eventId);
-    }
+    ParticipantDto save(ParticipantDto participantDto);
+
+    Optional<ParticipantDto> findById(String participantId);
+
+    void deleteParticipantByEventAndId(String eventId, String participantId);
 }

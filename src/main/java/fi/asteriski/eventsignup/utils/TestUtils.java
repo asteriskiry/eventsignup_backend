@@ -7,7 +7,7 @@ package fi.asteriski.eventsignup.utils;
 import fi.asteriski.eventsignup.domain.archiving.ArchivedEventDto;
 import fi.asteriski.eventsignup.domain.event.EventDto;
 import fi.asteriski.eventsignup.domain.event.Form;
-import fi.asteriski.eventsignup.domain.signup.Participant;
+import fi.asteriski.eventsignup.domain.signup.ParticipantDto;
 import org.apache.commons.io.IOUtils;
 
 import javax.validation.constraints.NotNull;
@@ -65,21 +65,21 @@ public final class TestUtils {
         return returnValue;
     }
 
-    public static List<Participant> getRandomParticipants(String eventId) {
-        var returnValue = new ArrayList<Participant>();
+    public static List<ParticipantDto> createRandomParticipants(String eventId) {
+        var returnValue = new ArrayList<ParticipantDto>();
         for (int i = 0; i < random.nextInt(10, 101); i++) {
             returnValue.add(createRandomParticipant(eventId));
         }
         return returnValue;
     }
 
-    public static Participant createRandomParticipant(String eventId) {
+    public static ParticipantDto createRandomParticipant(String eventId) {
         eventId = eventId != null ? eventId : Utils.generateRandomString(random.nextInt(5, 15));
-        return new Participant(
-            Utils.generateRandomString(random.nextInt(5, 15)),
-            Utils.generateRandomString(random.nextInt(5, 15)),
-            eventId
-        );
+        return ParticipantDto.builder()
+            .name(Utils.generateRandomString(random.nextInt(5, 15)))
+            .email(Utils.generateRandomString(random.nextInt(5, 15)))
+            .event(eventId)
+            .build();
     }
 
     /**

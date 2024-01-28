@@ -6,7 +6,7 @@ package fi.asteriski.eventsignup.service.event;
 
 import fi.asteriski.eventsignup.dao.event.EventDao;
 import fi.asteriski.eventsignup.domain.event.EventDto;
-import fi.asteriski.eventsignup.domain.signup.Participant;
+import fi.asteriski.eventsignup.domain.signup.ParticipantDto;
 import fi.asteriski.eventsignup.exception.EventNotFoundException;
 import fi.asteriski.eventsignup.exception.EventSignupException;
 import fi.asteriski.eventsignup.service.signup.ParticipantService;
@@ -51,7 +51,7 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public List<Participant> getParticipants(String eventId) {
+    public List<ParticipantDto> getParticipants(String eventId) {
         return participantService.findAllByEvent(eventId);
     }
 
@@ -103,5 +103,10 @@ public class EventServiceImpl implements EventService {
     @Override
     public void deleteAllByIds(List<String> eventIds) {
         eventDao.deleteAllByIds(eventIds);
+    }
+
+    @Override
+    public List<EventDto> findAllByStartDateIsBetween(Instant date1, Instant date2) {
+        return eventDao.findAllByStartDateIsBetween(date1, date2);
     }
 }

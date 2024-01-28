@@ -6,7 +6,7 @@ package fi.asteriski.eventsignup.controller.event;
 
 import fi.asteriski.eventsignup.Constants;
 import fi.asteriski.eventsignup.domain.event.EventDto;
-import fi.asteriski.eventsignup.domain.signup.Participant;
+import fi.asteriski.eventsignup.domain.signup.ParticipantDto;
 import fi.asteriski.eventsignup.service.event.EventService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -64,11 +64,11 @@ public class EventController {
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Participants of the requested event. List can be empty.",
             content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                schema = @Schema(implementation = Participant.class))}),
+                schema = @Schema(implementation = ParticipantDto.class))}),
         @ApiResponse(responseCode = "401", description = "Unauthorized.")
     })
     @GetMapping("participants/{eventId}")
-    public List<Participant> getParticipants(@PathVariable String eventId) {
+    public List<ParticipantDto> getParticipants(@PathVariable String eventId) {
         return eventService.getParticipants(eventId);
     }
 

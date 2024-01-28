@@ -61,4 +61,11 @@ public class EventDaoImpl implements EventDao {
     public void deleteAllByIds(@NotNull final List<String> eventIds) {
         eventRepository.deleteAllById(eventIds);
     }
+
+    @Override
+    public List<EventDto> findAllByStartDateIsBetween(Instant date1, Instant date2) {
+        return eventRepository.findAllByStartDateIsBetween(date1, date2).stream()
+            .map(EventEntity::toDto)
+            .toList();
+    }
 }

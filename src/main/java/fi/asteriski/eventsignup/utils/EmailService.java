@@ -4,11 +4,9 @@ Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
  */
 package fi.asteriski.eventsignup.utils;
 
-import fi.asteriski.eventsignup.domain.event.EventDto;
-import fi.asteriski.eventsignup.domain.signup.Participant;
 import fi.asteriski.eventsignup.event.SavedEventSpringEvent;
-import fi.asteriski.eventsignup.signup.SignupCancelledSpringEvent;
-import fi.asteriski.eventsignup.signup.SignupSuccessfulSpringEvent;
+import fi.asteriski.eventsignup.event.SignupCancelledSpringEvent;
+import fi.asteriski.eventsignup.event.SignupSuccessfulSpringEvent;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -22,11 +20,9 @@ import org.springframework.mail.MailSendException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
 import javax.mail.MessagingException;
-import javax.mail.internet.MimeMessage;
 import java.time.format.DateTimeFormatter;
 
 
@@ -99,10 +95,10 @@ public class EmailService {
     @Async
     @EventListener
     public void onSavedEventSpringEvent(SavedEventSpringEvent savedEventSpringEvent) {
-        Authentication loggedInUser = savedEventSpringEvent.getLoggedInUser();
+        var loggedInUser = savedEventSpringEvent.getLoggedInUser();
         var eventDto = savedEventSpringEvent.getEventDto();
-        RefreshableKeycloakSecurityContext ctx = (RefreshableKeycloakSecurityContext) loggedInUser.getCredentials();
-        String email = ctx.getToken().getEmail();
+        var ctx = (RefreshableKeycloakSecurityContext) loggedInUser.getCredentials();
+        var email = ctx.getToken().getEmail();
         try {
             sendEmail(email, defaultSender,
                 String.format(MAIL_SUBJECT_EVENT_TEMPLATE, eventDto.getName()),
@@ -115,11 +111,11 @@ public class EmailService {
     @Async
     @EventListener
     public void onSignupSuccessfulEvent(SignupSuccessfulSpringEvent signupSuccessfulSpringEvent) {
-        Participant participant = signupSuccessfulSpringEvent.getParticipant();
-        EventDto eventDto = signupSuccessfulSpringEvent.getEventDto();
-        String formattedDateTime = eventDto.getStartDate().format(DateTimeFormatter.RFC_1123_DATE_TIME);
+        var participantEntity = signupSuccessfulSpringEvent.getParticipantDto();
+        var eventDto = signupSuccessfulSpringEvent.getEventDto();
+        var formattedDateTime = eventDto.getStartDate().format(DateTimeFormatter.RFC_1123_DATE_TIME);
         try {
-            sendEmail(participant.getEmail(), defaultSender,
+            sendEmail(participantEntity.getEmail(), defaultSender,
                 String.format(messageSource.getMessage("email.message.subject.signup.success", null, signupSuccessfulSpringEvent.getUserLocale()),
                     eventDto.getName()),
                 String.format(MAIL_MESSAGE_SIGNUP_SUCCESSFUL_TEMPLATE,
@@ -127,9 +123,9 @@ public class EmailService {
                     eventDto.getName(), formattedDateTime,
                     messageSource.getMessage("email.message.body.signup.success.to.cancel", null, signupSuccessfulSpringEvent.getUserLocale()),
                     baseUrl,
-                    eventDto.getId(), participant.getId(),
+                    eventDto.getId(), participantEntity.getId(),
                     baseUrl,
-                    eventDto.getId(), participant.getId()));
+                    eventDto.getId(), participantEntity.getId()));
         } catch (MessagingException messagingException) {
             log.error(String.format(LOG_ERROR_MESSAGE_TEMPLATE, messagingException));
         }
@@ -138,10 +134,10 @@ public class EmailService {
     @Async
     @EventListener
     public void onSignupCancelledEvent(SignupCancelledSpringEvent signupCancelledSpringEvent) {
-        Participant participant = signupCancelledSpringEvent.getParticipant();
+        var participantEntity = signupCancelledSpringEvent.getParticipantDto();
         var eventDto = signupCancelledSpringEvent.getEventDto();
         try {
-            sendEmail(participant.getEmail(), defaultSender,
+            sendEmail(participantEntity.getEmail(), defaultSender,
                 String.format(messageSource.getMessage("email.message.subject.signup.cancelled", null, signupCancelledSpringEvent.getUsersLocale()),
                     eventDto.getName()),
                 String.format(MAIL_MESSAGE_SIGNUP_CANCELLED_TEMPLATE,
@@ -153,8 +149,8 @@ public class EmailService {
     }
 
     private void sendEmail(String recipient, String sender, String messageSubject, String messageText) throws MessagingException {
-        MimeMessage msg = javaMailSender.createMimeMessage();
-        MimeMessageHelper helper = new MimeMessageHelper(msg);
+        var msg = javaMailSender.createMimeMessage();
+        var helper = new MimeMessageHelper(msg);
         helper.setTo(recipient);
         helper.setFrom(sender);
 
