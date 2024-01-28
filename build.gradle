@@ -6,6 +6,7 @@ plugins {
     id 'java'
     id 'idea' // comment out if you don't use IntelliJ IDEA
     //id 'eclipse' // uncomment if you use Eclipse
+    id "com.diffplug.spotless" version "6.25.0"
 }
 
 group = 'fi.asteriski'
@@ -82,4 +83,18 @@ task generateTypesVersionNumber(type: NpmTask) {
 
 task publishTypesPlugin(type: NpmTask) {
     args = ["publish"]
+}
+
+spotless {
+    format 'misc', {
+        target '*.gradle', '.gitattributes', '.gitignore', '*.properties'
+
+        trimTrailingWhitespace()
+        endWithNewline()
+    }
+    java {
+        importOrder()
+        removeUnusedImports()
+        palantirJavaFormat('2.40.0').formatJavadoc(true)
+    }
 }

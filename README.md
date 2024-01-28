@@ -11,6 +11,7 @@ Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
 - MongoDB 5.0.5
 - JUnit 5 & Mockito
 - Project lombok
+- Spotless for code formatting
 
 ## Development
 
@@ -23,6 +24,10 @@ Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
 - All text which is visible to the end user (e.g. email) must use i18n translations (messages*.properties files)
 - All features and bug fixes are done in their own branches
 - All Pull Requests need to squash commits before merge so git history of develop (and master) remains clean and linear
+
+Format code with Spotless:
+
+    $ ./gradlew spotlessApply
 
 To run:
 
