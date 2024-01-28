@@ -4,8 +4,10 @@ Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
  */
 package fi.asteriski.eventsignup.admin;
 
+import fi.asteriski.eventsignup.controller.admin.AdminController;
 import fi.asteriski.eventsignup.domain.event.EventDto;
 import fi.asteriski.eventsignup.domain.signup.ParticipantDto;
+import fi.asteriski.eventsignup.service.admin.AdminServiceImpl;
 import fi.asteriski.eventsignup.utils.TestUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -23,13 +25,13 @@ import static org.mockito.Mockito.when;
 class AdminControllerUnitTest {
 
     private AdminController adminController;
-    private AdminService adminService;
+    private AdminServiceImpl adminService;
     private List<ParticipantDto> participantDtos;
     private List<EventDto> eventDtos;
 
     @BeforeEach
     void setUp() {
-        adminService = Mockito.mock(AdminService.class);
+        adminService = Mockito.mock(AdminServiceImpl.class);
         adminController = new AdminController(adminService);
         participantDtos = TestUtils.createRandomParticipants(null);
         eventDtos = TestUtils.getRandomEvents(null);

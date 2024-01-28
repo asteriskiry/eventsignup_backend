@@ -109,4 +109,9 @@ public class EventServiceImpl implements EventService {
     public List<EventDto> findAllByStartDateIsBetween(Instant date1, Instant date2) {
         return eventDao.findAllByStartDateIsBetween(date1, date2);
     }
+
+    @Override
+    public List<EventDto> findAll() {
+        return eventDao.findAll();
+    }
 }

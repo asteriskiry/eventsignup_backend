@@ -21,7 +21,7 @@ import java.util.Optional;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
-import static fi.asteriski.eventsignup.Constants.UTC_TIME_ZONE;
+import static fi.asteriski.eventsignup.utils.Constants.UTC_TIME_ZONE;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataMongoTest

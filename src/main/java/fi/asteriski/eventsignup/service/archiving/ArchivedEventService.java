@@ -25,7 +25,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.function.Supplier;
 
-import static fi.asteriski.eventsignup.Constants.UTC_TIME_ZONE;
+import static fi.asteriski.eventsignup.utils.Constants.UTC_TIME_ZONE;
 
 @Service
 @RequiredArgsConstructor

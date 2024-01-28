@@ -24,4 +24,6 @@ public interface ParticipantDao {
     Optional<ParticipantDto> findById(String participantId);
 
     void deleteParticipantByEventAndId(String eventId, String participantId);
+
+    List<ParticipantDto> findAll();
 }

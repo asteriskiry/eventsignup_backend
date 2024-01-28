@@ -27,7 +27,7 @@ import java.util.Optional;
 import java.util.Random;
 import java.util.function.Supplier;
 
-import static fi.asteriski.eventsignup.Constants.UTC_TIME_ZONE;
+import static fi.asteriski.eventsignup.utils.Constants.UTC_TIME_ZONE;
 
 /**
  * Class for utility methods used in testing.

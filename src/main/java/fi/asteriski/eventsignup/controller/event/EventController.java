@@ -4,10 +4,10 @@ Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
  */
 package fi.asteriski.eventsignup.controller.event;
 
-import fi.asteriski.eventsignup.Constants;
 import fi.asteriski.eventsignup.domain.event.EventDto;
 import fi.asteriski.eventsignup.domain.signup.ParticipantDto;
 import fi.asteriski.eventsignup.service.event.EventService;
+import fi.asteriski.eventsignup.utils.Constants;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;

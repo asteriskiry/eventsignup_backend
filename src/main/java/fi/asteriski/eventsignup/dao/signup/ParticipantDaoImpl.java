@@ -58,4 +58,9 @@ public class ParticipantDaoImpl implements ParticipantDao {
     public void deleteParticipantByEventAndId(String eventId, String participantId) {
         participantRepository.deleteParticipantByEventAndId(eventId, participantId);
     }
+
+    @Override
+    public List<ParticipantDto> findAll() {
+        return participantRepository.findAll().stream().map(ParticipantEntity::toDto).toList();
+    }
 }
