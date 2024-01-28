@@ -6,7 +6,6 @@ package fi.asteriski.eventsignup.service.archiving;
 
 import fi.asteriski.eventsignup.model.archiving.ArchivedEventDto;
 import fi.asteriski.eventsignup.model.archiving.ArchivedEventResponse;
-
 import java.time.Instant;
 import java.util.List;
 import java.util.Locale;

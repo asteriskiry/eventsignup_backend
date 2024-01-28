@@ -8,13 +8,12 @@ package fi.asteriski.eventsignup.dao.event;
 import fi.asteriski.eventsignup.model.event.EventDto;
 import fi.asteriski.eventsignup.model.event.EventEntity;
 import fi.asteriski.eventsignup.repo.event.EventRepository;
-import lombok.AllArgsConstructor;
-import org.springframework.stereotype.Component;
-
-import javax.validation.constraints.NotNull;
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
+import javax.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Component;
 
 @Component
 @AllArgsConstructor
@@ -24,15 +23,14 @@ public class EventDaoImpl implements EventDao {
 
     @Override
     public Optional<EventDto> findById(@NotNull final String id) {
-        return eventRepository.findById(id)
-            .map(EventEntity::toDto);
+        return eventRepository.findById(id).map(EventEntity::toDto);
     }
 
     @Override
     public List<EventDto> findAllByOwner(@NotNull final String owner) {
         return eventRepository.findAllByOwner(owner).stream()
-            .map(EventEntity::toDto)
-            .toList();
+                .map(EventEntity::toDto)
+                .toList();
     }
 
     @Override
@@ -53,8 +51,8 @@ public class EventDaoImpl implements EventDao {
     @Override
     public List<EventDto> findAllByStartDateIsBeforeOrEndDateIsBefore(Instant dateLimit, Instant dateLimit1) {
         return eventRepository.findAllByStartDateIsBeforeOrEndDateIsBefore(dateLimit, dateLimit1).stream()
-            .map(EventEntity::toDto)
-            .toList();
+                .map(EventEntity::toDto)
+                .toList();
     }
 
     @Override
@@ -65,14 +63,12 @@ public class EventDaoImpl implements EventDao {
     @Override
     public List<EventDto> findAllByStartDateIsBetween(Instant date1, Instant date2) {
         return eventRepository.findAllByStartDateIsBetween(date1, date2).stream()
-            .map(EventEntity::toDto)
-            .toList();
+                .map(EventEntity::toDto)
+                .toList();
     }
 
     @Override
     public List<EventDto> findAll() {
-        return eventRepository.findAll().stream()
-            .map(EventEntity::toDto)
-            .toList();
+        return eventRepository.findAll().stream().map(EventEntity::toDto).toList();
     }
 }

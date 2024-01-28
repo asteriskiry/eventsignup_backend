@@ -4,19 +4,18 @@ Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
  */
 package fi.asteriski.eventsignup.service.event;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import fi.asteriski.eventsignup.exception.ImageNotFoundException;
 import fi.asteriski.eventsignup.utils.TestUtils;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
 import java.util.Random;
-
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 class ImageServiceUnitTest {
 
@@ -29,8 +28,7 @@ class ImageServiceUnitTest {
     }
 
     @AfterEach
-    void tearDown() {
-    }
+    void tearDown() {}
 
     @Test
     void getBannerImage_giveFileDoesNotExist_expectImageNotFoundException() {

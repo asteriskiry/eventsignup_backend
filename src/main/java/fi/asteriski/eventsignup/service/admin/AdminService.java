@@ -6,7 +6,6 @@ package fi.asteriski.eventsignup.service.admin;
 
 import fi.asteriski.eventsignup.model.event.EventDto;
 import fi.asteriski.eventsignup.model.signup.ParticipantDto;
-
 import java.util.List;
 
 public interface AdminService {

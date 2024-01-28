@@ -7,13 +7,12 @@ package fi.asteriski.eventsignup.dao.archiving;
 import fi.asteriski.eventsignup.model.archiving.ArchivedEventDto;
 import fi.asteriski.eventsignup.model.archiving.ArchivedEventEntity;
 import fi.asteriski.eventsignup.repo.archiving.ArchivedEventRepository;
+import java.time.Instant;
+import java.util.List;
+import javax.validation.constraints.NotNull;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-
-import javax.validation.constraints.NotNull;
-import java.time.Instant;
-import java.util.List;
 
 @Component
 @RequiredArgsConstructor
@@ -28,26 +27,24 @@ public class ArchivedEventDaoImpl implements ArchivedEventDao {
 
     @Override
     public List<ArchivedEventDto> saveAll(@NotNull final List<ArchivedEventDto> toSave) {
-        var items = toSave.stream()
-            .map(ArchivedEventDto::toEntity)
-            .toList();
+        var items = toSave.stream().map(ArchivedEventDto::toEntity).toList();
         return archivedEventRepository.saveAll(items).stream()
-            .map(ArchivedEventEntity::toDto)
-            .toList();
+                .map(ArchivedEventEntity::toDto)
+                .toList();
     }
 
     @Override
     public List<ArchivedEventDto> findAll() {
         return archivedEventRepository.findAll().stream()
-            .map(ArchivedEventEntity::toDto)
-            .toList();
+                .map(ArchivedEventEntity::toDto)
+                .toList();
     }
 
     @Override
     public List<ArchivedEventDto> findAllByOriginalOwner(@NotNull final String userId) {
         return archivedEventRepository.findAllByOriginalOwner(userId).stream()
-            .map(ArchivedEventEntity::toDto)
-            .toList();
+                .map(ArchivedEventEntity::toDto)
+                .toList();
     }
 
     @Override

@@ -4,6 +4,7 @@ Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
  */
 package fi.asteriski.eventsignup.config;
 
+import java.util.List;
 import org.keycloak.adapters.KeycloakConfigResolver;
 import org.keycloak.adapters.springboot.KeycloakSpringBootConfigResolver;
 import org.keycloak.adapters.springsecurity.KeycloakConfiguration;
@@ -27,9 +28,6 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import java.util.List;
-
-
 public class SpringSecurityConfig {
 
     @Profile("!dev & !special")
@@ -41,8 +39,7 @@ public class SpringSecurityConfig {
 
         @Autowired
         public void configureGlobal(AuthenticationManagerBuilder auth) {
-            KeycloakAuthenticationProvider keycloakAuthenticationProvider =
-                keycloakAuthenticationProvider();
+            KeycloakAuthenticationProvider keycloakAuthenticationProvider = keycloakAuthenticationProvider();
             keycloakAuthenticationProvider.setGrantedAuthoritiesMapper(new SimpleAuthorityMapper());
             auth.authenticationProvider(keycloakAuthenticationProvider);
         }
@@ -55,38 +52,58 @@ public class SpringSecurityConfig {
 
         /**
          * Configures end point security.
+         *
          * @param http the {@link HttpSecurity} to modify
          * @throws Exception
          */
         @Override
         protected void configure(HttpSecurity http) throws Exception {
             super.configure(http);
-            http
-                .cors().configurationSource(corsConfigurationSource())
-                .and()
-                .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
-                .authorizeRequests()
-                .antMatchers(HttpMethod.GET, "/api/admin/**").hasRole("ADMIN")
-                .antMatchers(HttpMethod.POST, "/api/admin/**").hasRole("ADMIN")
-                .antMatchers(HttpMethod.GET, "/api/archive/**").hasRole("ADMIN")
-                .antMatchers(HttpMethod.PUT, "/api/archive/event").hasAnyRole("ADMIN", "USER")
-                .antMatchers(HttpMethod.PUT, "/api/archive/**").hasRole("ADMIN")
-                .antMatchers(HttpMethod.DELETE, "/api/archive/**").hasRole("ADMIN")
-                .antMatchers(HttpMethod.POST, "/api/event/create").hasAnyRole("ADMIN", "USER")
-                .antMatchers(HttpMethod.POST, "/api/event/banner/add").hasAnyRole("ADMIN", "USER")
-                .antMatchers(HttpMethod.GET, "/api/event/banner/**").permitAll()
-                .antMatchers(HttpMethod.PUT, "/api/event/edit/**").hasAnyRole("ADMIN", "USER")
-                .antMatchers(HttpMethod.DELETE, "/api/event/remove/**").hasAnyRole("ADMIN", "USER")
-                .antMatchers(HttpMethod.GET, "/api/event/**").hasAnyRole("ADMIN", "USER")
-                .antMatchers(HttpMethod.GET, "/api/signup/**").permitAll()
-                .antMatchers(HttpMethod.POST, "/api/signup/**").permitAll()
-                .antMatchers(HttpMethod.DELETE, "/api/signup/**").permitAll()
-                .antMatchers(HttpMethod.GET, "/swagger-ui/**").hasRole("ADMIN")
-                .antMatchers(HttpMethod.GET, "/api-docs/**").hasRole("ADMIN")
-                .antMatchers(HttpMethod.GET, "/api-docs.yaml").hasRole("ADMIN")
-                .antMatchers(HttpMethod.GET, "/api-docs.json").hasRole("ADMIN");
+            http.cors()
+                    .configurationSource(corsConfigurationSource())
+                    .and()
+                    .sessionManagement()
+                    .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                    .and()
+                    .authorizeRequests()
+                    .antMatchers(HttpMethod.GET, "/api/admin/**")
+                    .hasRole("ADMIN")
+                    .antMatchers(HttpMethod.POST, "/api/admin/**")
+                    .hasRole("ADMIN")
+                    .antMatchers(HttpMethod.GET, "/api/archive/**")
+                    .hasRole("ADMIN")
+                    .antMatchers(HttpMethod.PUT, "/api/archive/event")
+                    .hasAnyRole("ADMIN", "USER")
+                    .antMatchers(HttpMethod.PUT, "/api/archive/**")
+                    .hasRole("ADMIN")
+                    .antMatchers(HttpMethod.DELETE, "/api/archive/**")
+                    .hasRole("ADMIN")
+                    .antMatchers(HttpMethod.POST, "/api/event/create")
+                    .hasAnyRole("ADMIN", "USER")
+                    .antMatchers(HttpMethod.POST, "/api/event/banner/add")
+                    .hasAnyRole("ADMIN", "USER")
+                    .antMatchers(HttpMethod.GET, "/api/event/banner/**")
+                    .permitAll()
+                    .antMatchers(HttpMethod.PUT, "/api/event/edit/**")
+                    .hasAnyRole("ADMIN", "USER")
+                    .antMatchers(HttpMethod.DELETE, "/api/event/remove/**")
+                    .hasAnyRole("ADMIN", "USER")
+                    .antMatchers(HttpMethod.GET, "/api/event/**")
+                    .hasAnyRole("ADMIN", "USER")
+                    .antMatchers(HttpMethod.GET, "/api/signup/**")
+                    .permitAll()
+                    .antMatchers(HttpMethod.POST, "/api/signup/**")
+                    .permitAll()
+                    .antMatchers(HttpMethod.DELETE, "/api/signup/**")
+                    .permitAll()
+                    .antMatchers(HttpMethod.GET, "/swagger-ui/**")
+                    .hasRole("ADMIN")
+                    .antMatchers(HttpMethod.GET, "/api-docs/**")
+                    .hasRole("ADMIN")
+                    .antMatchers(HttpMethod.GET, "/api-docs.yaml")
+                    .hasRole("ADMIN")
+                    .antMatchers(HttpMethod.GET, "/api-docs.json")
+                    .hasRole("ADMIN");
         }
 
         protected CorsConfiguration getCorsConfiguration() {
@@ -125,14 +142,18 @@ public class SpringSecurityConfig {
         @Override
         protected void configure(HttpSecurity http) throws Exception {
             super.configure(http);
-            http
-                .authorizeRequests()
-                .antMatchers(HttpMethod.GET, "/swagger-ui/**").permitAll()
-                .antMatchers(HttpMethod.GET, "/api-docs/**").permitAll()
-                .antMatchers(HttpMethod.GET, "/api-docs.yaml").permitAll()
-                .antMatchers(HttpMethod.GET, "/api-docs.json").permitAll()
-                .and()
-                .csrf().disable();
+            http.authorizeRequests()
+                    .antMatchers(HttpMethod.GET, "/swagger-ui/**")
+                    .permitAll()
+                    .antMatchers(HttpMethod.GET, "/api-docs/**")
+                    .permitAll()
+                    .antMatchers(HttpMethod.GET, "/api-docs.yaml")
+                    .permitAll()
+                    .antMatchers(HttpMethod.GET, "/api-docs.json")
+                    .permitAll()
+                    .and()
+                    .csrf()
+                    .disable();
         }
     }
 }

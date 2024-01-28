@@ -4,11 +4,10 @@ Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
  */
 package fi.asteriski.eventsignup.model.signup;
 
-import lombok.Builder;
-import lombok.Data;
-
 import java.time.Instant;
 import java.util.Map;
+import lombok.Builder;
+import lombok.Data;
 
 @Builder
 @Data
@@ -29,19 +28,19 @@ public class ParticipantDto {
 
     public ParticipantEntity toEntity() {
         return ParticipantEntity.builder()
-            .id(id)
-            .name(name)
-            .email(email)
-            .event(event)
-            .gender(gender)
-            .mealChoice(mealChoice)
-            .drinkChoice(drinkChoice)
-            .belongsToQuota(belongsToQuota)
-            .isMember(isMember)
-            .hasPaid(hasPaid)
-            .signupTime(signupTime)
-            .otherData(otherData)
-            .metaData(metaData)
-            .build();
+                .id(id)
+                .name(name)
+                .email(email)
+                .event(event)
+                .gender(gender)
+                .mealChoice(mealChoice)
+                .drinkChoice(drinkChoice)
+                .belongsToQuota(belongsToQuota)
+                .isMember(isMember)
+                .hasPaid(hasPaid)
+                .signupTime(signupTime)
+                .otherData(otherData)
+                .metaData(metaData)
+                .build();
     }
 }

@@ -7,13 +7,12 @@ package fi.asteriski.eventsignup.dao.signup;
 import fi.asteriski.eventsignup.model.signup.ParticipantDto;
 import fi.asteriski.eventsignup.model.signup.ParticipantEntity;
 import fi.asteriski.eventsignup.repo.signup.ParticipantRepository;
+import java.util.List;
+import java.util.Optional;
+import javax.validation.constraints.NotNull;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-
-import javax.validation.constraints.NotNull;
-import java.util.List;
-import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
@@ -34,8 +33,8 @@ public class ParticipantDaoImpl implements ParticipantDao {
     @Override
     public List<ParticipantDto> findAllByEvent(@NotNull final String eventId) {
         return participantRepository.findAllByEvent(eventId).stream()
-            .map(ParticipantEntity::toDto)
-            .toList();
+                .map(ParticipantEntity::toDto)
+                .toList();
     }
 
     @Override
@@ -50,8 +49,7 @@ public class ParticipantDaoImpl implements ParticipantDao {
 
     @Override
     public Optional<ParticipantDto> findById(String participantId) {
-        return participantRepository.findById(participantId)
-            .map(ParticipantEntity::toDto);
+        return participantRepository.findById(participantId).map(ParticipantEntity::toDto);
     }
 
     @Override
@@ -61,6 +59,8 @@ public class ParticipantDaoImpl implements ParticipantDao {
 
     @Override
     public List<ParticipantDto> findAll() {
-        return participantRepository.findAll().stream().map(ParticipantEntity::toDto).toList();
+        return participantRepository.findAll().stream()
+                .map(ParticipantEntity::toDto)
+                .toList();
     }
 }

@@ -1,24 +1,23 @@
 package fi.asteriski.eventsignup.controller.event;
 
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.when;
+
 import fi.asteriski.eventsignup.exception.EventNotFoundException;
 import fi.asteriski.eventsignup.model.event.EventDto;
 import fi.asteriski.eventsignup.model.signup.ParticipantDto;
 import fi.asteriski.eventsignup.service.event.EventServiceImpl;
 import fi.asteriski.eventsignup.utils.TestUtils;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
-
 import java.time.ZoneId;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.when;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 class EventControllerUnitTest {
 
@@ -50,8 +49,11 @@ class EventControllerUnitTest {
     @Test
     @DisplayName("Try to get non-existent event.")
     void tryToGetNonExistentEvent() {
-        when(eventService.getEvent(eq("not-exist"), any(Locale.class), any())).thenThrow(new EventNotFoundException("not-exist"));
-        assertThrows(EventNotFoundException.class, () -> eventController.getEvent("not-exist", Locale.getDefault(), ZoneId.systemDefault()));
+        when(eventService.getEvent(eq("not-exist"), any(Locale.class), any()))
+                .thenThrow(new EventNotFoundException("not-exist"));
+        assertThrows(
+                EventNotFoundException.class,
+                () -> eventController.getEvent("not-exist", Locale.getDefault(), ZoneId.systemDefault()));
     }
 
     @Test
@@ -75,7 +77,11 @@ class EventControllerUnitTest {
     @Test
     @DisplayName("Get a non-empty list of participants for an event.")
     void getParticipantsForEventWithParticipants() {
-        var participantEntities = List.of(ParticipantDto.builder().name("John Doe").email("john@example.com").event("123").build());
+        var participantEntities = List.of(ParticipantDto.builder()
+                .name("John Doe")
+                .email("john@example.com")
+                .event("123")
+                .build());
         when(eventService.getParticipants("123")).thenReturn(participantEntities);
         assertInstanceOf(List.class, eventController.getParticipants("123"));
         assertFalse(eventController.getParticipants("123").isEmpty());

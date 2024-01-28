@@ -4,13 +4,12 @@ Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
  */
 package fi.asteriski.eventsignup.utils;
 
+import static fi.asteriski.eventsignup.utils.Constants.UTC_TIME_ZONE;
+
 import fi.asteriski.eventsignup.model.archiving.ArchivedEventDto;
 import fi.asteriski.eventsignup.model.event.EventDto;
 import fi.asteriski.eventsignup.model.event.Form;
 import fi.asteriski.eventsignup.model.signup.ParticipantDto;
-import org.apache.commons.io.IOUtils;
-
-import javax.validation.constraints.NotNull;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -26,31 +25,32 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 import java.util.function.Supplier;
+import javax.validation.constraints.NotNull;
+import org.apache.commons.io.IOUtils;
 
-import static fi.asteriski.eventsignup.utils.Constants.UTC_TIME_ZONE;
-
-/**
- * Class for utility methods used in testing.
- */
+/** Class for utility methods used in testing. */
 public final class TestUtils {
 
     private static final Random random = new Random();
-    private static final Supplier<Instant> defaultDateArchivedSupplier = () -> Instant.now().minus(random.nextInt(10, 400), ChronoUnit.DAYS);
+    private static final Supplier<Instant> defaultDateArchivedSupplier =
+            () -> Instant.now().minus(random.nextInt(10, 400), ChronoUnit.DAYS);
 
     // To prevent instantiation of the class.
-    private TestUtils(){}
+    private TestUtils() {}
 
     public static EventDto createRandomEvent(String owner) {
         var form = new Form();
-        var instant = random.nextBoolean() ? ZonedDateTime.now().minusDays(random.nextLong(10, 100)) : ZonedDateTime.now().plusDays(random.nextLong(10, 100));
+        var instant = random.nextBoolean()
+                ? ZonedDateTime.now().minusDays(random.nextLong(10, 100))
+                : ZonedDateTime.now().plusDays(random.nextLong(10, 100));
         var event = EventDto.builder()
-            .name(Utils.generateRandomString(random.nextInt(5, 15)))
-            .startDate(instant)
-            .endDate(instant.plusDays(random.nextLong(10, 100)))
-            .place(Utils.generateRandomString(random.nextInt(5, 15)))
-            .description(Utils.generateRandomString(random.nextInt(20, 50)))
-            .form(form)
-            .build();
+                .name(Utils.generateRandomString(random.nextInt(5, 15)))
+                .startDate(instant)
+                .endDate(instant.plusDays(random.nextLong(10, 100)))
+                .place(Utils.generateRandomString(random.nextInt(5, 15)))
+                .description(Utils.generateRandomString(random.nextInt(20, 50)))
+                .form(form)
+                .build();
         if (owner != null) {
             event.setOwner(owner);
         }
@@ -76,15 +76,15 @@ public final class TestUtils {
     public static ParticipantDto createRandomParticipant(String eventId) {
         eventId = eventId != null ? eventId : Utils.generateRandomString(random.nextInt(5, 15));
         return ParticipantDto.builder()
-            .name(Utils.generateRandomString(random.nextInt(5, 15)))
-            .email(Utils.generateRandomString(random.nextInt(5, 15)))
-            .event(eventId)
-            .build();
+                .name(Utils.generateRandomString(random.nextInt(5, 15)))
+                .email(Utils.generateRandomString(random.nextInt(5, 15)))
+                .event(eventId)
+                .build();
     }
 
     /**
-     * <p>Copies test file to a location expected by the application and returns it as byte[].<br>
-     * Copied file is set to delete on exit.</p>
+     * Copies test file to a location expected by the application and returns it as byte[].<br>
+     * Copied file is set to delete on exit.
      *
      * @return Byte[] of the test file.
      * @throws IOException If I/O error occurs when copying the file.
@@ -95,7 +95,10 @@ public final class TestUtils {
             random.nextBytes(file);
             return file;
         }
-        Files.copy(Path.of("./testData/testFile.jpg"), Path.of(rootPath + "/testFile.jpg"), StandardCopyOption.REPLACE_EXISTING);
+        Files.copy(
+                Path.of("./testData/testFile.jpg"),
+                Path.of(rootPath + "/testFile.jpg"),
+                StandardCopyOption.REPLACE_EXISTING);
         var finalFile = new File(rootPath + "/testFile.jpg");
         try (InputStream inputStream = new FileInputStream(finalFile.toString())) {
             file = IOUtils.toByteArray(inputStream);
@@ -105,7 +108,8 @@ public final class TestUtils {
         return file;
     }
 
-    public static List<ArchivedEventDto> getRandomArchivedEvents(@NotNull String owner, Optional<Supplier<Instant>> dateArchivedSupplier) {
+    public static List<ArchivedEventDto> getRandomArchivedEvents(
+            @NotNull String owner, Optional<Supplier<Instant>> dateArchivedSupplier) {
         var events = new ArrayList<ArchivedEventDto>();
         for (int i = 0; i < random.nextInt(200, 1001); i++) {
             events.add(createRandomArchivedEvent(owner, dateArchivedSupplier));
@@ -113,22 +117,24 @@ public final class TestUtils {
         return events;
     }
 
-    public static ArchivedEventDto createRandomArchivedEvent(@NotNull String owner, Optional<Supplier<Instant>> dateArchivedSupplier) {
+    public static ArchivedEventDto createRandomArchivedEvent(
+            @NotNull String owner, Optional<Supplier<Instant>> dateArchivedSupplier) {
         var event = createRandomEvent(owner);
-        var dateArchived = dateArchivedSupplier.orElse(defaultDateArchivedSupplier).get();
+        var dateArchived =
+                dateArchivedSupplier.orElse(defaultDateArchivedSupplier).get();
         return ArchivedEventDto.builder()
-            .originalEvent(event)
-            .dateArchived(ZonedDateTime.ofInstant(dateArchived, UTC_TIME_ZONE))
-            .numberOfParticipants(random.nextLong(20,200))
-            .originalOwner(owner)
-            .bannerImage("test_test")
-            .build();
+                .originalEvent(event)
+                .dateArchived(ZonedDateTime.ofInstant(dateArchived, UTC_TIME_ZONE))
+                .numberOfParticipants(random.nextLong(20, 200))
+                .originalOwner(owner)
+                .bannerImage("test_test")
+                .build();
     }
 
     public static List<String> createRandomIdList() {
         return random.ints()
-            .limit(random.nextLong(20, 200))
-            .mapToObj(i -> Utils.generateRandomString(10))
-            .toList();
+                .limit(random.nextLong(20, 200))
+                .mapToObj(i -> Utils.generateRandomString(10))
+                .toList();
     }
 }
