@@ -5,7 +5,7 @@ Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
 package fi.asteriski.eventsignup.admin;
 
 import fi.asteriski.eventsignup.domain.event.EventDto;
-import fi.asteriski.eventsignup.domain.signup.Participant;
+import fi.asteriski.eventsignup.domain.signup.ParticipantDto;
 import fi.asteriski.eventsignup.utils.TestUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -24,14 +24,14 @@ class AdminControllerUnitTest {
 
     private AdminController adminController;
     private AdminService adminService;
-    private List<Participant> participants;
+    private List<ParticipantDto> participantDtos;
     private List<EventDto> eventDtos;
 
     @BeforeEach
     void setUp() {
         adminService = Mockito.mock(AdminService.class);
         adminController = new AdminController(adminService);
-        participants = TestUtils.getRandomParticipants(null);
+        participantDtos = TestUtils.createRandomParticipants(null);
         eventDtos = TestUtils.getRandomEvents(null);
     }
 
@@ -56,7 +56,7 @@ class AdminControllerUnitTest {
     @Test
     @DisplayName("Get all participants regardless of event.")
     void getAllParticipants() {
-        when(adminService.getAllParticipants()).thenReturn(participants);
+        when(adminService.getAllParticipants()).thenReturn(participantDtos);
         assertInstanceOf(List.class, adminController.getAllParticipants());
     }
 
@@ -65,7 +65,7 @@ class AdminControllerUnitTest {
     void getAllParticipantsForEvent() {
         var eventId = "123";
         var valueCapture = ArgumentCaptor.forClass(String.class);
-        when(adminService.getAllParticipantsForEvent(valueCapture.capture())).thenReturn(participants);
+        when(adminService.getAllParticipantsForEvent(valueCapture.capture())).thenReturn(participantDtos);
         adminController.getAllParticipantsForEvent(eventId);
         verify(adminService).getAllParticipantsForEvent(eventId);
         assertEquals(eventId, valueCapture.getValue());

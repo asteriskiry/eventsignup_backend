@@ -4,16 +4,17 @@ Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
  */
 package fi.asteriski.eventsignup.service.archiving;
 
-import fi.asteriski.eventsignup.ParticipantRepository;
 import fi.asteriski.eventsignup.dao.archiving.ArchivedEventDao;
 import fi.asteriski.eventsignup.domain.archiving.ArchivedEventDto;
 import fi.asteriski.eventsignup.domain.event.EventDto;
+import fi.asteriski.eventsignup.domain.signup.ParticipantDto;
 import fi.asteriski.eventsignup.exception.EventNotFoundException;
 import fi.asteriski.eventsignup.repo.archiving.ArchivedEventRepository;
 import fi.asteriski.eventsignup.repo.event.EventRepository;
+import fi.asteriski.eventsignup.repo.signup.ParticipantRepository;
 import fi.asteriski.eventsignup.service.event.EventServiceImpl;
 import fi.asteriski.eventsignup.service.event.ImageServiceImpl;
-import fi.asteriski.eventsignup.service.signup.ParticipantService;
+import fi.asteriski.eventsignup.service.signup.ParticipantServiceImpl;
 import fi.asteriski.eventsignup.utils.TestUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -53,7 +54,7 @@ class ArchivedEventServiceIntegrationTest {
     @MockBean
     private ImageServiceImpl imageService;
     @MockBean
-    private ParticipantService participantService;
+    private ParticipantServiceImpl participantService;
     private final String testUser = "testUser";
     private final Locale defaultLocale = Locale.getDefault();
 
@@ -92,8 +93,8 @@ class ArchivedEventServiceIntegrationTest {
     void archiveEvent_whenEventExistAndHasParticipants_expectArchivedEventDtoWithParticipants() {
         var event = eventRepository.save(TestUtils.createRandomEvent(testUser).toEntity()).toDto();
         mockEventServiceGetEvent(event);
-        var participants = TestUtils.getRandomParticipants(event.getId());
-        participantRepository.saveAll(participants);
+        var participants = TestUtils.createRandomParticipants(event.getId());
+        participantRepository.saveAll(participants.stream().map(ParticipantDto::toEntity).toList());
 //        when(archivedEventDao.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
         when(participantService.countAllByEvent(anyString())).thenReturn((long) participants.size());
 

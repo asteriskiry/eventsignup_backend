@@ -6,7 +6,7 @@ Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
 package fi.asteriski.eventsignup.service.event;
 
 import fi.asteriski.eventsignup.domain.event.EventDto;
-import fi.asteriski.eventsignup.domain.signup.Participant;
+import fi.asteriski.eventsignup.domain.signup.ParticipantDto;
 import fi.asteriski.eventsignup.exception.EventSignupException;
 
 import java.time.Instant;
@@ -21,7 +21,7 @@ public interface EventService {
 
     List<EventDto> getAllEventsForUser(String user);
 
-    List<Participant> getParticipants(String eventId);
+    List<ParticipantDto> getParticipants(String eventId);
 
     EventDto createNewEvent(EventDto eventDto, Locale usersLocale, ZoneId userTimeZone);
 
@@ -34,4 +34,6 @@ public interface EventService {
     List<EventDto> findAllByStartDateIsBeforeOrEndDateIsBefore(Instant dateLimit, Instant dateLimit1);
 
     void deleteAllByIds(List<String> eventIds);
+
+    List<EventDto> findAllByStartDateIsBetween(Instant date1, Instant date2);
 }

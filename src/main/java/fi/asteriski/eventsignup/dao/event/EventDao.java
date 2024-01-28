@@ -25,4 +25,6 @@ public interface EventDao {
     List<EventDto> findAllByStartDateIsBeforeOrEndDateIsBefore(Instant dateLimit, Instant dateLimit1);
 
     void deleteAllByIds(List<String> eventIds);
+
+    List<EventDto> findAllByStartDateIsBetween(Instant date1, Instant date2);
 }

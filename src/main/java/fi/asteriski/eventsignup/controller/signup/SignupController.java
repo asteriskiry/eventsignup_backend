@@ -2,11 +2,12 @@
 Copyright Juhani Vähä-Mäkilä (juhani@fmail.co.uk) 2022.
 Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
  */
-package fi.asteriski.eventsignup.signup;
+package fi.asteriski.eventsignup.controller.signup;
 
 import fi.asteriski.eventsignup.Constants;
-import fi.asteriski.eventsignup.domain.SignupEvent;
-import fi.asteriski.eventsignup.domain.signup.Participant;
+import fi.asteriski.eventsignup.domain.signup.ParticipantDto;
+import fi.asteriski.eventsignup.domain.signup.SignupEvent;
+import fi.asteriski.eventsignup.service.signup.SignupService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -56,7 +57,7 @@ public class SignupController {
 
     @Operation(summary = "Signup for an event (i.e. add a participant).",
         requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content =
-            {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = Participant.class))}),
+            {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ParticipantDto.class))}),
     parameters = {@Parameter(name = "usersLocale", description = "Automatically inserted based on request headers."),
         @Parameter(name = "userTimeZone", description = "Automatically inserted based on request headers.")})
     @ApiResponses(value = {
@@ -64,7 +65,7 @@ public class SignupController {
         @ApiResponse(responseCode = "404", description = "Event not found."),
     })
     @PostMapping(value = "{eventId}/add", consumes = "application/json")
-    public void addParticipantToEvent(@PathVariable String eventId, @RequestBody Participant participant, Locale usersLocale, ZoneId userTimeZone) {
+    public void addParticipantToEvent(@PathVariable String eventId, @RequestBody ParticipantDto participant, Locale usersLocale, ZoneId userTimeZone) {
         signupService.addParticipantToEvent(eventId, participant, usersLocale, userTimeZone);
     }
 
@@ -78,7 +79,7 @@ public class SignupController {
         @ApiResponse(responseCode = "404", description = "Event not found"),
     })
     @DeleteMapping("cancel/{eventId}/{participantId}")
-    void removeParticipantFromEvent(@PathVariable String eventId, @PathVariable String participantId, Locale usersLocale, ZoneId userTimeZone) {
+    public void removeParticipantFromEvent(@PathVariable String eventId, @PathVariable String participantId, Locale usersLocale, ZoneId userTimeZone) {
         signupService.removeParticipantFromEvent(eventId, participantId, usersLocale, userTimeZone);
     }
 }
