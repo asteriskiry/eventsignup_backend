@@ -5,13 +5,13 @@ Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
 package fi.asteriski.eventsignup.signup;
 
 import fi.asteriski.eventsignup.controller.signup.SignupController;
-import fi.asteriski.eventsignup.domain.event.EventDto;
-import fi.asteriski.eventsignup.domain.signup.ParticipantDto;
-import fi.asteriski.eventsignup.domain.signup.SignupEvent;
 import fi.asteriski.eventsignup.exception.EventFullException;
 import fi.asteriski.eventsignup.exception.EventNotFoundException;
 import fi.asteriski.eventsignup.exception.SignupEndedException;
 import fi.asteriski.eventsignup.exception.SignupNotStartedException;
+import fi.asteriski.eventsignup.model.event.EventDto;
+import fi.asteriski.eventsignup.model.signup.ParticipantDto;
+import fi.asteriski.eventsignup.model.signup.SignupEvent;
 import fi.asteriski.eventsignup.service.signup.SignupServiceImpl;
 import fi.asteriski.eventsignup.utils.TestUtils;
 import org.junit.jupiter.api.BeforeEach;

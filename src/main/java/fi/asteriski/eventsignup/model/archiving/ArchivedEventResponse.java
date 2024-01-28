@@ -1,4 +1,4 @@
-package fi.asteriski.eventsignup.domain.archiving;
+package fi.asteriski.eventsignup.model.archiving;
 
 import java.util.List;
 

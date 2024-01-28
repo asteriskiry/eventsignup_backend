@@ -1,6 +1,6 @@
 package fi.asteriski.eventsignup.event;
 
-import fi.asteriski.eventsignup.domain.event.EventDto;
+import fi.asteriski.eventsignup.model.event.EventDto;
 import lombok.Getter;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.security.core.Authentication;

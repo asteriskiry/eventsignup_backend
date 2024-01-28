@@ -5,7 +5,7 @@ Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
 package fi.asteriski.eventsignup.service.signup;
 
 import fi.asteriski.eventsignup.dao.signup.ParticipantDao;
-import fi.asteriski.eventsignup.domain.signup.ParticipantDto;
+import fi.asteriski.eventsignup.model.signup.ParticipantDto;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
