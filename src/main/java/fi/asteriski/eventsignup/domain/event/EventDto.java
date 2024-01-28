@@ -4,7 +4,7 @@ Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
  */
 package fi.asteriski.eventsignup.domain.event;
 
-import fi.asteriski.eventsignup.domain.SignupEvent;
+import fi.asteriski.eventsignup.domain.signup.SignupEvent;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NonNull;

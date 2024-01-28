@@ -6,7 +6,7 @@ package fi.asteriski.eventsignup.admin;
 
 import fi.asteriski.eventsignup.Constants;
 import fi.asteriski.eventsignup.domain.event.EventDto;
-import fi.asteriski.eventsignup.domain.signup.Participant;
+import fi.asteriski.eventsignup.domain.signup.ParticipantDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -55,10 +55,10 @@ public class AdminController {
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "All participants in all events.",
             content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                schema = @Schema(implementation = Participant.class))})
+                schema = @Schema(implementation = ParticipantDto.class))})
     })
     @GetMapping("participants/all")
-    public List<Participant> getAllParticipants() {
+    public List<ParticipantDto> getAllParticipants() {
         return adminService.getAllParticipants();
     }
 
@@ -67,10 +67,10 @@ public class AdminController {
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "All participants in the specific event.",
             content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                schema = @Schema(implementation = Participant.class))})
+                schema = @Schema(implementation = ParticipantDto.class))})
     })
     @GetMapping("participants/{eventId}")
-    public List<Participant> getAllParticipantsForEvent(@PathVariable String eventId) {
+    public List<ParticipantDto> getAllParticipantsForEvent(@PathVariable String eventId) {
         return adminService.getAllParticipantsForEvent(eventId);
     }
 }

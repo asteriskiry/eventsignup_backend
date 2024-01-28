@@ -4,11 +4,11 @@ Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
  */
 package fi.asteriski.eventsignup.domain.signup;
 
+import lombok.Builder;
 import lombok.Data;
 import lombok.NonNull;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
-import org.springframework.data.mongodb.core.index.CompoundIndexes;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -17,12 +17,11 @@ import javax.validation.constraints.NotNull;
 import java.time.Instant;
 import java.util.Map;
 
-@CompoundIndexes({
-    @CompoundIndex(name = "id_event", def = "{'id' : 1, 'event': 1}")
-})
-@Document
+@CompoundIndex(name = "id_event", def = "{'id' : 1, 'event': 1}")
+@Document("Participant")
 @Data
-public class Participant {
+@Builder
+public class ParticipantEntity {
 
     @Id
     private String id;
@@ -47,4 +46,21 @@ public class Participant {
     private Map<String, Object> otherData;
     private Map<String, Object> metaData;
 
+    public ParticipantDto toDto() {
+        return ParticipantDto.builder()
+            .id(id)
+            .name(name)
+            .email(email)
+            .event(event)
+            .gender(gender)
+            .mealChoice(mealChoice)
+            .drinkChoice(drinkChoice)
+            .belongsToQuota(belongsToQuota)
+            .isMember(isMember)
+            .hasPaid(hasPaid)
+            .signupTime(signupTime)
+            .otherData(otherData)
+            .metaData(metaData)
+            .build();
+    }
 }

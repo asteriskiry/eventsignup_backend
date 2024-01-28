@@ -4,11 +4,12 @@ Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
  */
 package fi.asteriski.eventsignup.admin;
 
-import fi.asteriski.eventsignup.ParticipantRepository;
 import fi.asteriski.eventsignup.domain.event.EventDto;
 import fi.asteriski.eventsignup.domain.event.EventEntity;
-import fi.asteriski.eventsignup.domain.signup.Participant;
+import fi.asteriski.eventsignup.domain.signup.ParticipantDto;
+import fi.asteriski.eventsignup.domain.signup.ParticipantEntity;
 import fi.asteriski.eventsignup.repo.event.EventRepository;
+import fi.asteriski.eventsignup.repo.signup.ParticipantRepository;
 import fi.asteriski.eventsignup.service.event.EventService;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -54,8 +55,8 @@ class AdminService {
      * Fetches all participants from database.
      * @return List of participants in no particular order.
      */
-    List<Participant> getAllParticipants() {
-        return participantRepository.findAll();
+    List<ParticipantDto> getAllParticipants() {
+        return participantRepository.findAll().stream().map(ParticipantEntity::toDto).toList();
     }
 
     /**
@@ -63,7 +64,7 @@ class AdminService {
      * @param eventId Event's id.
      * @return List of participants in no particular order.
      */
-    List<Participant> getAllParticipantsForEvent(String eventId) {
+    List<ParticipantDto> getAllParticipantsForEvent(String eventId) {
         return eventService.getParticipants(eventId);
     }
 }

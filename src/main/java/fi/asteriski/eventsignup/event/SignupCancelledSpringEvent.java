@@ -2,10 +2,10 @@
 Copyright Juhani Vähä-Mäkilä (juhani@fmail.co.uk) 2022.
 Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
  */
-package fi.asteriski.eventsignup.signup;
+package fi.asteriski.eventsignup.event;
 
 import fi.asteriski.eventsignup.domain.event.EventDto;
-import fi.asteriski.eventsignup.domain.signup.Participant;
+import fi.asteriski.eventsignup.domain.signup.ParticipantDto;
 import lombok.Getter;
 import org.springframework.context.ApplicationEvent;
 
@@ -16,15 +16,15 @@ import java.util.Locale;
 public class SignupCancelledSpringEvent extends ApplicationEvent {
 
     private final EventDto eventDto;
-    private final Participant participant;
+    private final ParticipantDto participantDto;
     private final Locale usersLocale;
     private final ZoneId userTimeZone;
 
 
-    public SignupCancelledSpringEvent(Object source, EventDto eventDto, Participant participant, Locale usersLocale, ZoneId userTimeZone) {
+    public SignupCancelledSpringEvent(Object source, EventDto eventDto, ParticipantDto participantDto, Locale usersLocale, ZoneId userTimeZone) {
         super(source);
         this.eventDto = eventDto;
-        this.participant = participant;
+        this.participantDto = participantDto;
         this.usersLocale = usersLocale;
         this.userTimeZone = userTimeZone;
     }

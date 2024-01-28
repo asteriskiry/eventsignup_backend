@@ -1,7 +1,7 @@
 package fi.asteriski.eventsignup.controller.event;
 
 import fi.asteriski.eventsignup.domain.event.EventDto;
-import fi.asteriski.eventsignup.domain.signup.Participant;
+import fi.asteriski.eventsignup.domain.signup.ParticipantDto;
 import fi.asteriski.eventsignup.exception.EventNotFoundException;
 import fi.asteriski.eventsignup.service.event.EventServiceImpl;
 import fi.asteriski.eventsignup.utils.TestUtils;
@@ -75,9 +75,8 @@ class EventControllerUnitTest {
     @Test
     @DisplayName("Get a non-empty list of participants for an event.")
     void getParticipantsForEventWithParticipants() {
-        List<Participant> participants = new LinkedList<>();
-        participants.add(new Participant("John Doe", "john@example.com", "123"));
-        when(eventService.getParticipants("123")).thenReturn(participants);
+        var participantEntities = List.of(ParticipantDto.builder().name("John Doe").email("john@example.com").event("123").build());
+        when(eventService.getParticipants("123")).thenReturn(participantEntities);
         assertInstanceOf(List.class, eventController.getParticipants("123"));
         assertFalse(eventController.getParticipants("123").isEmpty());
     }
