@@ -5,7 +5,6 @@ Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
 package fi.asteriski.eventsignup.service.signup;
 
 import fi.asteriski.eventsignup.model.signup.ParticipantDto;
-
 import java.util.List;
 import java.util.Optional;
 

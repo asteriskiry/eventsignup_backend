@@ -6,5 +6,4 @@ package fi.asteriski.eventsignup.model.archiving;
 
 import java.time.ZonedDateTime;
 
-public record RemoveArchivedEventsRequest(ZonedDateTime dateLimit) {
-}
+public record RemoveArchivedEventsRequest(ZonedDateTime dateLimit) {}

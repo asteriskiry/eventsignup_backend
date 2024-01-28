@@ -6,7 +6,6 @@ package fi.asteriski.eventsignup.config;
 
 import java.io.IOException;
 import java.util.Properties;
-
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.quartz.spi.JobFactory;
@@ -24,8 +23,10 @@ public class QuartzConfig {
 
     @NonNull
     private ApplicationContext applicationContext;
+
     @Value("${org.quartz.jobStore.mongoUri}")
     private String mongoUrl;
+
     @Value("${org.quartz.jobStore.dbName}")
     private String mongoDatabaseName;
 

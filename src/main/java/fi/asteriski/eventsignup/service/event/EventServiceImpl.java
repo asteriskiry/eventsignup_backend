@@ -11,19 +11,18 @@ import fi.asteriski.eventsignup.model.event.EventDto;
 import fi.asteriski.eventsignup.model.signup.ParticipantDto;
 import fi.asteriski.eventsignup.service.signup.ParticipantService;
 import fi.asteriski.eventsignup.utils.CustomEventPublisher;
-import lombok.AllArgsConstructor;
-import lombok.extern.log4j.Log4j2;
-import org.springframework.context.MessageSource;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
-
 import java.time.Instant;
 import java.time.ZoneId;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 import java.util.function.Supplier;
+import lombok.AllArgsConstructor;
+import lombok.extern.log4j.Log4j2;
+import org.springframework.context.MessageSource;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 @Log4j2
 @AllArgsConstructor
@@ -38,9 +37,10 @@ public class EventServiceImpl implements EventService {
     private MessageSource messageSource;
 
     @Override
-    public EventDto getEvent(String id, Locale usersLocale, Optional<Supplier<? extends EventSignupException>> errorSupplier) {
-        Supplier<EventNotFoundException> defaultErrorSupplier = () ->
-            new EventNotFoundException(String.format(messageSource.getMessage("event.not.found.message", null, usersLocale), id));
+    public EventDto getEvent(
+            String id, Locale usersLocale, Optional<Supplier<? extends EventSignupException>> errorSupplier) {
+        Supplier<EventNotFoundException> defaultErrorSupplier = () -> new EventNotFoundException(
+                String.format(messageSource.getMessage("event.not.found.message", null, usersLocale), id));
 
         return eventDao.findById(id).orElseThrow(errorSupplier.orElse(defaultErrorSupplier));
     }
@@ -76,7 +76,9 @@ public class EventServiceImpl implements EventService {
     public EventDto editExistingEvent(EventDto newEventDto, Locale usersLocale, ZoneId userTimeZone) {
         var authentication = SecurityContextHolder.getContext().getAuthentication();
         var oldEventDto = eventDao.findById(newEventDto.getId()).orElseThrow(() -> {
-            log.error(String.format("%s Unable to edit existing event. Old event with id <%s> was not found!", LOG_PREFIX, newEventDto.getId()));
+            log.error(String.format(
+                    "%s Unable to edit existing event. Old event with id <%s> was not found!",
+                    LOG_PREFIX, newEventDto.getId()));
             return new EventNotFoundException(newEventDto.getId());
         });
         newEventDto.setId(oldEventDto.getId());

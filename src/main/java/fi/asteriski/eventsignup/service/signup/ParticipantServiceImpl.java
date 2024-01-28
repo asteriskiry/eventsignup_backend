@@ -6,12 +6,11 @@ package fi.asteriski.eventsignup.service.signup;
 
 import fi.asteriski.eventsignup.dao.signup.ParticipantDao;
 import fi.asteriski.eventsignup.model.signup.ParticipantDto;
+import java.util.List;
+import java.util.Optional;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -30,7 +29,7 @@ public class ParticipantServiceImpl implements ParticipantService {
     }
 
     @Override
-    public List<ParticipantDto> findAllByEvent(String eventId){
+    public List<ParticipantDto> findAllByEvent(String eventId) {
         return participantDao.findAllByEvent(eventId);
     }
 

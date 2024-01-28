@@ -4,5 +4,4 @@ Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
  */
 package fi.asteriski.eventsignup.model.event;
 
-record Quota(String group, String quota) {
-}
+record Quota(String group, String quota) {}

@@ -7,5 +7,4 @@ package fi.asteriski.eventsignup.model.event;
 import lombok.Builder;
 
 @Builder
-public record BannerImageUploadSuccessResponse(String fileName) {
-}
+public record BannerImageUploadSuccessResponse(String fileName) {}

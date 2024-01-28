@@ -4,6 +4,9 @@ Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
  */
 package fi.asteriski.eventsignup.signup;
 
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
 import fi.asteriski.eventsignup.controller.signup.SignupController;
 import fi.asteriski.eventsignup.exception.EventFullException;
 import fi.asteriski.eventsignup.exception.EventNotFoundException;
@@ -14,16 +17,12 @@ import fi.asteriski.eventsignup.model.signup.ParticipantDto;
 import fi.asteriski.eventsignup.model.signup.SignupEvent;
 import fi.asteriski.eventsignup.service.signup.SignupServiceImpl;
 import fi.asteriski.eventsignup.utils.TestUtils;
+import java.time.ZoneId;
+import java.util.Locale;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
-
-import java.time.ZoneId;
-import java.util.Locale;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
 
 class SignupControllerUnitTest {
 
@@ -43,45 +42,51 @@ class SignupControllerUnitTest {
     @Test
     void getEventForSignup_givenEventExists_expectSignupEventInstance() {
         when(signupService.getEventForSignUp(eq("123"), any(Locale.class), any(ZoneId.class)))
-            .thenReturn(event.toSignupEvent());
+                .thenReturn(event.toSignupEvent());
 
-        assertInstanceOf(SignupEvent.class, signupController.getEventForSignup("123", Locale.getDefault(), ZoneId.systemDefault()));
+        assertInstanceOf(
+                SignupEvent.class,
+                signupController.getEventForSignup("123", Locale.getDefault(), ZoneId.systemDefault()));
     }
 
     @Test
     void getEventForSignup_givenEventDoesNotExist_throwsEventNotFoundException() {
         when(signupService.getEventForSignUp(eq("123"), any(Locale.class), any(ZoneId.class)))
-            .thenThrow(EventNotFoundException.class);
+                .thenThrow(EventNotFoundException.class);
 
-        assertThrows(EventNotFoundException.class,
-            () -> signupController.getEventForSignup("123", Locale.getDefault(), ZoneId.systemDefault()));
+        assertThrows(
+                EventNotFoundException.class,
+                () -> signupController.getEventForSignup("123", Locale.getDefault(), ZoneId.systemDefault()));
     }
 
     @Test
     void getEventForSignup_givenEventExistAndItIsAlreadyFull_throwsEventFullException() {
         when(signupService.getEventForSignUp(eq("123"), any(Locale.class), any(ZoneId.class)))
-            .thenThrow(EventFullException.class);
+                .thenThrow(EventFullException.class);
 
-        assertThrows(EventFullException.class,
-            () -> signupController.getEventForSignup("123", Locale.getDefault(), ZoneId.systemDefault()));
+        assertThrows(
+                EventFullException.class,
+                () -> signupController.getEventForSignup("123", Locale.getDefault(), ZoneId.systemDefault()));
     }
 
     @Test
     void getEventForSignup_eventExistsButSignupHasNotStarted_throwsSignupNotStartedException() {
         when(signupService.getEventForSignUp(eq("123"), any(Locale.class), any(ZoneId.class)))
-            .thenThrow(SignupNotStartedException.class);
+                .thenThrow(SignupNotStartedException.class);
 
-        assertThrows(SignupNotStartedException.class,
-            () -> signupController.getEventForSignup("123", Locale.getDefault(), ZoneId.systemDefault()));
+        assertThrows(
+                SignupNotStartedException.class,
+                () -> signupController.getEventForSignup("123", Locale.getDefault(), ZoneId.systemDefault()));
     }
 
     @Test
     void getEventForSignup_eventExistsButSignupHasEnded_throwsSignupEndedException() {
         when(signupService.getEventForSignUp(eq("123"), any(Locale.class), any(ZoneId.class)))
-            .thenThrow(SignupEndedException.class);
+                .thenThrow(SignupEndedException.class);
 
-        assertThrows(SignupEndedException.class,
-            () -> signupController.getEventForSignup("123", Locale.getDefault(), ZoneId.systemDefault()));
+        assertThrows(
+                SignupEndedException.class,
+                () -> signupController.getEventForSignup("123", Locale.getDefault(), ZoneId.systemDefault()));
     }
 
     @Test
@@ -92,7 +97,12 @@ class SignupControllerUnitTest {
         var valueCapture4 = ArgumentCaptor.forClass(ZoneId.class);
         var defaultLocale = Locale.getDefault();
         var defaultTimeZone = ZoneId.systemDefault();
-        when(signupService.addParticipantToEvent(valueCapture.capture(), valueCapture2.capture(), valueCapture3.capture(), valueCapture4.capture())).thenReturn(this.participant);
+        when(signupService.addParticipantToEvent(
+                        valueCapture.capture(),
+                        valueCapture2.capture(),
+                        valueCapture3.capture(),
+                        valueCapture4.capture()))
+                .thenReturn(this.participant);
 
         signupController.addParticipantToEvent("123", participant, defaultLocale, defaultTimeZone);
 
@@ -106,7 +116,13 @@ class SignupControllerUnitTest {
         var valueCapture = ArgumentCaptor.forClass(String.class);
         var valueCapture3 = ArgumentCaptor.forClass(Locale.class);
         var valueCapture4 = ArgumentCaptor.forClass(ZoneId.class);
-        doNothing().when(signupService).removeParticipantFromEvent(valueCapture.capture(), valueCapture.capture(), valueCapture3.capture(), valueCapture4.capture());
+        doNothing()
+                .when(signupService)
+                .removeParticipantFromEvent(
+                        valueCapture.capture(),
+                        valueCapture.capture(),
+                        valueCapture3.capture(),
+                        valueCapture4.capture());
 
         signupController.removeParticipantFromEvent("123", "456", Locale.getDefault(), ZoneId.systemDefault());
 

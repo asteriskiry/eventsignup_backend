@@ -5,19 +5,17 @@ Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
 package fi.asteriski.eventsignup.model.signup;
 
 import fi.asteriski.eventsignup.model.event.Form;
+import java.time.ZonedDateTime;
 import lombok.Builder;
 
-import java.time.ZonedDateTime;
-
 @Builder
-public record SignupEvent(String id,
-                          String name,
-                          ZonedDateTime startDate,
-                          String place,
-                          String description,
-                          Form form,
-                          ZonedDateTime endDate,
-                          Double price,
-                          String bannerImg
-) {
-}
+public record SignupEvent(
+        String id,
+        String name,
+        ZonedDateTime startDate,
+        String place,
+        String description,
+        Form form,
+        ZonedDateTime endDate,
+        Double price,
+        String bannerImg) {}

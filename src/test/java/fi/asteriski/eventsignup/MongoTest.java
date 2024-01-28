@@ -4,6 +4,8 @@ Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
  */
 package fi.asteriski.eventsignup;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
+
 import fi.asteriski.eventsignup.repo.event.EventRepository;
 import fi.asteriski.eventsignup.repo.signup.ParticipantRepository;
 import fi.asteriski.eventsignup.utils.TestUtils;
@@ -12,13 +14,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-
 @DataMongoTest
 class MongoTest {
 
     @Autowired
     EventRepository eventRepository;
+
     @Autowired
     ParticipantRepository participantRepository;
 
@@ -33,6 +34,4 @@ class MongoTest {
         assertFalse(eventRepository.findAll().isEmpty());
         assertFalse(participantRepository.findAll().isEmpty());
     }
-
-
 }

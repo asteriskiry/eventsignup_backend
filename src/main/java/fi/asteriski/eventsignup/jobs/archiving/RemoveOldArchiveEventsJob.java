@@ -5,12 +5,11 @@ Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
 package fi.asteriski.eventsignup.jobs.archiving;
 
 import fi.asteriski.eventsignup.service.archiving.ArchivedEventService;
+import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.scheduling.annotation.Scheduled;
-
-import java.time.LocalDateTime;
 
 @Log4j2
 @NoArgsConstructor

@@ -6,11 +6,10 @@ package fi.asteriski.eventsignup.event;
 
 import fi.asteriski.eventsignup.model.event.EventDto;
 import fi.asteriski.eventsignup.model.signup.ParticipantDto;
-import lombok.Getter;
-import org.springframework.context.ApplicationEvent;
-
 import java.time.ZoneId;
 import java.util.Locale;
+import lombok.Getter;
+import org.springframework.context.ApplicationEvent;
 
 @Getter
 public class SignupCancelledSpringEvent extends ApplicationEvent {
@@ -20,8 +19,8 @@ public class SignupCancelledSpringEvent extends ApplicationEvent {
     private final Locale usersLocale;
     private final ZoneId userTimeZone;
 
-
-    public SignupCancelledSpringEvent(Object source, EventDto eventDto, ParticipantDto participantDto, Locale usersLocale, ZoneId userTimeZone) {
+    public SignupCancelledSpringEvent(
+            Object source, EventDto eventDto, ParticipantDto participantDto, Locale usersLocale, ZoneId userTimeZone) {
         super(source);
         this.eventDto = eventDto;
         this.participantDto = participantDto;

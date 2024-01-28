@@ -9,6 +9,7 @@ public class ImageNotFoundException extends EventSignupException {
     public ImageNotFoundException(String fileName) {
         super(String.format("Banner image with name '%s' not found.", fileName));
     }
+
     public ImageNotFoundException(String fileName, Exception cause) {
         super(String.format("Banner image with name '%s' not found.", fileName), cause);
     }

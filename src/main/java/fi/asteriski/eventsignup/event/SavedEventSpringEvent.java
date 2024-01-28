@@ -1,12 +1,11 @@
 package fi.asteriski.eventsignup.event;
 
 import fi.asteriski.eventsignup.model.event.EventDto;
+import java.time.ZoneId;
+import java.util.Locale;
 import lombok.Getter;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.security.core.Authentication;
-
-import java.time.ZoneId;
-import java.util.Locale;
 
 @Getter
 public class SavedEventSpringEvent extends ApplicationEvent {
@@ -16,7 +15,8 @@ public class SavedEventSpringEvent extends ApplicationEvent {
     private final Locale usersLocale;
     private final ZoneId userTimeZone;
 
-    public SavedEventSpringEvent(Object source, EventDto eventDto, Authentication loggedInUser, Locale usersLocale, ZoneId userTimeZone) {
+    public SavedEventSpringEvent(
+            Object source, EventDto eventDto, Authentication loggedInUser, Locale usersLocale, ZoneId userTimeZone) {
         super(source);
         this.eventDto = eventDto;
         this.loggedInUser = loggedInUser;

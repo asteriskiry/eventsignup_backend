@@ -5,5 +5,7 @@ Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
 package fi.asteriski.eventsignup.model.signup;
 
 public enum Gender {
-    M, F, X
+    M,
+    F,
+    X
 }

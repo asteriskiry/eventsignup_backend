@@ -4,15 +4,12 @@ Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
  */
 package fi.asteriski.eventsignup.dao.archiving;
 
+import static fi.asteriski.eventsignup.utils.Constants.UTC_TIME_ZONE;
+import static org.assertj.core.api.Assertions.assertThat;
+
 import fi.asteriski.eventsignup.model.archiving.ArchivedEventDto;
 import fi.asteriski.eventsignup.repo.archiving.ArchivedEventRepository;
 import fi.asteriski.eventsignup.utils.TestUtils;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
-
 import java.time.Instant;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
@@ -20,18 +17,21 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
-
-import static fi.asteriski.eventsignup.utils.Constants.UTC_TIME_ZONE;
-import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 
 @DataMongoTest
 class ArchivedEventDaoImplTest {
     @Autowired
     private ArchivedEventRepository archivedEventRepository;
+
     public ArchivedEventDao archivedEventDao;
     private final String testUser = "testUser";
-    private final Supplier<Instant> lessThanHundredDaysAgoSupplier = () -> Instant.now().minus(60, ChronoUnit.DAYS);
-
+    private final Supplier<Instant> lessThanHundredDaysAgoSupplier =
+            () -> Instant.now().minus(60, ChronoUnit.DAYS);
 
     @BeforeEach
     void setUp() {
@@ -65,7 +65,8 @@ class ArchivedEventDaoImplTest {
     @Test
     void findAll_givenDatabaseHasItems_expectListOfItems() {
         var archivedEvents = TestUtils.getRandomArchivedEvents(testUser, Optional.empty());
-        archivedEventRepository.saveAll(archivedEvents.stream().map(ArchivedEventDto::toEntity).toList());
+        archivedEventRepository.saveAll(
+                archivedEvents.stream().map(ArchivedEventDto::toEntity).toList());
 
         var result = archivedEventDao.findAll();
 
@@ -83,45 +84,36 @@ class ArchivedEventDaoImplTest {
     void findAllByOriginalOwner_givenDatabaseHasArchivedEventsForMultipleUsers_expectListContainingOnlyTestUsers() {
         var archivedEvents = TestUtils.getRandomArchivedEvents(testUser, Optional.empty());
         var archivedEvents2 = TestUtils.getRandomArchivedEvents("otherTestUser", Optional.empty());
-        archivedEventRepository.saveAll(
-            Stream.concat(archivedEvents.stream(),
-                    archivedEvents2.stream())
+        archivedEventRepository.saveAll(Stream.concat(archivedEvents.stream(), archivedEvents2.stream())
                 .map(ArchivedEventDto::toEntity)
-                .toList()
-        );
+                .toList());
 
         var result = archivedEventDao.findAllByOriginalOwner(testUser);
 
         assertThat(result).hasSameSizeAs(archivedEvents);
         assertThat(result.size()).isNotEqualTo((int) archivedEventRepository.count());
-        assertThat(result.stream().allMatch(archivedEvent -> Objects.equals(archivedEvent.originalOwner(), testUser))).isTrue();
+        assertThat(result.stream().allMatch(archivedEvent -> Objects.equals(archivedEvent.originalOwner(), testUser)))
+                .isTrue();
     }
 
     @Test
     void findAllByOriginalOwner_givenDatabaseHasArchivedEventsForTestUser_expectListContainingOnlyTestUsers() {
         var archivedEvents = TestUtils.getRandomArchivedEvents(testUser, Optional.empty());
         archivedEventRepository.saveAll(
-            archivedEvents.stream()
-                .map(ArchivedEventDto::toEntity)
-                .toList()
-        );
+                archivedEvents.stream().map(ArchivedEventDto::toEntity).toList());
 
         var result = archivedEventDao.findAllByOriginalOwner(testUser);
 
-        assertThat(result)
-            .hasSameSizeAs(archivedEvents)
-            .hasSize((int) archivedEventRepository.count());
-        assertThat(result.stream().allMatch(archivedEvent -> Objects.equals(archivedEvent.originalOwner(), testUser))).isTrue();
+        assertThat(result).hasSameSizeAs(archivedEvents).hasSize((int) archivedEventRepository.count());
+        assertThat(result.stream().allMatch(archivedEvent -> Objects.equals(archivedEvent.originalOwner(), testUser)))
+                .isTrue();
     }
 
     @Test
     void findAllByOriginalOwner_givenDatabaseHasArchivedEventsForOtherUsers_expectEmptyList() {
         var archivedEvents = TestUtils.getRandomArchivedEvents("otherTestUser", Optional.empty());
         archivedEventRepository.saveAll(
-            archivedEvents.stream()
-                .map(ArchivedEventDto::toEntity)
-                .toList()
-        );
+                archivedEvents.stream().map(ArchivedEventDto::toEntity).toList());
 
         var result = archivedEventDao.findAllByOriginalOwner(testUser);
 
@@ -136,9 +128,11 @@ class ArchivedEventDaoImplTest {
         archivedEvents.addAll(TestUtils.getRandomArchivedEvents(testUser, Optional.of(lessThanHundredDaysAgoSupplier)));
         var dateLimit = now.minus(100, ChronoUnit.DAYS);
         var numberOfEventsToRemove = archivedEvents.stream()
-            .filter(archivedEventEntity -> archivedEventEntity.dateArchived().isBefore(ZonedDateTime.ofInstant(dateLimit, UTC_TIME_ZONE)))
-            .count();
-        archivedEventRepository.saveAll(archivedEvents.stream().map(ArchivedEventDto::toEntity).toList());
+                .filter(archivedEventEntity ->
+                        archivedEventEntity.dateArchived().isBefore(ZonedDateTime.ofInstant(dateLimit, UTC_TIME_ZONE)))
+                .count();
+        archivedEventRepository.saveAll(
+                archivedEvents.stream().map(ArchivedEventDto::toEntity).toList());
 
         var countBefore = archivedEventRepository.count();
         archivedEventDao.deleteAllByDateArchivedIsBefore(dateLimit);
@@ -154,9 +148,11 @@ class ArchivedEventDaoImplTest {
         var archivedEvents = TestUtils.getRandomArchivedEvents(testUser, Optional.of(lessThanHundredDaysAgoSupplier));
         var dateLimit = now.minus(100, ChronoUnit.DAYS);
         var numberOfEventsToRemove = archivedEvents.stream()
-            .filter(archivedEventEntity -> archivedEventEntity.dateArchived().isBefore(ZonedDateTime.ofInstant(dateLimit, UTC_TIME_ZONE)))
-            .count();
-        archivedEventRepository.saveAll(archivedEvents.stream().map(ArchivedEventDto::toEntity).toList());
+                .filter(archivedEventEntity ->
+                        archivedEventEntity.dateArchived().isBefore(ZonedDateTime.ofInstant(dateLimit, UTC_TIME_ZONE)))
+                .count();
+        archivedEventRepository.saveAll(
+                archivedEvents.stream().map(ArchivedEventDto::toEntity).toList());
 
         var countBefore = archivedEventRepository.count();
         archivedEventDao.deleteAllByDateArchivedIsBefore(dateLimit);

@@ -8,7 +8,6 @@ package fi.asteriski.eventsignup.service.event;
 import fi.asteriski.eventsignup.exception.EventSignupException;
 import fi.asteriski.eventsignup.model.event.EventDto;
 import fi.asteriski.eventsignup.model.signup.ParticipantDto;
-
 import java.time.Instant;
 import java.time.ZoneId;
 import java.util.List;

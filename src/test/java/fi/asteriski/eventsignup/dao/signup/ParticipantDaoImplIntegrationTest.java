@@ -4,25 +4,25 @@ Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
  */
 package fi.asteriski.eventsignup.dao.signup;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import fi.asteriski.eventsignup.model.signup.ParticipantDto;
 import fi.asteriski.eventsignup.repo.signup.ParticipantRepository;
 import fi.asteriski.eventsignup.utils.TestUtils;
+import java.util.List;
+import java.util.Objects;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 
-import java.util.List;
-import java.util.Objects;
-
-import static org.junit.jupiter.api.Assertions.*;
-
 @DataMongoTest
 class ParticipantDaoImplIntegrationTest {
 
     @Autowired
     private ParticipantRepository participantRepository;
+
     private ParticipantDaoImpl participantDao;
 
     @BeforeEach
@@ -37,7 +37,9 @@ class ParticipantDaoImplIntegrationTest {
 
     @Test
     void countAllByEvent_givenEventExistsAndHasParticipants_expectCountGreaterThanZero() {
-        var participants = TestUtils.createRandomParticipants("123").stream().map(ParticipantDto::toEntity).toList();
+        var participants = TestUtils.createRandomParticipants("123").stream()
+                .map(ParticipantDto::toEntity)
+                .toList();
         participantRepository.saveAll(participants);
 
         var result = participantDao.countAllByEvent("123");
@@ -56,10 +58,8 @@ class ParticipantDaoImplIntegrationTest {
     void deleteAllByEventId_givenEventsHasParticipants_expectThemToBeDeleted() {
         var participants = TestUtils.createRandomParticipants("123");
         participants.addAll(TestUtils.createRandomParticipants("456"));
-        participantRepository.saveAll(participants.stream()
-            .map(ParticipantDto::toEntity)
-            .toList()
-        );
+        participantRepository.saveAll(
+                participants.stream().map(ParticipantDto::toEntity).toList());
 
         var countBefore = participantRepository.count();
         participantDao.deleteAllByEventIds(List.of("123", "456"));
@@ -71,7 +71,9 @@ class ParticipantDaoImplIntegrationTest {
 
     @Test
     void findAllByEvent_givenEventHasParticipants_expectNonEmptyList() {
-        var participants = TestUtils.createRandomParticipants("123").stream().map(ParticipantDto::toEntity).toList();
+        var participants = TestUtils.createRandomParticipants("123").stream()
+                .map(ParticipantDto::toEntity)
+                .toList();
         participantRepository.saveAll(participants);
 
         var result = participantDao.findAllByEvent("123");
@@ -89,7 +91,9 @@ class ParticipantDaoImplIntegrationTest {
 
     @Test
     void deleteAllByEvent_givenEventHasParticipants_expectThemToBeDeleted() {
-        var participants = TestUtils.createRandomParticipants("123").stream().map(ParticipantDto::toEntity).toList();
+        var participants = TestUtils.createRandomParticipants("123").stream()
+                .map(ParticipantDto::toEntity)
+                .toList();
         participantRepository.saveAll(participants);
 
         var countBefore = participantRepository.count();
@@ -101,7 +105,9 @@ class ParticipantDaoImplIntegrationTest {
 
     @Test
     void deleteAllByEvent_givenEventHasNoParticipants_expectNothingToBeDeleted() {
-        var participants = TestUtils.createRandomParticipants("123").stream().map(ParticipantDto::toEntity).toList();
+        var participants = TestUtils.createRandomParticipants("123").stream()
+                .map(ParticipantDto::toEntity)
+                .toList();
         participantRepository.saveAll(participants);
 
         var countBefore = participantRepository.count();
@@ -148,7 +154,7 @@ class ParticipantDaoImplIntegrationTest {
 
     @Test
     void deleteParticipantByEventAndId_givenParticipantWithThatEventExists_expectItToBeDeleted() {
-        var participant =TestUtils.createRandomParticipant("123").toEntity();
+        var participant = TestUtils.createRandomParticipant("123").toEntity();
         participant = participantRepository.save(participant);
 
         var countBefore = participantRepository.count();

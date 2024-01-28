@@ -5,21 +5,20 @@ Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
 
 package fi.asteriski.eventsignup.dao.event;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import fi.asteriski.eventsignup.model.event.EventDto;
 import fi.asteriski.eventsignup.model.event.EventEntity;
 import fi.asteriski.eventsignup.repo.event.EventRepository;
 import fi.asteriski.eventsignup.utils.TestUtils;
+import java.time.ZonedDateTime;
+import java.util.List;
+import java.util.Random;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
-
-import java.time.ZonedDateTime;
-import java.util.List;
-import java.util.Random;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @DataMongoTest
 class EventDaoIntegrationTest {
@@ -28,6 +27,7 @@ class EventDaoIntegrationTest {
 
     @Autowired
     private EventRepository eventRepository;
+
     private EventDaoImpl eventDao;
     private final String testUser = "testUser";
 
@@ -43,7 +43,9 @@ class EventDaoIntegrationTest {
 
     @Test
     void findById_givenEventExists_expectResult() {
-        var event = eventRepository.save(TestUtils.createRandomEvent(testUser).toEntity()).toDto();
+        var event = eventRepository
+                .save(TestUtils.createRandomEvent(testUser).toEntity())
+                .toDto();
 
         var result = eventDao.findById(event.getId());
 
@@ -60,7 +62,9 @@ class EventDaoIntegrationTest {
 
     @Test
     void findAllByOwner_givenOwnersEventsExist_expectNonEmptyList() {
-        eventRepository.saveAll(TestUtils.getRandomEvents(testUser).stream().map(EventDto::toEntity).toList());
+        eventRepository.saveAll(TestUtils.getRandomEvents(testUser).stream()
+                .map(EventDto::toEntity)
+                .toList());
 
         var result = eventDao.findAllByOwner(testUser);
 
@@ -69,7 +73,9 @@ class EventDaoIntegrationTest {
 
     @Test
     void findAllByOwner_givenOwnersEventsDoNotExist_expectEmptyList() {
-        eventRepository.saveAll(TestUtils.getRandomEvents(testUser).stream().map(EventDto::toEntity).toList());
+        eventRepository.saveAll(TestUtils.getRandomEvents(testUser).stream()
+                .map(EventDto::toEntity)
+                .toList());
 
         var result = eventDao.findAllByOwner("otherUser");
 
@@ -88,7 +94,9 @@ class EventDaoIntegrationTest {
 
     @Test
     void deleteById_givenDataExistInDatabase_expectDataNotExistInDatabase() {
-        var event = eventRepository.save(TestUtils.createRandomEvent(testUser).toEntity()).toDto();
+        var event = eventRepository
+                .save(TestUtils.createRandomEvent(testUser).toEntity())
+                .toDto();
         var countBefore = eventRepository.count();
 
         eventDao.deleteById(event.getId());
@@ -99,7 +107,9 @@ class EventDaoIntegrationTest {
 
     @Test
     void existsById_givenDataExists_expectTrue() {
-        var event = eventRepository.save(TestUtils.createRandomEvent(testUser).toEntity()).toDto();
+        var event = eventRepository
+                .save(TestUtils.createRandomEvent(testUser).toEntity())
+                .toDto();
 
         var result = eventDao.existsById(event.getId());
 
@@ -139,7 +149,9 @@ class EventDaoIntegrationTest {
 
     @Test
     void deleteAllByIds_givenDataExistsInDatabase_expectDataNotToExistInDatabase() {
-        var events = eventRepository.saveAll(TestUtils.getRandomEvents(testUser).stream().map(EventDto::toEntity).toList());
+        var events = eventRepository.saveAll(TestUtils.getRandomEvents(testUser).stream()
+                .map(EventDto::toEntity)
+                .toList());
         var countBefore = eventRepository.count();
 
         eventDao.deleteAllByIds(events.stream().map(EventEntity::getId).toList());

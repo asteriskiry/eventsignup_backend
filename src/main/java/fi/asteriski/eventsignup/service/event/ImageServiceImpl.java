@@ -9,6 +9,12 @@ import fi.asteriski.eventsignup.exception.ImageDirectoryCreationFailedException;
 import fi.asteriski.eventsignup.exception.ImageNotFoundException;
 import fi.asteriski.eventsignup.exception.InvalidImageFileException;
 import fi.asteriski.eventsignup.utils.Utils;
+import java.awt.image.BufferedImage;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import javax.imageio.ImageIO;
+import javax.imageio.stream.ImageOutputStream;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -16,13 +22,6 @@ import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-
-import javax.imageio.ImageIO;
-import javax.imageio.stream.ImageOutputStream;
-import java.awt.image.BufferedImage;
-import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Path;
 
 @Log4j2
 @Service
@@ -103,7 +102,8 @@ public class ImageServiceImpl implements ImageService {
         try {
             Files.move(Path.of(sourceDirectory), Path.of(targetDirectory));
         } catch (IOException e) {
-            var errorMessage = String.format("Failed to move banner image <%s> to archive.", originalPath.replace("_", "/"));
+            var errorMessage =
+                    String.format("Failed to move banner image <%s> to archive.", originalPath.replace("_", "/"));
             log.error(errorMessage);
             throw new FileMoveNotSuccessfulException(errorMessage, e);
         }
@@ -113,9 +113,10 @@ public class ImageServiceImpl implements ImageService {
 
     private boolean isInputFileNonValidImage(byte[] inputFile) {
         BufferedImage finalBufferedImage = null;
-        try (ByteArrayInputStream inputStream= new ByteArrayInputStream(inputFile)) {
+        try (ByteArrayInputStream inputStream = new ByteArrayInputStream(inputFile)) {
             finalBufferedImage = ImageIO.read(inputStream);
-        } catch (IOException ignored) {}
+        } catch (IOException ignored) {
+        }
         return finalBufferedImage == null;
     }
 }
