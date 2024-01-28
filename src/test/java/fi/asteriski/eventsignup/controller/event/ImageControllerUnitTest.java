@@ -18,7 +18,7 @@ import org.springframework.web.servlet.view.RedirectView;
 
 class ImageControllerUnitTest {
 
-    @Value("${root.path.bannerimg}")
+    @Value("${fi.asteriski.config.event.root-path-bannerimg}")
     private String rootPath;
 
     private ImageServiceImpl imageService;
