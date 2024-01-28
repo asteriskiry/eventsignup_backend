@@ -36,4 +36,6 @@ public interface EventService {
     void deleteAllByIds(List<String> eventIds);
 
     List<EventDto> findAllByStartDateIsBetween(Instant date1, Instant date2);
+
+    List<EventDto> findAll();
 }

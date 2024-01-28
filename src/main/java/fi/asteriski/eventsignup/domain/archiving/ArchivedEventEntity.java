@@ -15,7 +15,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import java.time.Instant;
 import java.time.ZonedDateTime;
 
-import static fi.asteriski.eventsignup.Constants.UTC_TIME_ZONE;
+import static fi.asteriski.eventsignup.utils.Constants.UTC_TIME_ZONE;
 
 @Document(collection = "ArchivedEvent")
 @Data

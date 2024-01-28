@@ -2,15 +2,12 @@
 Copyright Juhani Vähä-Mäkilä (juhani@fmail.co.uk) 2022.
 Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
  */
-package fi.asteriski.eventsignup.admin;
+package fi.asteriski.eventsignup.service.admin;
 
 import fi.asteriski.eventsignup.domain.event.EventDto;
-import fi.asteriski.eventsignup.domain.event.EventEntity;
 import fi.asteriski.eventsignup.domain.signup.ParticipantDto;
-import fi.asteriski.eventsignup.domain.signup.ParticipantEntity;
-import fi.asteriski.eventsignup.repo.event.EventRepository;
-import fi.asteriski.eventsignup.repo.signup.ParticipantRepository;
 import fi.asteriski.eventsignup.service.event.EventService;
+import fi.asteriski.eventsignup.service.signup.ParticipantService;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
@@ -21,22 +18,20 @@ import java.util.List;
 @Log4j2
 @Service
 @AllArgsConstructor
-class AdminService {
+public class AdminServiceImpl implements AdminService {
 
-    private static final String LOG_PREFIX = "[AdminService]";
+    private static final String LOG_PREFIX = "[AdminServiceImpl]";
 
-    private EventRepository eventRepository;
-    private ParticipantRepository participantRepository;
+    private ParticipantService participantService;
     private EventService eventService;
 
     /**
      * Fetches all event from database in no particular order.
      * @return List of events.
      */
-    List<EventDto> getAllEvents() {
-        return eventRepository.findAll().stream()
-            .map(EventEntity::toDto)
-            .toList();
+    @Override
+    public List<EventDto> getAllEvents() {
+        return eventService.findAll();
     }
 
     /**
@@ -44,7 +39,8 @@ class AdminService {
      * @param userId ID of the user.
      * @return List of events ordered by starting date.
      */
-    List<EventDto> getAllEventsForUser(String userId) {
+    @Override
+    public List<EventDto> getAllEventsForUser(String userId) {
         log.info(String.format("%s In %s.getAllEventsForUser(). User: %s", LOG_PREFIX, this.getClass().getSimpleName(), userId));
         return eventService.getAllEventsForUser(userId).stream()
             .sorted(Comparator.comparing(EventDto::getStartDate))
@@ -55,8 +51,9 @@ class AdminService {
      * Fetches all participants from database.
      * @return List of participants in no particular order.
      */
-    List<ParticipantDto> getAllParticipants() {
-        return participantRepository.findAll().stream().map(ParticipantEntity::toDto).toList();
+    @Override
+    public List<ParticipantDto> getAllParticipants() {
+        return participantService.findAll();
     }
 
     /**
@@ -64,7 +61,8 @@ class AdminService {
      * @param eventId Event's id.
      * @return List of participants in no particular order.
      */
-    List<ParticipantDto> getAllParticipantsForEvent(String eventId) {
+    @Override
+    public List<ParticipantDto> getAllParticipantsForEvent(String eventId) {
         return eventService.getParticipants(eventId);
     }
 }

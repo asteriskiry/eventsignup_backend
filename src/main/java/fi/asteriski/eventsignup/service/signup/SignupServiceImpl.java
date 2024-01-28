@@ -25,7 +25,7 @@ import java.util.Locale;
 import java.util.Objects;
 import java.util.Optional;
 
-import static fi.asteriski.eventsignup.Constants.UTC_TIME_ZONE;
+import static fi.asteriski.eventsignup.utils.Constants.UTC_TIME_ZONE;
 
 @Log4j2
 @AllArgsConstructor

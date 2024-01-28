@@ -53,4 +53,9 @@ public class ParticipantServiceImpl implements ParticipantService {
     public void deleteParticipantByEventAndId(String eventId, String participantId) {
         participantDao.deleteParticipantByEventAndId(eventId, participantId);
     }
+
+    @Override
+    public List<ParticipantDto> findAll() {
+        return participantDao.findAll();
+    }
 }

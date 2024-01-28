@@ -68,4 +68,11 @@ public class EventDaoImpl implements EventDao {
             .map(EventEntity::toDto)
             .toList();
     }
+
+    @Override
+    public List<EventDto> findAll() {
+        return eventRepository.findAll().stream()
+            .map(EventEntity::toDto)
+            .toList();
+    }
 }
