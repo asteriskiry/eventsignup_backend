@@ -4,7 +4,7 @@ Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
  */
 package fi.asteriski.eventsignup.service.archiving;
 
-import fi.asteriski.eventsignup.dao.archiving.ArchivedEventDao;
+import fi.asteriski.eventsignup.dao.archiving.ArchivedEventDaoImpl;
 import fi.asteriski.eventsignup.domain.archiving.ArchivedEventDto;
 import fi.asteriski.eventsignup.domain.event.EventDto;
 import fi.asteriski.eventsignup.domain.signup.ParticipantDto;
@@ -37,7 +37,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @DataMongoTest
-class ArchivedEventServiceIntegrationTest {
+class ArchivedEventServiceImplIntegrationTest {
 
     @Autowired
     private EventRepository eventRepository;
@@ -45,7 +45,7 @@ class ArchivedEventServiceIntegrationTest {
     private ParticipantRepository participantRepository;
     @Autowired
     private ArchivedEventRepository archivedEventRepository;
-    private ArchivedEventService archivedEventService;
+    private ArchivedEventServiceImpl archivedEventService;
     @Autowired
     private MessageSource messageSource;
     @MockBean
@@ -61,9 +61,9 @@ class ArchivedEventServiceIntegrationTest {
     @BeforeEach
     void setUp() {
         eventService = Mockito.mock(EventServiceImpl.class);
-        var archivedEventDao = new ArchivedEventDao(archivedEventRepository);
+        var archivedEventDao = new ArchivedEventDaoImpl(archivedEventRepository);
         imageService = Mockito.mock(ImageServiceImpl.class);
-        archivedEventService = new ArchivedEventService(participantService, archivedEventDao, eventService, imageService, messageSource);
+        archivedEventService = new ArchivedEventServiceImpl(participantService, archivedEventDao, eventService, imageService, messageSource);
     }
 
     @AfterEach

@@ -25,7 +25,7 @@ import static fi.asteriski.eventsignup.utils.Constants.UTC_TIME_ZONE;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataMongoTest
-class ArchivedEventDaoTest {
+class ArchivedEventDaoImplTest {
     @Autowired
     private ArchivedEventRepository archivedEventRepository;
     public ArchivedEventDao archivedEventDao;
@@ -35,7 +35,7 @@ class ArchivedEventDaoTest {
 
     @BeforeEach
     void setUp() {
-        archivedEventDao = new ArchivedEventDao(archivedEventRepository);
+        archivedEventDao = new ArchivedEventDaoImpl(archivedEventRepository);
     }
 
     @AfterEach
