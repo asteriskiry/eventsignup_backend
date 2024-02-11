@@ -1,5 +1,4 @@
-FROM eclipse-temurin:21.0.2_13-jdk-alpine AS build
-RUN apk update && apk --no-cache add findutils
+FROM openjdk:21 AS build
 
 WORKDIR /work
 
@@ -12,7 +11,7 @@ COPY src src
 RUN ./gradlew bootJar
 
 
-FROM eclipse-temurin:21.0.2_13-jdk-alpine
+FROM openjdk:21
 WORKDIR /app
 COPY --from=build /work/build/libs/eventsignup.jar .
 
