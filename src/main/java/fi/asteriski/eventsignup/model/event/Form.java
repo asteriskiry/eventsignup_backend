@@ -5,10 +5,11 @@ Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
 package fi.asteriski.eventsignup.model.event;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotNull;
+import lombok.Data;
+
 import java.time.Instant;
 import java.util.Map;
-import javax.validation.constraints.NotNull;
-import lombok.Data;
 
 @Data
 public class Form {

@@ -4,8 +4,6 @@ Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
  */
 package fi.asteriski.eventsignup.config;
 
-import java.io.IOException;
-import java.util.Properties;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.quartz.spi.JobFactory;
@@ -16,6 +14,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.scheduling.quartz.SchedulerFactoryBean;
+
+import java.io.IOException;
+import java.util.Properties;
 
 @Configuration
 @RequiredArgsConstructor
@@ -32,14 +33,14 @@ public class QuartzConfig {
 
     @Bean
     public JobFactory jobFactory() {
-        AutowiringSpringBeanJobFactory jobFactory = new AutowiringSpringBeanJobFactory();
+        var jobFactory = new AutowiringSpringBeanJobFactory();
         jobFactory.setApplicationContext(applicationContext);
         return jobFactory;
     }
 
     @Bean
     public SchedulerFactoryBean schedulerFactoryBean() throws IOException {
-        SchedulerFactoryBean schedulerFactory = new SchedulerFactoryBean();
+        var schedulerFactory = new SchedulerFactoryBean();
         schedulerFactory.setQuartzProperties(quartzProperties());
         schedulerFactory.setWaitForJobsToCompleteOnShutdown(true);
         schedulerFactory.setAutoStartup(true);
@@ -48,7 +49,7 @@ public class QuartzConfig {
     }
 
     public Properties quartzProperties() throws IOException {
-        PropertiesFactoryBean propertiesFactoryBean = new PropertiesFactoryBean();
+        var propertiesFactoryBean = new PropertiesFactoryBean();
         propertiesFactoryBean.setLocation(new ClassPathResource("/quartz.properties"));
         propertiesFactoryBean.afterPropertiesSet();
 

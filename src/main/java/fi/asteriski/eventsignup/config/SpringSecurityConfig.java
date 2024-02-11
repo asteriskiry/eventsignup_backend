@@ -1,112 +1,112 @@
 /*
-Copyright Juhani Vähä-Mäkilä (juhani@fmail.co.uk) 2022.
+Copyright Juhani Vähä-Mäkilä (juhani@fmail.co.uk) 2024.
 Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
  */
 package fi.asteriski.eventsignup.config;
 
-import java.util.List;
-import org.keycloak.adapters.KeycloakConfigResolver;
-import org.keycloak.adapters.springboot.KeycloakSpringBootConfigResolver;
-import org.keycloak.adapters.springsecurity.KeycloakConfiguration;
-import org.keycloak.adapters.springsecurity.authentication.KeycloakAuthenticationProvider;
-import org.keycloak.adapters.springsecurity.config.KeycloakWebSecurityConfigurerAdapter;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpMethod;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.authority.mapping.SimpleAuthorityMapper;
-import org.springframework.security.core.session.SessionRegistry;
-import org.springframework.security.core.session.SessionRegistryImpl;
-import org.springframework.security.web.authentication.session.NullAuthenticatedSessionStrategy;
-import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import java.util.List;
+
+import static fi.asteriski.eventsignup.utils.Constants.*;
+
+@Configuration
+@EnableWebSecurity
 public class SpringSecurityConfig {
+    @Profile({"dev", "special"})
+    public static class DevSecurityConfig {
+        @Bean
+        public SecurityFilterChain configureDev(@NonNull HttpSecurity http) throws Exception {
+            http.cors(Customizer.withDefaults()).csrf(Customizer.withDefaults());
 
-    @Profile("!dev & !special")
-    @KeycloakConfiguration
-    public static class Authenticated extends KeycloakWebSecurityConfigurerAdapter {
+            return http.build();
+        }
+    }
 
-        @Value("${fi.asteriski.config.security.allowedCorsDomain}")
+    @Profile({"!dev & !special"})
+    public static class ProdSecurityConfig {
+        @Value("${spring.security.oauth2.client.provider.external.issuer-uri}")
+        private String keycloakUrl;
+
+        @Value("${fi.asteriski.config.security.logout-redirect-url}")
+        private String redirectUrl;
+
+        @Value("${fi.asteriski.config.security.allowed-cors-domain}")
         private String allowedCorsOrigin;
 
-        @Autowired
-        public void configureGlobal(AuthenticationManagerBuilder auth) {
-            KeycloakAuthenticationProvider keycloakAuthenticationProvider = keycloakAuthenticationProvider();
-            keycloakAuthenticationProvider.setGrantedAuthoritiesMapper(new SimpleAuthorityMapper());
-            auth.authenticationProvider(keycloakAuthenticationProvider);
-        }
-
         @Bean
-        @Override
-        protected SessionAuthenticationStrategy sessionAuthenticationStrategy() {
-            return new NullAuthenticatedSessionStrategy();
+        public SecurityFilterChain configureProd(@NonNull HttpSecurity http) throws Exception {
+            http.oauth2Client(Customizer.withDefaults())
+                    .oauth2Login(httpSecurityOAuth2LoginConfigurer -> {
+                        httpSecurityOAuth2LoginConfigurer.tokenEndpoint(Customizer.withDefaults());
+                        httpSecurityOAuth2LoginConfigurer.userInfoEndpoint(Customizer.withDefaults());
+                    })
+                    .sessionManagement(
+                            sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.ALWAYS))
+                    .authorizeHttpRequests(authorizeHttpRequests -> authorizeHttpRequests
+                            .requestMatchers("/unauthenticated", "/oauth2/**", "/login/**")
+                            .permitAll()
+                            .requestMatchers(HttpMethod.GET, API_PATH_ADMIN + "/**")
+                            .hasRole(ROLE_ADMIN)
+                            .requestMatchers(HttpMethod.POST, API_PATH_ADMIN + "/**")
+                            .hasRole(ROLE_ADMIN)
+                            .requestMatchers(HttpMethod.GET, API_PATH_ARCHIVE + "/**")
+                            .hasRole(ROLE_ADMIN)
+                            .requestMatchers(HttpMethod.PUT, API_PATH_ARCHIVE + "/event")
+                            .hasAnyRole(ROLE_ADMIN, ROLE_USER)
+                            .requestMatchers(HttpMethod.PUT, API_PATH_ARCHIVE + "/**")
+                            .hasRole(ROLE_ADMIN)
+                            .requestMatchers(HttpMethod.DELETE, API_PATH_ARCHIVE + "/**")
+                            .hasRole(ROLE_ADMIN)
+                            .requestMatchers(HttpMethod.POST, API_PATH_EVENT + "/create")
+                            .hasAnyRole(ROLE_ADMIN, ROLE_USER)
+                            .requestMatchers(HttpMethod.POST, API_PATH_EVENT + "/banner/add")
+                            .hasAnyRole(ROLE_ADMIN, ROLE_USER)
+                            .requestMatchers(HttpMethod.GET, API_PATH_EVENT + "/banner/**")
+                            .permitAll()
+                            .requestMatchers(HttpMethod.PUT, API_PATH_EVENT + "/edit/**")
+                            .hasAnyRole(ROLE_ADMIN, ROLE_USER)
+                            .requestMatchers(HttpMethod.DELETE, API_PATH_EVENT + "/remove/**")
+                            .hasAnyRole(ROLE_ADMIN, ROLE_USER)
+                            .requestMatchers(HttpMethod.GET, API_PATH_EVENT + "/**")
+                            .hasAnyRole(ROLE_ADMIN, ROLE_USER)
+                            .requestMatchers(HttpMethod.GET, API_PATH_SIGNUP + "/**")
+                            .permitAll()
+                            .requestMatchers(HttpMethod.POST, API_PATH_SIGNUP + "/**")
+                            .permitAll()
+                            .requestMatchers(HttpMethod.DELETE, API_PATH_SIGNUP + "/**")
+                            .permitAll()
+                            .requestMatchers(HttpMethod.GET, "/swagger-ui/**")
+                            .hasRole(ROLE_ADMIN)
+                            .requestMatchers(HttpMethod.GET, "/api-docs/**")
+                            .hasRole(ROLE_ADMIN)
+                            .requestMatchers(HttpMethod.GET, "/api-docs.yaml")
+                            .hasRole(ROLE_ADMIN)
+                            .requestMatchers(HttpMethod.GET, "/api-docs.json")
+                            .hasRole(ROLE_ADMIN))
+                    .logout(httpSecurityLogoutConfigurer -> {
+                        var url = String.format(
+                                "%s/protocol/openid-connect/logout?redirect=%s", keycloakUrl, redirectUrl);
+                        httpSecurityLogoutConfigurer.logoutSuccessUrl(url);
+                    });
+
+            return http.build();
         }
 
-        /**
-         * Configures end point security.
-         *
-         * @param http the {@link HttpSecurity} to modify
-         * @throws Exception
-         */
-        @Override
-        protected void configure(HttpSecurity http) throws Exception {
-            super.configure(http);
-            http.cors()
-                    .configurationSource(corsConfigurationSource())
-                    .and()
-                    .sessionManagement()
-                    .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                    .and()
-                    .authorizeRequests()
-                    .antMatchers(HttpMethod.GET, "/api/admin/**")
-                    .hasRole("ADMIN")
-                    .antMatchers(HttpMethod.POST, "/api/admin/**")
-                    .hasRole("ADMIN")
-                    .antMatchers(HttpMethod.GET, "/api/archive/**")
-                    .hasRole("ADMIN")
-                    .antMatchers(HttpMethod.PUT, "/api/archive/event")
-                    .hasAnyRole("ADMIN", "USER")
-                    .antMatchers(HttpMethod.PUT, "/api/archive/**")
-                    .hasRole("ADMIN")
-                    .antMatchers(HttpMethod.DELETE, "/api/archive/**")
-                    .hasRole("ADMIN")
-                    .antMatchers(HttpMethod.POST, "/api/event/create")
-                    .hasAnyRole("ADMIN", "USER")
-                    .antMatchers(HttpMethod.POST, "/api/event/banner/add")
-                    .hasAnyRole("ADMIN", "USER")
-                    .antMatchers(HttpMethod.GET, "/api/event/banner/**")
-                    .permitAll()
-                    .antMatchers(HttpMethod.PUT, "/api/event/edit/**")
-                    .hasAnyRole("ADMIN", "USER")
-                    .antMatchers(HttpMethod.DELETE, "/api/event/remove/**")
-                    .hasAnyRole("ADMIN", "USER")
-                    .antMatchers(HttpMethod.GET, "/api/event/**")
-                    .hasAnyRole("ADMIN", "USER")
-                    .antMatchers(HttpMethod.GET, "/api/signup/**")
-                    .permitAll()
-                    .antMatchers(HttpMethod.POST, "/api/signup/**")
-                    .permitAll()
-                    .antMatchers(HttpMethod.DELETE, "/api/signup/**")
-                    .permitAll()
-                    .antMatchers(HttpMethod.GET, "/swagger-ui/**")
-                    .hasRole("ADMIN")
-                    .antMatchers(HttpMethod.GET, "/api-docs/**")
-                    .hasRole("ADMIN")
-                    .antMatchers(HttpMethod.GET, "/api-docs.yaml")
-                    .hasRole("ADMIN")
-                    .antMatchers(HttpMethod.GET, "/api-docs.json")
-                    .hasRole("ADMIN");
-        }
-
-        protected CorsConfiguration getCorsConfiguration() {
+        private CorsConfiguration getCorsConfiguration() {
             CorsConfiguration configuration = new CorsConfiguration();
             configuration.setAllowedOrigins(List.of(allowedCorsOrigin));
             configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE"));
@@ -116,53 +116,11 @@ public class SpringSecurityConfig {
         }
 
         @Bean
-        CorsConfigurationSource corsConfigurationSource() {
+        public CorsConfigurationSource corsConfigurationSource() {
             CorsConfiguration configuration = getCorsConfiguration();
             UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
             source.registerCorsConfiguration("/**", configuration);
             return source;
         }
-
-        @Bean
-        public SessionRegistry buildSessionRegistry() {
-            return new SessionRegistryImpl();
-        }
-    }
-
-    @Profile({"dev", "special"})
-    @KeycloakConfiguration
-    public static class DevAuths extends Authenticated {
-        @Override
-        protected CorsConfiguration getCorsConfiguration() {
-            CorsConfiguration configuration = super.getCorsConfiguration();
-            configuration.addAllowedOrigin("http://localhost:3000");
-            return configuration;
-        }
-
-        @Override
-        protected void configure(HttpSecurity http) throws Exception {
-            super.configure(http);
-            http.authorizeRequests()
-                    .antMatchers(HttpMethod.GET, "/swagger-ui/**")
-                    .permitAll()
-                    .antMatchers(HttpMethod.GET, "/api-docs/**")
-                    .permitAll()
-                    .antMatchers(HttpMethod.GET, "/api-docs.yaml")
-                    .permitAll()
-                    .antMatchers(HttpMethod.GET, "/api-docs.json")
-                    .permitAll()
-                    .and()
-                    .csrf()
-                    .disable();
-        }
-    }
-}
-
-@Configuration
-class ApplicationConfiguration {
-
-    @Bean
-    public KeycloakConfigResolver KeycloakConfigResolver() {
-        return new KeycloakSpringBootConfigResolver();
     }
 }

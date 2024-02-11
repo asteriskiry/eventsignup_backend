@@ -4,6 +4,7 @@ Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
  */
 package fi.asteriski.eventsignup.config;
 
+import lombok.NonNull;
 import org.quartz.spi.TriggerFiredBundle;
 import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
 import org.springframework.context.ApplicationContext;
@@ -20,7 +21,7 @@ public final class AutowiringSpringBeanJobFactory extends SpringBeanJobFactory i
     }
 
     @Override
-    protected Object createJobInstance(final TriggerFiredBundle bundle) throws Exception {
+    protected @NonNull Object createJobInstance(final @NonNull TriggerFiredBundle bundle) throws Exception {
         final Object job = super.createJobInstance(bundle);
         beanFactory.autowireBean(job);
         return job;

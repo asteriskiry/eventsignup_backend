@@ -7,12 +7,13 @@ package fi.asteriski.eventsignup.dao.archiving;
 import fi.asteriski.eventsignup.model.archiving.ArchivedEventDto;
 import fi.asteriski.eventsignup.model.archiving.ArchivedEventEntity;
 import fi.asteriski.eventsignup.repo.archiving.ArchivedEventRepository;
-import java.time.Instant;
-import java.util.List;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+
+import java.time.Instant;
+import java.util.List;
 
 @Component
 @RequiredArgsConstructor

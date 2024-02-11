@@ -7,7 +7,7 @@ jobs:
   static-analysis:
     runs-on: ubuntu-latest
     container:
-      image: openjdk:17
+      image: openjdk:21
     env:
       MONGO_HOST: localhost
 

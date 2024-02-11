@@ -5,9 +5,10 @@ Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
 package fi.asteriski.eventsignup.dao.signup;
 
 import fi.asteriski.eventsignup.model.signup.ParticipantDto;
+import jakarta.validation.constraints.NotNull;
+
 import java.util.List;
 import java.util.Optional;
-import javax.validation.constraints.NotNull;
 
 public interface ParticipantDao {
     long countAllByEvent(@NotNull String eventId);

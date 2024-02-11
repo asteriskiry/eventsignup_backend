@@ -5,13 +5,14 @@ Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
 package fi.asteriski.eventsignup.model.event;
 
 import fi.asteriski.eventsignup.model.signup.SignupEvent;
-import java.time.ZonedDateTime;
-import java.util.List;
-import java.util.Map;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NonNull;
+
+import java.time.ZonedDateTime;
+import java.util.List;
+import java.util.Map;
 
 @Builder
 @Data

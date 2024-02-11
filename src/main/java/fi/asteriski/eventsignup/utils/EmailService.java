@@ -7,8 +7,7 @@ package fi.asteriski.eventsignup.utils;
 import fi.asteriski.eventsignup.event.SavedEventSpringEvent;
 import fi.asteriski.eventsignup.event.SignupCancelledSpringEvent;
 import fi.asteriski.eventsignup.event.SignupSuccessfulSpringEvent;
-import java.time.format.DateTimeFormatter;
-import javax.mail.MessagingException;
+import jakarta.mail.MessagingException;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -24,6 +23,8 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
+import java.time.format.DateTimeFormatter;
+
 @Log4j2
 @RequiredArgsConstructor
 @Component
@@ -32,7 +33,7 @@ public class EmailService {
     @Value("${fi.asteriski.config.email.default-sender-address}")
     private String defaultSender;
 
-    @Value("${fi.asteriski.config.email.baseUrl}")
+    @Value("${fi.asteriski.config.email.base-url}")
     private String baseUrl;
 
     @NonNull

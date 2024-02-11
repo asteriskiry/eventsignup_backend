@@ -1,4 +1,4 @@
-FROM openjdk:17 as build
+FROM openjdk:21 AS build
 WORKDIR /work
 
 COPY gradle gradle
@@ -10,7 +10,7 @@ COPY src src
 RUN ./gradlew bootJar
 
 
-FROM openjdk:17
+FROM openjdk:21
 WORKDIR /app
 COPY --from=build /work/build/libs/eventsignup.jar .
 
