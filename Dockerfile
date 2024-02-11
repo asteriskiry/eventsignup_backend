@@ -1,4 +1,6 @@
-FROM openjdk:21 AS build
+FROM eclipse-temurin:21.0.2_13-jdk-alpine AS build
+RUN apk update && apk --no-cache add findutils
+
 WORKDIR /work
 
 COPY gradle gradle
@@ -10,11 +12,11 @@ COPY src src
 RUN ./gradlew bootJar
 
 
-FROM openjdk:21
+FROM eclipse-temurin:21.0.2_13-jdk-alpine
 WORKDIR /app
 COPY --from=build /work/build/libs/eventsignup.jar .
 
 ENTRYPOINT ["java","-jar","eventsignup.jar"]
 
 # add image to repository
-LABEL org.opencontainers.image.source https://github.com/asteriskiry/eventsignup_backend
+LABEL org.opencontainers.image.source=https://github.com/asteriskiry/eventsignup_backend
