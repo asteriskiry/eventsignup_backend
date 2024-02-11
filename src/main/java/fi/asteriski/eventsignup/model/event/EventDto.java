@@ -6,13 +6,12 @@ package fi.asteriski.eventsignup.model.event;
 
 import fi.asteriski.eventsignup.model.signup.SignupEvent;
 import jakarta.validation.constraints.NotNull;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NonNull;
-
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Map;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NonNull;
 
 @Builder
 @Data

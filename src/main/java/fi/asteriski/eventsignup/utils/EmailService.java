@@ -8,6 +8,7 @@ import fi.asteriski.eventsignup.event.SavedEventSpringEvent;
 import fi.asteriski.eventsignup.event.SignupCancelledSpringEvent;
 import fi.asteriski.eventsignup.event.SignupSuccessfulSpringEvent;
 import jakarta.mail.MessagingException;
+import java.time.format.DateTimeFormatter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -22,8 +23,6 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
-
-import java.time.format.DateTimeFormatter;
 
 @Log4j2
 @RequiredArgsConstructor

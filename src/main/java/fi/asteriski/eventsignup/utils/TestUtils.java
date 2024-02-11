@@ -4,13 +4,13 @@ Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
  */
 package fi.asteriski.eventsignup.utils;
 
+import static fi.asteriski.eventsignup.utils.Constants.UTC_TIME_ZONE;
+
 import fi.asteriski.eventsignup.model.archiving.ArchivedEventDto;
 import fi.asteriski.eventsignup.model.event.EventDto;
 import fi.asteriski.eventsignup.model.event.Form;
 import fi.asteriski.eventsignup.model.signup.ParticipantDto;
 import jakarta.validation.constraints.NotNull;
-import org.apache.commons.io.IOUtils;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -26,8 +26,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 import java.util.function.Supplier;
-
-import static fi.asteriski.eventsignup.utils.Constants.UTC_TIME_ZONE;
+import org.apache.commons.io.IOUtils;
 
 /** Class for utility methods used in testing. */
 public final class TestUtils {

@@ -6,7 +6,6 @@ package fi.asteriski.eventsignup.dao.signup;
 
 import fi.asteriski.eventsignup.model.signup.ParticipantDto;
 import jakarta.validation.constraints.NotNull;
-
 import java.util.List;
 import java.util.Optional;
 

@@ -4,6 +4,9 @@ Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
  */
 package fi.asteriski.eventsignup.config;
 
+import static fi.asteriski.eventsignup.utils.Constants.*;
+
+import java.util.List;
 import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -18,10 +21,6 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-
-import java.util.List;
-
-import static fi.asteriski.eventsignup.utils.Constants.*;
 
 @Configuration
 @EnableWebSecurity

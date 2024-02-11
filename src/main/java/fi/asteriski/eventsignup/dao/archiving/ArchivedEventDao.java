@@ -6,7 +6,6 @@ package fi.asteriski.eventsignup.dao.archiving;
 
 import fi.asteriski.eventsignup.model.archiving.ArchivedEventDto;
 import jakarta.validation.constraints.NotNull;
-
 import java.time.Instant;
 import java.util.List;
 

@@ -8,12 +8,11 @@ import fi.asteriski.eventsignup.model.signup.ParticipantDto;
 import fi.asteriski.eventsignup.model.signup.ParticipantEntity;
 import fi.asteriski.eventsignup.repo.signup.ParticipantRepository;
 import jakarta.validation.constraints.NotNull;
+import java.util.List;
+import java.util.Optional;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
-import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor

@@ -4,6 +4,8 @@ Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
  */
 package fi.asteriski.eventsignup.config;
 
+import java.io.IOException;
+import java.util.Properties;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.quartz.spi.JobFactory;
@@ -14,9 +16,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.scheduling.quartz.SchedulerFactoryBean;
-
-import java.io.IOException;
-import java.util.Properties;
 
 @Configuration
 @RequiredArgsConstructor

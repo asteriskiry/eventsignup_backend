@@ -8,12 +8,11 @@ import fi.asteriski.eventsignup.model.archiving.ArchivedEventDto;
 import fi.asteriski.eventsignup.model.archiving.ArchivedEventEntity;
 import fi.asteriski.eventsignup.repo.archiving.ArchivedEventRepository;
 import jakarta.validation.constraints.NotNull;
+import java.time.Instant;
+import java.util.List;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-
-import java.time.Instant;
-import java.util.List;
 
 @Component
 @RequiredArgsConstructor
