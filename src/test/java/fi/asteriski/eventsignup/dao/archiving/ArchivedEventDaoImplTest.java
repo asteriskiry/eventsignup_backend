@@ -4,15 +4,12 @@ Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
  */
 package fi.asteriski.eventsignup.dao.archiving;
 
+import static fi.asteriski.eventsignup.utils.Constants.UTC_TIME_ZONE;
+import static org.assertj.core.api.Assertions.assertThat;
+
 import fi.asteriski.eventsignup.model.archiving.ArchivedEventDto;
 import fi.asteriski.eventsignup.repo.archiving.ArchivedEventRepository;
 import fi.asteriski.eventsignup.utils.TestUtils;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
-
 import java.time.Instant;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
@@ -20,9 +17,11 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
-
-import static fi.asteriski.eventsignup.utils.Constants.UTC_TIME_ZONE;
-import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 
 @DataMongoTest
 class ArchivedEventDaoImplTest {

@@ -5,21 +5,20 @@ Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
 
 package fi.asteriski.eventsignup.dao.event;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import fi.asteriski.eventsignup.model.event.EventDto;
 import fi.asteriski.eventsignup.model.event.EventEntity;
 import fi.asteriski.eventsignup.repo.event.EventRepository;
 import fi.asteriski.eventsignup.utils.TestUtils;
+import java.time.ZonedDateTime;
+import java.util.List;
+import java.util.Random;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
-
-import java.time.ZonedDateTime;
-import java.util.List;
-import java.util.Random;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @DataMongoTest
 class EventDaoIntegrationTest {
