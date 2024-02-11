@@ -4,11 +4,6 @@ Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
  */
 package fi.asteriski.eventsignup.service.archiving;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 import fi.asteriski.eventsignup.dao.archiving.ArchivedEventDaoImpl;
 import fi.asteriski.eventsignup.exception.EventNotFoundException;
 import fi.asteriski.eventsignup.model.archiving.ArchivedEventDto;
@@ -21,24 +16,27 @@ import fi.asteriski.eventsignup.service.event.EventServiceImpl;
 import fi.asteriski.eventsignup.service.event.ImageServiceImpl;
 import fi.asteriski.eventsignup.service.signup.ParticipantServiceImpl;
 import fi.asteriski.eventsignup.utils.TestUtils;
-import java.util.List;
-import java.util.Locale;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.stream.Stream;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.MessageSource;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+
+import java.util.List;
+import java.util.Locale;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Stream;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @DataMongoTest
-@ExtendWith(SpringExtension.class)
 class ArchivedEventServiceImplIntegrationTest {
 
     @Autowired
