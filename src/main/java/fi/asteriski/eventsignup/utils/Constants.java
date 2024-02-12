@@ -9,9 +9,11 @@ import java.time.ZoneId;
 public final class Constants {
     private Constants() {}
 
-    public static final String API_PATH_ARCHIVE = "/api/archive";
-    public static final String API_PATH_ADMIN = "/api/admin";
-    public static final String API_PATH_EVENT = "/api/event";
-    public static final String API_PATH_SIGNUP = "/api/signup";
+    public static final String API_PATH_ARCHIVE = "/api/v1/archive";
+    public static final String API_PATH_ADMIN = "/api/v1/admin";
+    public static final String API_PATH_EVENT = "/api/v1/event";
+    public static final String API_PATH_SIGNUP = "/api/v1/signup";
     public static final ZoneId UTC_TIME_ZONE = ZoneId.of("Z");
+    public static final String ROLE_ADMIN = "ADMIN";
+    public static final String ROLE_USER = "USER";
 }

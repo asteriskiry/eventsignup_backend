@@ -8,10 +8,10 @@ package fi.asteriski.eventsignup.dao.event;
 import fi.asteriski.eventsignup.model.event.EventDto;
 import fi.asteriski.eventsignup.model.event.EventEntity;
 import fi.asteriski.eventsignup.repo.event.EventRepository;
+import jakarta.validation.constraints.NotNull;
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
-import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 

@@ -5,121 +5,93 @@
 
 
 export interface paths {
-  "/api/event/edit": {
+  "/api/v1/event/edit": {
     /** Edit an existing event. */
     put: operations["editEvent"];
   };
-  "/api/archive/event": {
+  "/api/v1/archive/event": {
     /** Archive an event. Admin user only. */
     put: operations["archiveEvent"];
   };
-  "/api/admin/users/edit/": {
-    /** Edit an existing users. */
-    put: operations["editUser"];
-  };
-  "/api/signup/{eventId}/add": {
+  "/api/v1/signup/{eventId}/add": {
     /** Signup for an event (i.e. add a participant). */
     post: operations["addParticipantToEvent"];
   };
-  "/api/event/create": {
+  "/api/v1/event/create": {
     /** Create a new event. */
     post: operations["createEvent"];
   };
-  "/api/event/banner/add": {
+  "/api/v1/event/banner/add": {
     /** Upload a new banner image. */
     post: operations["addBannerImg"];
   };
-  "/api/auth/authenticate": {
-    /** Try to authenticate a user. */
-    post: operations["login"];
-  };
-  "/api/admin/users/add": {
-    /** Add a new user to the system. */
-    post: operations["addUser"];
-  };
-  "/api/signup/{eventId}": {
+  "/api/v1/signup/{eventId}": {
     /** Get an event for signup purposes. */
     get: operations["getEventForSignup"];
   };
-  "/api/signup/upcomingEvents/{days}": {
+  "/api/v1/signup/upcomingEvents/{days}": {
     /** Get a list of upcoming events at to selected days. */
     get: operations["getUpcomingEvents"];
   };
-  "/api/event/participants/{eventId}": {
+  "/api/v1/event/participants/{eventId}": {
     /** Get participants for an event by event's id. */
     get: operations["getParticipants"];
   };
-  "/api/event/get/{eventId}": {
+  "/api/v1/event/get/{eventId}": {
     /** Get an event by its id. */
     get: operations["getEvent"];
   };
-  "/api/event/banner/{fileName}": {
+  "/api/v1/event/banner/{fileName}": {
     /** Get file path for the uploaded banner image. */
     get: operations["getBannerImagePath"];
   };
-  "/api/event/banner/get/{fileName}": {
+  "/api/v1/event/banner/get/{fileName}": {
     /** Get a banner image. */
     get: operations["getBannerImage"];
   };
-  "/api/event/all/{user}": {
+  "/api/v1/event/all/{user}": {
     /** Get all events for a user. */
     get: operations["getAllEventsForUser"];
   };
-  "/api/auth/creds/{id}": {
-    /** Get needed login data so client side scripts can work. */
-    get: operations["getCredentials"];
-  };
-  "/api/archive/get/{userId}": {
+  "/api/v1/archive/get/{userId}": {
     /** Get all archived events for a specific user sorted by date archived (desc). Admin user only. */
     get: operations["getAllArchivedEventsForUser"];
   };
-  "/api/archive/get/all": {
+  "/api/v1/archive/get/all": {
     /** Get all archived events. Admin user only. */
     get: operations["getAllArchiveEvents"];
   };
-  "/api/admin/users/all": {
-    /** Get all non-admin users for admin view. */
-    get: operations["getAllNonAdminUsers"];
-  };
-  "/api/admin/participants/{eventId}": {
+  "/api/v1/admin/participants/{eventId}": {
     /** Gets all participants for a specific event. */
     get: operations["getAllParticipantsForEvent"];
   };
-  "/api/admin/participants/all": {
+  "/api/v1/admin/participants/all": {
     /** Gets all participants for admin view. */
     get: operations["getAllParticipants"];
   };
-  "/api/admin/event/{userId}": {
+  "/api/v1/admin/event/{userId}": {
     /** Get all events of a specific user to admin view. */
     get: operations["getAllEventsForUser_1"];
   };
-  "/api/admin/event/all": {
+  "/api/v1/admin/event/all": {
     /** Gets all events for admin view. */
     get: operations["getAllEvents"];
   };
-  "/api/signup/cancel/{eventId}/{participantId}": {
+  "/api/v1/signup/cancel/{eventId}/{participantId}": {
     /** Cancel participation to an event. */
     delete: operations["removeParticipantFromEvent"];
   };
-  "/api/event/remove/{eventId}": {
+  "/api/v1/event/remove/{eventId}": {
     /** Delete an event. */
     delete: operations["removeEvent"];
   };
-  "/api/archive/remove": {
+  "/api/v1/archive/remove": {
     /** Remove a single archived event. Admin user only. */
     delete: operations["removeArchivedEvent"];
   };
-  "/api/archive/remove/all": {
+  "/api/v1/archive/remove/all": {
     /** Delete archived events older than set date. Admin user only. */
     delete: operations["removeArchivedEvents"];
-  };
-  "/api/admin/users/delete/{userId}": {
-    /** Deletes an user by their id. */
-    delete: operations["deleteUser"];
-  };
-  "/api/admin/users/delete/all": {
-    /** Delete ALL non-admin users. */
-    delete: operations["deleteAllNonAdminUsers"];
   };
 }
 
@@ -127,7 +99,7 @@ export type webhooks = Record<string, never>;
 
 export interface components {
   schemas: {
-    Event: {
+    EventDto: {
       id?: string;
       name: string;
       /** Format: date-time */
@@ -146,15 +118,15 @@ export interface components {
       signupStarts?: string;
       /** Format: date-time */
       signupEnds?: string;
-      quotas?: (components["schemas"]["Quota"])[];
+      quotas?: components["schemas"]["Quota"][];
       /** Format: double */
       price?: number;
       bannerImg?: string;
       otherData?: {
-        [key: string]: Record<string, never> | undefined;
+        [key: string]: Record<string, never>;
       };
       metaData?: {
-        [key: string]: Record<string, never> | undefined;
+        [key: string]: Record<string, never>;
       };
     };
     Form: {
@@ -162,7 +134,7 @@ export interface components {
       dateCreated?: string;
       /** @description generated by formGenerator */
       formData: {
-        [key: string]: Record<string, never> | undefined;
+        [key: string]: Record<string, never>;
       };
       userCreated?: string;
     };
@@ -173,39 +145,17 @@ export interface components {
     ArchiveEventRequest: {
       archivedEventId?: string;
     };
-    GrantedAuthority: {
-      authority?: string;
-    };
-    User: {
+    ParticipantDto: {
       id?: string;
-      firstName: string;
-      lastName: string;
-      email: string;
-      password: string;
-      username: string;
-      /** Format: date-time */
-      expirationDate?: string;
-      /** @enum {string} */
-      userRole?: "ROLE_ADMIN" | "ROLE_USER" | "ADMIN" | "USER";
-      locked?: boolean;
-      enabled?: boolean;
-      accountNonExpired?: boolean;
-      accountNonLocked?: boolean;
-      credentialsNonExpired?: boolean;
-      authorities?: (components["schemas"]["GrantedAuthority"])[];
-      admin?: boolean;
-    };
-    Participant: {
-      id?: string;
-      name: string;
-      email: string;
-      event: string;
+      name?: string;
+      email?: string;
+      event?: string;
       /** @enum {string} */
       gender?: "M" | "F" | "X";
       /** @enum {string} */
-      mealChoice?: "meat" | "vegetarian";
+      mealChoice?: "MEAT" | "VEGETARIAN";
       drinkChoice?: {
-        [key: string]: string | undefined;
+        [key: string]: string;
       };
       belongsToQuota?: string;
       isMember?: boolean;
@@ -213,24 +163,24 @@ export interface components {
       /** Format: date-time */
       signupTime?: string;
       otherData?: {
-        [key: string]: Record<string, never> | undefined;
+        [key: string]: Record<string, never>;
       };
       metaData?: {
-        [key: string]: Record<string, never> | undefined;
+        [key: string]: Record<string, never>;
       };
     };
     ApplicationContext: {
       parent?: components["schemas"]["ApplicationContext"];
       id?: string;
       displayName?: string;
+      autowireCapableBeanFactory?: components["schemas"]["AutowireCapableBeanFactory"];
       applicationName?: string;
       /** Format: int64 */
       startupDate?: number;
-      autowireCapableBeanFactory?: components["schemas"]["AutowireCapableBeanFactory"];
       environment?: components["schemas"]["Environment"];
       /** Format: int32 */
       beanDefinitionCount?: number;
-      beanDefinitionNames?: (string)[];
+      beanDefinitionNames?: string[];
       parentBeanFactory?: components["schemas"]["BeanFactory"];
       classLoader?: {
         name?: string;
@@ -243,10 +193,10 @@ export interface components {
             classLoader?: {
               name?: string;
               registeredAsParallelCapable?: boolean;
-              definedPackages?: ({
+              definedPackages?: {
                   name?: string;
-                  annotations?: (Record<string, never>)[];
-                  declaredAnnotations?: (Record<string, never>)[];
+                  annotations?: Record<string, never>[];
+                  declaredAnnotations?: Record<string, never>[];
                   sealed?: boolean;
                   specificationTitle?: string;
                   specificationVersion?: string;
@@ -254,7 +204,7 @@ export interface components {
                   implementationTitle?: string;
                   implementationVersion?: string;
                   implementationVendor?: string;
-                })[];
+                }[];
               defaultAssertionStatus?: boolean;
             };
             descriptor?: {
@@ -262,15 +212,16 @@ export interface components {
               automatic?: boolean;
             };
             named?: boolean;
-            annotations?: (Record<string, never>)[];
-            declaredAnnotations?: (Record<string, never>)[];
-            packages?: (string)[];
+            annotations?: Record<string, never>[];
+            declaredAnnotations?: Record<string, never>[];
+            packages?: string[];
+            nativeAccessEnabled?: boolean;
             layer?: Record<string, never>;
           };
-          definedPackages?: ({
+          definedPackages?: {
               name?: string;
-              annotations?: (Record<string, never>)[];
-              declaredAnnotations?: (Record<string, never>)[];
+              annotations?: Record<string, never>[];
+              declaredAnnotations?: Record<string, never>[];
               sealed?: boolean;
               specificationTitle?: string;
               specificationVersion?: string;
@@ -278,7 +229,7 @@ export interface components {
               implementationTitle?: string;
               implementationVersion?: string;
               implementationVendor?: string;
-            })[];
+            }[];
           defaultAssertionStatus?: boolean;
         };
         unnamedModule?: {
@@ -286,10 +237,10 @@ export interface components {
           classLoader?: {
             name?: string;
             registeredAsParallelCapable?: boolean;
-            definedPackages?: ({
+            definedPackages?: {
                 name?: string;
-                annotations?: (Record<string, never>)[];
-                declaredAnnotations?: (Record<string, never>)[];
+                annotations?: Record<string, never>[];
+                declaredAnnotations?: Record<string, never>[];
                 sealed?: boolean;
                 specificationTitle?: string;
                 specificationVersion?: string;
@@ -297,7 +248,7 @@ export interface components {
                 implementationTitle?: string;
                 implementationVersion?: string;
                 implementationVendor?: string;
-              })[];
+              }[];
             defaultAssertionStatus?: boolean;
           };
           descriptor?: {
@@ -305,15 +256,16 @@ export interface components {
             automatic?: boolean;
           };
           named?: boolean;
-          annotations?: (Record<string, never>)[];
-          declaredAnnotations?: (Record<string, never>)[];
-          packages?: (string)[];
+          annotations?: Record<string, never>[];
+          declaredAnnotations?: Record<string, never>[];
+          packages?: string[];
+          nativeAccessEnabled?: boolean;
           layer?: Record<string, never>;
         };
-        definedPackages?: ({
+        definedPackages?: {
             name?: string;
-            annotations?: (Record<string, never>)[];
-            declaredAnnotations?: (Record<string, never>)[];
+            annotations?: Record<string, never>[];
+            declaredAnnotations?: Record<string, never>[];
             sealed?: boolean;
             specificationTitle?: string;
             specificationVersion?: string;
@@ -321,146 +273,157 @@ export interface components {
             implementationTitle?: string;
             implementationVersion?: string;
             implementationVendor?: string;
-          })[];
+          }[];
         defaultAssertionStatus?: boolean;
       };
     };
     AutowireCapableBeanFactory: Record<string, never>;
     BeanFactory: Record<string, never>;
     Environment: {
-      activeProfiles?: (string)[];
-      defaultProfiles?: (string)[];
+      activeProfiles?: string[];
+      defaultProfiles?: string[];
+    };
+    FilterRegistration: {
+      servletNameMappings?: string[];
+      urlPatternMappings?: string[];
+      initParameters?: {
+        [key: string]: string;
+      };
+      name?: string;
+      className?: string;
+    };
+    HttpStatusCode: {
+      is4xxClientError?: boolean;
+      is5xxServerError?: boolean;
+      is1xxInformational?: boolean;
+      is2xxSuccessful?: boolean;
+      is3xxRedirection?: boolean;
+      error?: boolean;
+    };
+    JspConfigDescriptor: {
+      taglibs?: components["schemas"]["TaglibDescriptor"][];
+      jspPropertyGroups?: components["schemas"]["JspPropertyGroupDescriptor"][];
+    };
+    JspPropertyGroupDescriptor: {
+      deferredSyntaxAllowedAsLiteral?: string;
+      elIgnored?: string;
+      pageEncoding?: string;
+      isXml?: string;
+      includePreludes?: string[];
+      includeCodas?: string[];
+      trimDirectiveWhitespaces?: string;
+      errorOnUndeclaredNamespace?: string;
+      defaultContentType?: string;
+      errorOnELNotFound?: string;
+      urlPatterns?: string[];
+      scriptingInvalid?: string;
+      buffer?: string;
     };
     RedirectView: {
       applicationContext?: components["schemas"]["ApplicationContext"];
-      servletContext?: {
-        classLoader?: {
-          name?: string;
-          registeredAsParallelCapable?: boolean;
-          definedPackages?: ({
-              name?: string;
-              annotations?: (Record<string, never>)[];
-              declaredAnnotations?: (Record<string, never>)[];
-              sealed?: boolean;
-              specificationTitle?: string;
-              specificationVersion?: string;
-              specificationVendor?: string;
-              implementationTitle?: string;
-              implementationVersion?: string;
-              implementationVendor?: string;
-            })[];
-          defaultAssertionStatus?: boolean;
-        };
-        /** Format: int32 */
-        majorVersion?: number;
-        /** Format: int32 */
-        minorVersion?: number;
-        contextPath?: string;
-        initParameterNames?: Record<string, never>;
-        /** Format: int32 */
-        effectiveMajorVersion?: number;
-        /** Format: int32 */
-        effectiveMinorVersion?: number;
-        /** @deprecated */
-        servlets?: Record<string, never>;
-        /** @deprecated */
-        servletNames?: Record<string, never>;
-        serverInfo?: string;
-        attributeNames?: Record<string, never>;
-        servletContextName?: string;
-        servletRegistrations?: {
-          [key: string]: ({
-            mappings?: (string)[];
-            runAsRole?: string;
-            name?: string;
-            className?: string;
-            initParameters?: {
-              [key: string]: string | undefined;
-            };
-          }) | undefined;
-        };
-        filterRegistrations?: {
-          [key: string]: ({
-            servletNameMappings?: (string)[];
-            urlPatternMappings?: (string)[];
-            name?: string;
-            className?: string;
-            initParameters?: {
-              [key: string]: string | undefined;
-            };
-          }) | undefined;
-        };
-        sessionCookieConfig?: {
-          domain?: string;
-          name?: string;
-          path?: string;
-          comment?: string;
-          httpOnly?: boolean;
-          /** Format: int32 */
-          maxAge?: number;
-          secure?: boolean;
-        };
-        sessionTrackingModes?: ("COOKIE" | "URL" | "SSL")[];
-        jspConfigDescriptor?: {
-          jspPropertyGroups?: ({
-              buffer?: string;
-              elIgnored?: string;
-              pageEncoding?: string;
-              scriptingInvalid?: string;
-              includePreludes?: (string)[];
-              includeCodas?: (string)[];
-              defaultContentType?: string;
-              urlPatterns?: (string)[];
-              deferredSyntaxAllowedAsLiteral?: string;
-              trimDirectiveWhitespaces?: string;
-              errorOnUndeclaredNamespace?: string;
-              isXml?: string;
-            })[];
-          taglibs?: ({
-              taglibURI?: string;
-              taglibLocation?: string;
-            })[];
-        };
-        virtualServerName?: string;
-        /** Format: int32 */
-        sessionTimeout?: number;
-        defaultSessionTrackingModes?: ("COOKIE" | "URL" | "SSL")[];
-        effectiveSessionTrackingModes?: ("COOKIE" | "URL" | "SSL")[];
-        requestCharacterEncoding?: string;
-        responseCharacterEncoding?: string;
-      };
+      servletContext?: components["schemas"]["ServletContext"];
       contentType?: string;
       requestContextAttribute?: string;
       staticAttributes?: {
-        [key: string]: Record<string, never> | undefined;
+        [key: string]: Record<string, never>;
       };
       exposePathVariables?: boolean;
       exposeContextBeansAsAttributes?: boolean;
-      exposedContextBeanNames?: (string)[];
+      exposedContextBeanNames?: string[];
       beanName?: string;
       url?: string;
       contextRelative?: boolean;
       http10Compatible?: boolean;
       exposeModelAttributes?: boolean;
       encodingScheme?: string;
-      /** @enum {string} */
-      statusCode?: "100 CONTINUE" | "101 SWITCHING_PROTOCOLS" | "102 PROCESSING" | "103 CHECKPOINT" | "200 OK" | "201 CREATED" | "202 ACCEPTED" | "203 NON_AUTHORITATIVE_INFORMATION" | "204 NO_CONTENT" | "205 RESET_CONTENT" | "206 PARTIAL_CONTENT" | "207 MULTI_STATUS" | "208 ALREADY_REPORTED" | "226 IM_USED" | "300 MULTIPLE_CHOICES" | "301 MOVED_PERMANENTLY" | "302 FOUND" | "302 MOVED_TEMPORARILY" | "303 SEE_OTHER" | "304 NOT_MODIFIED" | "305 USE_PROXY" | "307 TEMPORARY_REDIRECT" | "308 PERMANENT_REDIRECT" | "400 BAD_REQUEST" | "401 UNAUTHORIZED" | "402 PAYMENT_REQUIRED" | "403 FORBIDDEN" | "404 NOT_FOUND" | "405 METHOD_NOT_ALLOWED" | "406 NOT_ACCEPTABLE" | "407 PROXY_AUTHENTICATION_REQUIRED" | "408 REQUEST_TIMEOUT" | "409 CONFLICT" | "410 GONE" | "411 LENGTH_REQUIRED" | "412 PRECONDITION_FAILED" | "413 PAYLOAD_TOO_LARGE" | "413 REQUEST_ENTITY_TOO_LARGE" | "414 URI_TOO_LONG" | "414 REQUEST_URI_TOO_LONG" | "415 UNSUPPORTED_MEDIA_TYPE" | "416 REQUESTED_RANGE_NOT_SATISFIABLE" | "417 EXPECTATION_FAILED" | "418 I_AM_A_TEAPOT" | "419 INSUFFICIENT_SPACE_ON_RESOURCE" | "420 METHOD_FAILURE" | "421 DESTINATION_LOCKED" | "422 UNPROCESSABLE_ENTITY" | "423 LOCKED" | "424 FAILED_DEPENDENCY" | "425 TOO_EARLY" | "426 UPGRADE_REQUIRED" | "428 PRECONDITION_REQUIRED" | "429 TOO_MANY_REQUESTS" | "431 REQUEST_HEADER_FIELDS_TOO_LARGE" | "451 UNAVAILABLE_FOR_LEGAL_REASONS" | "500 INTERNAL_SERVER_ERROR" | "501 NOT_IMPLEMENTED" | "502 BAD_GATEWAY" | "503 SERVICE_UNAVAILABLE" | "504 GATEWAY_TIMEOUT" | "505 HTTP_VERSION_NOT_SUPPORTED" | "506 VARIANT_ALSO_NEGOTIATES" | "507 INSUFFICIENT_STORAGE" | "508 LOOP_DETECTED" | "509 BANDWIDTH_LIMIT_EXCEEDED" | "510 NOT_EXTENDED" | "511 NETWORK_AUTHENTICATION_REQUIRED";
+      statusCode?: components["schemas"]["HttpStatusCode"];
       expandUriTemplateVariables?: boolean;
       propagateQueryParams?: boolean;
-      hosts?: (string)[];
-      propagateQueryProperties?: boolean;
+      hosts?: string[];
       redirectView?: boolean;
-      attributes?: {
-        [key: string]: string | undefined;
+      propagateQueryProperties?: boolean;
+      attributesMap?: {
+        [key: string]: Record<string, never>;
       };
       attributesCSV?: string;
-      attributesMap?: {
-        [key: string]: Record<string, never> | undefined;
+      attributes?: {
+        [key: string]: string;
       };
     };
-    AuthCredentialsRequest: {
-      username?: string;
-      password?: string;
+    ServletContext: {
+      contextPath?: string;
+      servletRegistrations?: {
+        [key: string]: components["schemas"]["ServletRegistration"];
+      };
+      initParameterNames?: Record<string, never>;
+      /** Format: int32 */
+      effectiveMajorVersion?: number;
+      /** Format: int32 */
+      effectiveMinorVersion?: number;
+      serverInfo?: string;
+      servletContextName?: string;
+      filterRegistrations?: {
+        [key: string]: components["schemas"]["FilterRegistration"];
+      };
+      sessionCookieConfig?: components["schemas"]["SessionCookieConfig"];
+      sessionTrackingModes?: ("COOKIE" | "URL" | "SSL")[];
+      defaultSessionTrackingModes?: ("COOKIE" | "URL" | "SSL")[];
+      effectiveSessionTrackingModes?: ("COOKIE" | "URL" | "SSL")[];
+      jspConfigDescriptor?: components["schemas"]["JspConfigDescriptor"];
+      virtualServerName?: string;
+      /** Format: int32 */
+      sessionTimeout?: number;
+      requestCharacterEncoding?: string;
+      responseCharacterEncoding?: string;
+      classLoader?: {
+        name?: string;
+        registeredAsParallelCapable?: boolean;
+        definedPackages?: {
+            name?: string;
+            annotations?: Record<string, never>[];
+            declaredAnnotations?: Record<string, never>[];
+            sealed?: boolean;
+            specificationTitle?: string;
+            specificationVersion?: string;
+            specificationVendor?: string;
+            implementationTitle?: string;
+            implementationVersion?: string;
+            implementationVendor?: string;
+          }[];
+        defaultAssertionStatus?: boolean;
+      };
+      /** Format: int32 */
+      majorVersion?: number;
+      /** Format: int32 */
+      minorVersion?: number;
+      attributeNames?: Record<string, never>;
+    };
+    ServletRegistration: {
+      mappings?: string[];
+      runAsRole?: string;
+      initParameters?: {
+        [key: string]: string;
+      };
+      name?: string;
+      className?: string;
+    };
+    SessionCookieConfig: {
+      /** Format: int32 */
+      maxAge?: number;
+      httpOnly?: boolean;
+      path?: string;
+      secure?: boolean;
+      domain?: string;
+      name?: string;
+      attributes?: {
+        [key: string]: string;
+      };
+      /** @deprecated */
+      comment?: string;
+    };
+    TaglibDescriptor: {
+      taglibURI?: string;
+      taglibLocation?: string;
     };
     SignupEvent: {
       id?: string;
@@ -476,22 +439,22 @@ export interface components {
       price?: number;
       bannerImg?: string;
     };
-    AuthCredentialsResponse: {
-      isAdmin?: boolean;
-      token?: string;
+    BannerImageUploadSuccessResponse: {
+      fileName?: string;
     };
-    ArchivedEvent: {
+    ArchivedEventDto: {
       id?: string;
-      originalEvent?: components["schemas"]["Event"];
+      originalEvent?: components["schemas"]["EventDto"];
       /** Format: date-time */
       dateArchived?: string;
       /** Format: int64 */
       numberOfParticipants?: number;
       originalOwner?: string;
+      bannerImage?: string;
     };
     ArchivedEventResponse: {
       eventOwner?: string;
-      events?: (components["schemas"]["ArchivedEvent"])[];
+      events?: components["schemas"]["ArchivedEventDto"][];
     };
     RemoveArchivedEventsRequest: {
       /** Format: date-time */
@@ -505,22 +468,36 @@ export interface components {
   pathItems: never;
 }
 
+export type $defs = Record<string, never>;
+
 export type external = Record<string, never>;
 
 export interface operations {
 
+  /** Edit an existing event. */
   editEvent: {
-    /** Edit an existing event. */
+    parameters: {
+      query?: {
+        /** @description Automatically inserted based on request headers. */
+        usersLocale?: string;
+        /** @description Automatically inserted based on request headers. */
+        userTimeZone?: string;
+      };
+    };
     requestBody: {
       content: {
-        "application/json": components["schemas"]["Event"];
+        "application/json": components["schemas"]["EventDto"];
       };
     };
     responses: {
       /** @description Event editing successful. */
-      200: never;
+      200: {
+        content: never;
+      };
       /** @description Unauthorized. */
-      401: never;
+      401: {
+        content: never;
+      };
       /** @description Unable to edit. Old event not found. */
       404: {
         content: {
@@ -547,8 +524,14 @@ export interface operations {
       };
     };
   };
+  /** Archive an event. Admin user only. */
   archiveEvent: {
-    /** Archive an event. Admin user only. */
+    parameters: {
+      query?: {
+        /** @description Not required. Automatically added currently logged in user. */
+        loggedInUser?: string;
+      };
+    };
     requestBody: {
       content: {
         "application/json": components["schemas"]["ArchiveEventRequest"];
@@ -556,9 +539,13 @@ export interface operations {
     };
     responses: {
       /** @description Event archiving successful. */
-      200: never;
+      200: {
+        content: never;
+      };
       /** @description Unauthorized. */
-      401: never;
+      401: {
+        content: never;
+      };
       /** @description Unable to archive event. Event was not found. */
       404: {
         content: {
@@ -585,59 +572,29 @@ export interface operations {
       };
     };
   };
-  editUser: {
-    /** Edit an existing users. */
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["User"];
-      };
-    };
-    responses: {
-      /** @description User editing successful. */
-      200: never;
-      /** @description Unauthenticated. */
-      401: never;
-      /** @description Not Found */
-      404: {
-        content: {
-          "*/*": string;
-        };
-      };
-      /** @description Not Acceptable */
-      406: {
-        content: {
-          "*/*": string;
-        };
-      };
-      /** @description Conflict */
-      409: {
-        content: {
-          "*/*": string;
-        };
-      };
-      /** @description Internal Server Error */
-      500: {
-        content: {
-          "*/*": string;
-        };
-      };
-    };
-  };
+  /** Signup for an event (i.e. add a participant). */
   addParticipantToEvent: {
-    /** Signup for an event (i.e. add a participant). */
     parameters: {
+      query?: {
+        /** @description Automatically inserted based on request headers. */
+        usersLocale?: string;
+        /** @description Automatically inserted based on request headers. */
+        userTimeZone?: string;
+      };
       path: {
         eventId: string;
       };
     };
     requestBody: {
       content: {
-        "application/json": components["schemas"]["Participant"];
+        "application/json": components["schemas"]["ParticipantDto"];
       };
     };
     responses: {
       /** @description Signup successful. */
-      200: never;
+      200: {
+        content: never;
+      };
       /** @description Event not found. */
       404: {
         content: {
@@ -664,18 +621,30 @@ export interface operations {
       };
     };
   };
+  /** Create a new event. */
   createEvent: {
-    /** Create a new event. */
+    parameters: {
+      query?: {
+        /** @description Automatically inserted based on request headers. */
+        usersLocale?: string;
+        /** @description Automatically inserted based on request headers. */
+        userTimeZone?: string;
+      };
+    };
     requestBody: {
       content: {
-        "application/json": components["schemas"]["Event"];
+        "application/json": components["schemas"]["EventDto"];
       };
     };
     responses: {
       /** @description Event creation successful. */
-      200: never;
+      200: {
+        content: never;
+      };
       /** @description Unauthorized. */
-      401: never;
+      401: {
+        content: never;
+      };
       /** @description Not Found */
       404: {
         content: {
@@ -702,25 +671,17 @@ export interface operations {
       };
     };
   };
+  /** Upload a new banner image. */
   addBannerImg: {
-    /** Upload a new banner image. */
+    parameters: {
+      query?: {
+        /** @description Raw bytes of the image being uploaded. */
+        file?: string;
+      };
+    };
     requestBody: {
       content: {
-        "application/json": {
-          /** Format: int32 */
-          short?: number;
-          char?: string;
-          /** Format: int32 */
-          int?: number;
-          /** Format: int64 */
-          long?: number;
-          /** Format: float */
-          float?: number;
-          /** Format: double */
-          double?: number;
-          direct?: boolean;
-          readOnly?: boolean;
-        };
+        "application/json": string[];
       };
     };
     responses: {
@@ -762,95 +723,17 @@ export interface operations {
       };
     };
   };
-  login: {
-    /** Try to authenticate a user. */
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["AuthCredentialsRequest"];
-      };
-    };
-    responses: {
-      /** @description Authentication was successful. Do a get request to get data. */
-      303: {
-        content: {
-          "*/*": Record<string, never>;
-        };
-      };
-      /** @description Authentication was unsuccessful. */
-      401: {
-        content: {
-          "*/*": Record<string, never>;
-        };
-      };
-      /** @description Not Found */
-      404: {
-        content: {
-          "*/*": string;
-        };
-      };
-      /** @description Not Acceptable */
-      406: {
-        content: {
-          "*/*": string;
-        };
-      };
-      /** @description Conflict */
-      409: {
-        content: {
-          "*/*": string;
-        };
-      };
-      /** @description Internal Server Error */
-      500: {
-        content: {
-          "*/*": string;
-        };
-      };
-    };
-  };
-  addUser: {
-    /** Add a new user to the system. */
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["User"];
-      };
-    };
-    responses: {
-      /** @description New user adding successful. */
-      200: never;
-      /** @description Unauthenticated. */
-      401: never;
-      /** @description Not Found */
-      404: {
-        content: {
-          "*/*": string;
-        };
-      };
-      /** @description Not Acceptable */
-      406: {
-        content: {
-          "*/*": string;
-        };
-      };
-      /** @description Conflict */
-      409: {
-        content: {
-          "*/*": string;
-        };
-      };
-      /** @description Internal Server Error */
-      500: {
-        content: {
-          "*/*": string;
-        };
-      };
-    };
-  };
+  /** Get an event for signup purposes. */
   getEventForSignup: {
-    /** Get an event for signup purposes. */
     parameters: {
-        /** @description Event's id */
+      query?: {
+        /** @description Automatically inserted based on request headers. */
+        usersLocale?: string;
+        /** @description Automatically inserted based on request headers. */
+        userTimeZone?: string;
+      };
       path: {
+        /** @description Event's id */
         eventId: string;
       };
     };
@@ -887,11 +770,11 @@ export interface operations {
       };
     };
   };
+  /** Get a list of upcoming events at to selected days. */
   getUpcomingEvents: {
-    /** Get a list of upcoming events at to selected days. */
     parameters: {
-        /** @description How many days into the future events are wanted. */
       path: {
+        /** @description How many days into the future events are wanted. */
         days: string;
       };
     };
@@ -928,11 +811,15 @@ export interface operations {
       };
     };
   };
+  /** Get participants for an event by event's id. */
   getParticipants: {
-    /** Get participants for an event by event's id. */
     parameters: {
-        /** @description Event's id. */
+      query?: {
+        /** @description Not required. Automatically added currently logged in user. */
+        loggedInUser?: string;
+      };
       path: {
+        /** @description Event's id. */
         eventId: string;
       };
     };
@@ -940,13 +827,13 @@ export interface operations {
       /** @description Participants of the requested event. List can be empty. */
       200: {
         content: {
-          "application/json": components["schemas"]["Participant"];
+          "application/json": components["schemas"]["ParticipantDto"];
         };
       };
       /** @description Unauthorized. */
       401: {
         content: {
-          "*/*": (components["schemas"]["Participant"])[];
+          "*/*": components["schemas"]["ParticipantDto"][];
         };
       };
       /** @description Not Found */
@@ -975,11 +862,15 @@ export interface operations {
       };
     };
   };
+  /** Get an event by its id. */
   getEvent: {
-    /** Get an event by its id. */
     parameters: {
-        /** @description Requested events id. */
+      query?: {
+        /** @description Not required. Automatically added currently logged in user. */
+        loggedInUser?: string;
+      };
       path: {
+        /** @description Requested events id. */
         eventId: string;
       };
     };
@@ -987,13 +878,13 @@ export interface operations {
       /** @description Requested event. */
       200: {
         content: {
-          "application/json": components["schemas"]["Event"];
+          "application/json": components["schemas"]["EventDto"];
         };
       };
       /** @description Unauthorized. */
       401: {
         content: {
-          "*/*": components["schemas"]["Event"];
+          "*/*": components["schemas"]["EventDto"];
         };
       };
       /** @description Event not found. */
@@ -1022,21 +913,19 @@ export interface operations {
       };
     };
   };
+  /** Get file path for the uploaded banner image. */
   getBannerImagePath: {
-    /** Get file path for the uploaded banner image. */
     parameters: {
-        /** @description Filename generated when saving an image. */
       path: {
+        /** @description Filename generated when saving an image. */
         fileName: string;
       };
     };
     responses: {
-      /** @description Json: {'fileName': fileName} */
+      /** @description Final path of the uploaded image file wrapped in json. */
       200: {
         content: {
-          "*/*": {
-            [key: string]: string | undefined;
-          };
+          "application/json": components["schemas"]["BannerImageUploadSuccessResponse"];
         };
       };
       /** @description Not Found */
@@ -1065,11 +954,11 @@ export interface operations {
       };
     };
   };
+  /** Get a banner image. */
   getBannerImage: {
-    /** Get a banner image. */
     parameters: {
-        /** @description File's name we want. */
       path: {
+        /** @description File's name we want. */
         fileName: string;
       };
     };
@@ -1077,9 +966,9 @@ export interface operations {
       /** @description The file requested. */
       200: {
         content: {
-          "image/png": (string)[];
-          "image/jpeg": (string)[];
-          "image/gif": (string)[];
+          "image/png": string[];
+          "image/jpeg": string[];
+          "image/gif": string[];
         };
       };
       /** @description File not found. */
@@ -1108,9 +997,15 @@ export interface operations {
       };
     };
   };
+  /** Get all events for a user. */
   getAllEventsForUser: {
-    /** Get all events for a user. */
     parameters: {
+      query?: {
+        /** @description User's id. */
+        undefined?: string;
+        /** @description Not required. Automatically added currently logged in user. */
+        loggedInUser?: string;
+      };
       path: {
         user: string;
       };
@@ -1119,13 +1014,13 @@ export interface operations {
       /** @description All events of the user. List can be empty. */
       200: {
         content: {
-          "application/json": components["schemas"]["Event"];
+          "application/json": components["schemas"]["EventDto"];
         };
       };
       /** @description Unauthorized. */
       401: {
         content: {
-          "*/*": (components["schemas"]["Event"])[];
+          "*/*": components["schemas"]["EventDto"][];
         };
       };
       /** @description Not Found */
@@ -1154,52 +1049,11 @@ export interface operations {
       };
     };
   };
-  getCredentials: {
-    /** Get needed login data so client side scripts can work. */
-    parameters: {
-        /** @description Id in cache the data was stored to (created during the post call). */
-      path: {
-        id: string;
-      };
-    };
-    responses: {
-      /** @description The requested data. */
-      200: {
-        content: {
-          "application/json": components["schemas"]["AuthCredentialsResponse"];
-        };
-      };
-      /** @description Not Found */
-      404: {
-        content: {
-          "*/*": string;
-        };
-      };
-      /** @description Not Acceptable */
-      406: {
-        content: {
-          "*/*": string;
-        };
-      };
-      /** @description Conflict */
-      409: {
-        content: {
-          "*/*": string;
-        };
-      };
-      /** @description Internal Server Error */
-      500: {
-        content: {
-          "*/*": string;
-        };
-      };
-    };
-  };
+  /** Get all archived events for a specific user sorted by date archived (desc). Admin user only. */
   getAllArchivedEventsForUser: {
-    /** Get all archived events for a specific user sorted by date archived (desc). Admin user only. */
     parameters: {
-        /** @description User's id whose data is wanted. */
       path: {
+        /** @description User's id whose data is wanted. */
         userId: string;
       };
     };
@@ -1207,13 +1061,13 @@ export interface operations {
       /** @description All archived events for the requested user. List can be empty. */
       200: {
         content: {
-          "application/json": components["schemas"]["ArchivedEvent"];
+          "application/json": components["schemas"]["ArchivedEventDto"];
         };
       };
       /** @description Unauthorized */
       401: {
         content: {
-          "*/*": (components["schemas"]["ArchivedEvent"])[];
+          "*/*": components["schemas"]["ArchivedEventDto"][];
         };
       };
       /** @description Not Found */
@@ -1242,8 +1096,8 @@ export interface operations {
       };
     };
   };
+  /** Get all archived events. Admin user only. */
   getAllArchiveEvents: {
-    /** Get all archived events. Admin user only. */
     responses: {
       /** @description All archived events. List can be empty. */
       200: {
@@ -1254,7 +1108,7 @@ export interface operations {
       /** @description Unauthorized. */
       401: {
         content: {
-          "*/*": (components["schemas"]["ArchivedEventResponse"])[];
+          "*/*": components["schemas"]["ArchivedEventResponse"][];
         };
       };
       /** @description Not Found */
@@ -1283,52 +1137,11 @@ export interface operations {
       };
     };
   };
-  getAllNonAdminUsers: {
-    /** Get all non-admin users for admin view. */
-    responses: {
-      /** @description All participants in the specific event. */
-      200: {
-        content: {
-          "application/json": components["schemas"]["User"];
-        };
-      };
-      /** @description Unauthenticated. */
-      401: {
-        content: {
-          "*/*": (components["schemas"]["User"])[];
-        };
-      };
-      /** @description Not Found */
-      404: {
-        content: {
-          "*/*": string;
-        };
-      };
-      /** @description Not Acceptable */
-      406: {
-        content: {
-          "*/*": string;
-        };
-      };
-      /** @description Conflict */
-      409: {
-        content: {
-          "*/*": string;
-        };
-      };
-      /** @description Internal Server Error */
-      500: {
-        content: {
-          "*/*": string;
-        };
-      };
-    };
-  };
+  /** Gets all participants for a specific event. */
   getAllParticipantsForEvent: {
-    /** Gets all participants for a specific event. */
     parameters: {
-        /** @description Event's id. */
       path: {
+        /** @description Event's id. */
         eventId: string;
       };
     };
@@ -1336,7 +1149,7 @@ export interface operations {
       /** @description All participants in the specific event. */
       200: {
         content: {
-          "application/json": components["schemas"]["Participant"];
+          "application/json": components["schemas"]["ParticipantDto"];
         };
       };
       /** @description Not Found */
@@ -1365,13 +1178,13 @@ export interface operations {
       };
     };
   };
+  /** Gets all participants for admin view. */
   getAllParticipants: {
-    /** Gets all participants for admin view. */
     responses: {
       /** @description All participants in all events. */
       200: {
         content: {
-          "application/json": components["schemas"]["Participant"];
+          "application/json": components["schemas"]["ParticipantDto"];
         };
       };
       /** @description Not Found */
@@ -1400,8 +1213,8 @@ export interface operations {
       };
     };
   };
+  /** Get all events of a specific user to admin view. */
   getAllEventsForUser_1: {
-    /** Get all events of a specific user to admin view. */
     parameters: {
       path: {
         userId: string;
@@ -1411,7 +1224,7 @@ export interface operations {
       /** @description All events for the specific user. */
       200: {
         content: {
-          "application/json": components["schemas"]["Event"];
+          "application/json": components["schemas"]["EventDto"];
         };
       };
       /** @description Not Found */
@@ -1440,13 +1253,13 @@ export interface operations {
       };
     };
   };
+  /** Gets all events for admin view. */
   getAllEvents: {
-    /** Gets all events for admin view. */
     responses: {
       /** @description All events. */
       200: {
         content: {
-          "application/json": components["schemas"]["Event"];
+          "application/json": components["schemas"]["EventDto"];
         };
       };
       /** @description Not Found */
@@ -1475,19 +1288,27 @@ export interface operations {
       };
     };
   };
+  /** Cancel participation to an event. */
   removeParticipantFromEvent: {
-    /** Cancel participation to an event. */
     parameters: {
-        /** @description Event's id where to cancel from. */
-        /** @description Participant's id (who's cancelling). */
+      query?: {
+        /** @description Automatically inserted based on request headers. */
+        usersLocale?: string;
+        /** @description Automatically inserted based on request headers. */
+        userTimeZone?: string;
+      };
       path: {
+        /** @description Event's id where to cancel from. */
         eventId: string;
+        /** @description Participant's id (who's cancelling). */
         participantId: string;
       };
     };
     responses: {
       /** @description Cancellation successful. */
-      200: never;
+      200: {
+        content: never;
+      };
       /** @description Event not found */
       404: {
         content: {
@@ -1514,19 +1335,27 @@ export interface operations {
       };
     };
   };
+  /** Delete an event. */
   removeEvent: {
-    /** Delete an event. */
     parameters: {
-        /** @description Event's id. */
+      query?: {
+        /** @description Not required. Automatically added currently logged in user. */
+        loggedInUser?: string;
+      };
       path: {
+        /** @description Event's id. */
         eventId: string;
       };
     };
     responses: {
       /** @description Event deleted successfully. */
-      200: never;
+      200: {
+        content: never;
+      };
       /** @description Unauthorized. */
-      401: never;
+      401: {
+        content: never;
+      };
       /** @description Not Found */
       404: {
         content: {
@@ -1553,8 +1382,8 @@ export interface operations {
       };
     };
   };
+  /** Remove a single archived event. Admin user only. */
   removeArchivedEvent: {
-    /** Remove a single archived event. Admin user only. */
     requestBody: {
       content: {
         "application/json": components["schemas"]["ArchiveEventRequest"];
@@ -1562,9 +1391,13 @@ export interface operations {
     };
     responses: {
       /** @description Delete was successful. */
-      200: never;
+      200: {
+        content: never;
+      };
       /** @description Unauthorized */
-      401: never;
+      401: {
+        content: never;
+      };
       /** @description Not Found */
       404: {
         content: {
@@ -1591,8 +1424,8 @@ export interface operations {
       };
     };
   };
+  /** Delete archived events older than set date. Admin user only. */
   removeArchivedEvents: {
-    /** Delete archived events older than set date. Admin user only. */
     requestBody: {
       content: {
         "application/json": components["schemas"]["RemoveArchivedEventsRequest"];
@@ -1600,81 +1433,13 @@ export interface operations {
     };
     responses: {
       /** @description Delete was successful. */
-      200: never;
+      200: {
+        content: never;
+      };
       /** @description Unauthorized */
-      401: never;
-      /** @description Not Found */
-      404: {
-        content: {
-          "*/*": string;
-        };
+      401: {
+        content: never;
       };
-      /** @description Not Acceptable */
-      406: {
-        content: {
-          "*/*": string;
-        };
-      };
-      /** @description Conflict */
-      409: {
-        content: {
-          "*/*": string;
-        };
-      };
-      /** @description Internal Server Error */
-      500: {
-        content: {
-          "*/*": string;
-        };
-      };
-    };
-  };
-  deleteUser: {
-    /** Deletes an user by their id. */
-    parameters: {
-        /** @description Id of the user to delete. */
-      path: {
-        userId: string;
-      };
-    };
-    responses: {
-      /** @description Delete was successful. */
-      200: never;
-      /** @description Unauthenticated. */
-      401: never;
-      /** @description Not Found */
-      404: {
-        content: {
-          "*/*": string;
-        };
-      };
-      /** @description Not Acceptable */
-      406: {
-        content: {
-          "*/*": string;
-        };
-      };
-      /** @description Conflict */
-      409: {
-        content: {
-          "*/*": string;
-        };
-      };
-      /** @description Internal Server Error */
-      500: {
-        content: {
-          "*/*": string;
-        };
-      };
-    };
-  };
-  deleteAllNonAdminUsers: {
-    /** Delete ALL non-admin users. */
-    responses: {
-      /** @description Delete was successful. */
-      200: never;
-      /** @description Unauthenticated. */
-      401: never;
       /** @description Not Found */
       404: {
         content: {

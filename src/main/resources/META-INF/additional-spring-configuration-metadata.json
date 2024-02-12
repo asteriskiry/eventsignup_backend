@@ -16,12 +16,12 @@
       "description": "Default amount of days before automatic archiving of past events."
     },
     {
-      "name": "fi.asteriski.config.email.baseUrl",
+      "name": "fi.asteriski.config.email.base-url",
       "type": "java.lang.String",
       "description": "Systems base url (used in emails)."
     },
     {
-      "name": "fi.asteriski.config.security.allowedCorsDomain",
+      "name": "fi.asteriski.config.security.allowed-cors-domain",
       "type": "java.lang.String",
       "description": "Allowed cross origin domain for security."
     }
