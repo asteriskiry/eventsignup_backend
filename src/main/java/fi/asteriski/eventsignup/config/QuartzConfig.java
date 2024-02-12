@@ -32,14 +32,14 @@ public class QuartzConfig {
 
     @Bean
     public JobFactory jobFactory() {
-        AutowiringSpringBeanJobFactory jobFactory = new AutowiringSpringBeanJobFactory();
+        var jobFactory = new AutowiringSpringBeanJobFactory();
         jobFactory.setApplicationContext(applicationContext);
         return jobFactory;
     }
 
     @Bean
     public SchedulerFactoryBean schedulerFactoryBean() throws IOException {
-        SchedulerFactoryBean schedulerFactory = new SchedulerFactoryBean();
+        var schedulerFactory = new SchedulerFactoryBean();
         schedulerFactory.setQuartzProperties(quartzProperties());
         schedulerFactory.setWaitForJobsToCompleteOnShutdown(true);
         schedulerFactory.setAutoStartup(true);
@@ -48,7 +48,7 @@ public class QuartzConfig {
     }
 
     public Properties quartzProperties() throws IOException {
-        PropertiesFactoryBean propertiesFactoryBean = new PropertiesFactoryBean();
+        var propertiesFactoryBean = new PropertiesFactoryBean();
         propertiesFactoryBean.setLocation(new ClassPathResource("/quartz.properties"));
         propertiesFactoryBean.afterPropertiesSet();
 

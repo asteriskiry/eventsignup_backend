@@ -1,4 +1,4 @@
-FROM quay.io/keycloak/keycloak:21.0.0
+FROM quay.io/keycloak/keycloak:23.0.4
 
 COPY realm/asteriski-realm.json /opt/keycloak/data/import/asteriski-realm.json
 COPY themes/asteriski /opt/keycloak/themes

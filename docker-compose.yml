@@ -19,7 +19,7 @@ services:
     volumes:
       - mongodb_data:/data/db
   keycloak:
-    image: quay.io/keycloak/keycloak:21.0.0
+    image: quay.io/keycloak/keycloak:23.0.4
     environment:
       KEYCLOAK_ADMIN: admin
       KEYCLOAK_ADMIN_PASSWORD: admin

@@ -10,6 +10,7 @@ import fi.asteriski.eventsignup.model.archiving.ArchivedEventDto;
 import fi.asteriski.eventsignup.model.event.EventDto;
 import fi.asteriski.eventsignup.model.event.Form;
 import fi.asteriski.eventsignup.model.signup.ParticipantDto;
+import jakarta.validation.constraints.NotNull;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -25,7 +26,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 import java.util.function.Supplier;
-import javax.validation.constraints.NotNull;
 import org.apache.commons.io.IOUtils;
 
 /** Class for utility methods used in testing. */
