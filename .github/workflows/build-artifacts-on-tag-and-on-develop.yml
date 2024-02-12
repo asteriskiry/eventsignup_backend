@@ -50,13 +50,15 @@ jobs:
     runs-on: ubuntu-latest
     container: eclipse-temurin:21
     env:
-      MONGO_HOST: mongo
+      MONGO_HOST: localhost
       KEYCLOAK_URL: localhost
-    services:
-      mongo:
-        image: mongo:5.0.5
     steps:
       - uses: actions/checkout@v3
+
+      - name: Start MongoDB
+        uses: supercharge/mongodb-github-action@1.10.0
+        with:
+          mongodb-version: '5.0.5'
 
       - name: Authenticate to github packages
         run: echo '//npm.pkg.github.com/:_authToken=${{ secrets.gh_token }}' > ~/.npmrc
