@@ -48,7 +48,7 @@ jobs:
 
   typescript-types:
     runs-on: ubuntu-latest
-    container: openjdk:21
+    container: eclipse-temurin:21
     env:
       MONGO_HOST: mongo
       KEYCLOAK_URL: localhost

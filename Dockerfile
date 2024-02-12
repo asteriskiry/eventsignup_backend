@@ -1,5 +1,4 @@
-FROM openjdk:21 AS build
-
+FROM eclipse-temurin:21 AS build
 WORKDIR /work
 
 COPY gradle gradle
@@ -10,8 +9,7 @@ COPY src src
 
 RUN ./gradlew bootJar
 
-
-FROM openjdk:21
+FROM eclipse-temurin:21
 WORKDIR /app
 COPY --from=build /work/build/libs/eventsignup.jar .
 
