@@ -74,6 +74,8 @@ jobs:
 
       - name: Generate new version number
         run: ./gradlew generateTypesVersionNumber
+        env:
+          GIT_TAG: ${{ github.ref_name }}
 
       - name: Push new version to npm registry
         run: ./gradlew publishTypesPlugin
