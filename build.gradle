@@ -82,7 +82,7 @@ tasks.register('generateTsTypes', NpxTask) {
 
 tasks.register('generateTypesVersionNumber', NpmTask) {
     def tag = System.getenv("GIT_TAG")
-    if (tag && tag =~ '[0-9]+.[0-9]+.[0-9]+') {
+    if (tag && tag =~ '^[0-9]+\\.[0-9]+\\.[0-9]+$') {
         args = ["version", tag.substring(1)]
     } else {
         args = ["version", new Date().format('yyyyMMdd') + "." + new Date().format('HHmm') + ".0"]
