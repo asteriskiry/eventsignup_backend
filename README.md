@@ -1,5 +1,5 @@
 # Eventsignup Backend
-© Juhani Vähä-Mäkilä (juhani@fmail.co.uk) 2024.
+© Juhani Vähä-Mäkilä (juhani@fmail.co.uk) and contributors 2024.
 
 Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
 
