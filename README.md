@@ -1,7 +1,7 @@
 # Eventsignup Backend
 © Juhani Vähä-Mäkilä (juhani@fmail.co.uk) and contributors 2024.
 
-Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
+Licenced under EUPL-1.2 or later.
 
 Backend microservice for event signup system. Includes Keycloak integration for authentication.
 
@@ -21,23 +21,100 @@ Backend microservice for event signup system. Includes Keycloak integration for 
 
 ## Development
 
-- Import existing sources as a new project in your favorite IDE (e.g. IntelliJ IDEA)
-- Import Gradle project
-- Expects Mongodb at localhost:27017
-- Server will be at localhost:8080
+- Expects Mongodb at `localhost:27017`
+- Server will be at `localhost:8080`
 - OpenAPI definitions are available at http://localhost:8080/v1/api-docs.<yaml | json>
 - OpenAPI swagger ui is available at http://localhost:8080/swagger-ui/index.html
-- All text which is visible to the end user (e.g. email) must use i18n translations (messages*.properties files)
-- All features and bug fixes are done in their own branches
-- All Pull Requests should squash commits before merge so git history of develop (and master) remains clean and linear
 
-Format code with Spotless:
+To run the service:
+
+    $ ./gradlew bootRunDev
+
+### Setting up
+
+1. Install OpenJDK21
+   1. [Windows](https://adoptium.net/temurin/releases/?os=windows&version=21)
+   2. Linux: Install from your distro's repo
+   3. [macOs](https://adoptium.net/temurin/releases/?os=mac&version=21)
+2. Install podman or docker. See [container setup](#running-locally)
+   1. Run mongodb in a container: `podman run -dt --pod new:eventsignup -p 27017:27017 -p 8080:8080 mongo:5.0.5` or `docker run -d -p 27017:27017 --name mongodb mongo:5.0.5`
+3. Import existing sources as a new project in your favorite IDE (e.g. IntelliJ IDEA)
+4. Import Gradle project
+
+### Development guidelines
+
+- All text which is visible to the end user (e.g. email) must use i18n translations (messages*.properties files).
+- Main development happens in `develop` branch.
+  - All features and bug fixes are done in their own branches (branched off from `develop`).
+  - All Pull Requests should squash commits before merge so git history of develop (and ultimately `master`) remains clean and linear.
+  - Delete source branch once PR is merged.
+  - NEVER force-push to `develop`. This will break everyone else's work.
+- Avoid commiting directly to `develop`. Only PRs will run CI pipelines.
+- Only when a new version is to be released is `develop` merged into `master`.
+- Use [Semantic versioning](https://en.wikipedia.org/wiki/Software_versioning#Semantic_versioning) for releases.
+  - Use Git tags (created in `master`) for releases (builds containers) and the GitHub releases functionality.
+- Use GitHub Issues for all features, bugs etc.
+- Public interfaces need to have unit tests, and integration tests where appropriate.
+- Use Project Lombok annotations for constructors, getters, setters etc.
+
+### Code quality
+
+- All code, comments, documentation, names of classes and variables, log messages, etc. must be in English.
+- Maximum recommended line length is 120 characters.
+- Indentation must be made with 4 spaces, not tabs.
+  - Continuation indent is 4.
+- Line feeds must be UNIX-like (\n).
+- All source files should be UTF-8, except .properties files which should be ISO-8859-1.
+- Spotless is used to automatically format code (using [palantirJavaFormat](https://github.com/palantir/palantir-java-format)).
+  - CI pipeline will fail if not properly formated.
+- All your code should follow the Java Code Conventions regarding variable/method/class naming.
+- Be [DRY](https://en.wikipedia.org/wiki/Don%27t_repeat_yourself).
+- Try to use [test-driven-development](https://en.wikipedia.org/wiki/Test-driven_development).
+
+Automatically format code with Spotless:
 
     $ ./gradlew spotlessApply
 
-To run:
+## How to run with containers only
 
-    $ ./gradlew bootRun
+If you just need the service up and running e.g. for front-end development or prod deployment here's how to do it.
+
+### Running locally
+
+1. Install Podman or docker
+   1. Podman
+      1. [Windows](https://podman-desktop.io/docs/installation/windows-install)
+      2. Linux: install from your distro's repo
+      3. [macOs](https://podman-desktop.io/docs/installation/macos-install)
+   2. Docker Desktop: [Windows](https://docs.docker.com/desktop/install/windows-install/), [Linux](https://docs.docker.com/desktop/install/linux-install/), [MacOs](https://docs.docker.com/desktop/install/mac-install/)
+2. Run Mongodb
+   1. `docker run -d -p 27017:27017 --name mongodb mongo:5.0.5` or
+   2. `podman run -dt --pod new:eventsignup -p 27017:27017 -p 8080:8080 mongo:5.0.5`
+3. Authenticate to [GHCR](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-container-registry#authenticating-with-a-personal-access-token-classic)
+4. Download .env-dev file from this repo
+5. (Only for podman) `podman run -d --pod=eventsignup --env-file=path/to/.env-dev ghcr.io/asteriskiry/eventsignup_backend:latest`
+   1. Note `latest` gives you the most recent CI pipeline built container which can be a dev snapshot. Use a version tag to get a specific version e.g. 1.0.0.
+
+TODO complete docker instructions.
+
+After initial run described above with podman the whole eventsignup system pod can be controlled like this `podman pod start|stop|restart eventsignup`.
+
+#### Troubleshooting
+
+If Podman gives an error try adding `--network=slirp4netns:enable_ipv6=false` to the command.
+
+### Running in production
+
+Prerequisite: Mongodb should be already running somewhere.
+
+1. Create a .env file somewhere with values for all the variables listed in [environment variables](#environment-variables) table.
+2. Run container 
+   1. `podman run -d --pod=new:eventsignup -p 8080:8080 --env-file=path/to/.env ghcr.io/asteriskiry/eventsignup_backend:<tag>`
+   2. `docker run -d -p 8080:8080 --env-file=path/to/.env ghcr.io/asteriskiry/eventsignup_backend:<tag>`
+
+Note
+- Substitute port numbers with the port you want to run the service with (must be the same as SERVER_PORT env variable).
+- Substitute \<tag> with a version tag e.g. 1.0.0.
 
 ## Environment variables
 For production these variables are needed.
