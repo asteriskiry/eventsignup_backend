@@ -23,6 +23,8 @@ jobs:
           mongodb-version: '5.0.5'
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@ec92e829475ac0c2315ea8f9eced72db85bb337a # v3.0.0
+      - name: Spotless check
+        run: ./gradlew spotlessCheck
       - name: Run unit tests
         run: ./gradlew check
       - name: Build with Gradle Wrapper
