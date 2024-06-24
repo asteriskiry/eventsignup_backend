@@ -97,6 +97,18 @@ tasks.named("forkedSpringBootRun") {
     mustRunAfter("nodeSetup")
 }
 
+tasks.register("bootRunDev") {
+    group = "application"
+    description = "Runs the Spring Boot application with the dev profile"
+    doFirst {
+        tasks.bootRun.configure {
+            systemProperty("spring.profiles.active", "dev")
+            systemProperty("MONGO_HOST", "localhost")
+        }
+    }
+    finalizedBy("bootRun")
+}
+
 spotless {
     format 'misc', {
         target '*.gradle', '.gitattributes', '.gitignore', '*.properties'
@@ -107,6 +119,6 @@ spotless {
     java {
         importOrder()
         removeUnusedImports()
-        palantirJavaFormat('2.40.0').formatJavadoc(true)
+        palantirJavaFormat('2.47.0').formatJavadoc(true)
     }
 }
