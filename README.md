@@ -18,7 +18,6 @@ Backend microservice for event signup system. Includes Keycloak integration for 
 - Quartz scheduler
 - OpenApi
 - Spotless for code formatting
-- [Git LFS](https://docs.github.com/en/repositories/working-with-files/managing-large-files/installing-git-large-file-storage)
 
 ## Development
 
@@ -57,7 +56,6 @@ To run the service:
 - Use GitHub Issues for all features, bugs etc.
 - Public interfaces need to have unit tests, and integration tests where appropriate.
 - Use Project Lombok annotations for constructors, getters, setters etc.
-- Binary files should be tracked using Git LFS
 
 ### Code quality
 
