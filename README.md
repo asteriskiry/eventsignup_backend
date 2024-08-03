@@ -114,7 +114,7 @@ Prerequisite: Mongodb should be already running somewhere.
 
 Note
 - Substitute port numbers with the port you want to run the service with (must be the same as SERVER_PORT env variable).
-- Substitute \<tag> with a version tag e.g. 1.0.0.
+- Substitute `<tag>` with a version tag e.g. 1.0.0.
 
 ## Environment variables
 For production these variables are needed.
