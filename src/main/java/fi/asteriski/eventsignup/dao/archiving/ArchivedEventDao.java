@@ -8,6 +8,7 @@ import fi.asteriski.eventsignup.model.archiving.ArchivedEventDto;
 import jakarta.validation.constraints.NotNull;
 import java.time.Instant;
 import java.util.List;
+import java.util.UUID;
 
 public interface ArchivedEventDao {
     ArchivedEventDto save(@NotNull ArchivedEventDto toSave);
@@ -20,5 +21,5 @@ public interface ArchivedEventDao {
 
     void deleteAllByDateArchivedIsBefore(@NotNull Instant dateLimit);
 
-    void deleteById(@NotNull String archivedEventId);
+    void deleteById(@NotNull UUID archivedEventId);
 }

@@ -21,21 +21,17 @@ import fi.asteriski.eventsignup.service.event.EventServiceImpl;
 import fi.asteriski.eventsignup.service.event.ImageServiceImpl;
 import fi.asteriski.eventsignup.service.signup.ParticipantServiceImpl;
 import fi.asteriski.eventsignup.utils.TestUtils;
-import java.util.List;
-import java.util.Locale;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Stream;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.MessageSource;
 
-@DataMongoTest
+@DataJpaTest
 class ArchivedEventServiceImplIntegrationTest {
 
     @Autowired
@@ -86,12 +82,12 @@ class ArchivedEventServiceImplIntegrationTest {
                 .save(TestUtils.createRandomEvent(testUser).toEntity())
                 .toDto();
         mockEventServiceGetEvent(event);
-        when(participantService.countAllByEvent(anyString())).thenReturn(0L);
+        when(participantService.countAllByEvent(any(UUID.class))).thenReturn(0L);
         //        when(archivedEventDao.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
 
         var result = archivedEventService.archiveEvent(event.getId(), defaultLocale);
 
-        verify(eventService).getEvent(anyString(), any(Locale.class), any());
+        verify(eventService).getEvent(any(UUID.class), any(Locale.class), any());
         assertInstanceOf(ArchivedEventDto.class, result);
         assertNotNull(result.id());
         assertEquals(event, result.originalEvent());
@@ -108,7 +104,7 @@ class ArchivedEventServiceImplIntegrationTest {
         participantRepository.saveAll(
                 participants.stream().map(ParticipantDto::toEntity).toList());
         //        when(archivedEventDao.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
-        when(participantService.countAllByEvent(anyString())).thenReturn((long) participants.size());
+        when(participantService.countAllByEvent(any(UUID.class))).thenReturn((long) participants.size());
 
         var result = archivedEventService.archiveEvent(event.getId(), defaultLocale);
 
@@ -121,10 +117,12 @@ class ArchivedEventServiceImplIntegrationTest {
 
     @Test
     void archiveEvent_whenEventDoesNotExist_throwsEventNotFoundException() {
-        when(eventService.getEvent(any(String.class), eq(defaultLocale), any()))
+        when(eventService.getEvent(any(UUID.class), eq(defaultLocale), any()))
                 .thenThrow(new EventNotFoundException("not found"));
 
-        assertThrows(EventNotFoundException.class, () -> archivedEventService.archiveEvent("not-exist", defaultLocale));
+        assertThrows(
+                EventNotFoundException.class,
+                () -> archivedEventService.archiveEvent(UUID.randomUUID(), defaultLocale));
     }
 
     @Test
@@ -157,7 +155,7 @@ class ArchivedEventServiceImplIntegrationTest {
     void removeArchivedEvent_givenThatTheEventDoesNotExist_expectNothingIsRemovedFromDatabase() {
         archivedEventRepository.save(
                 TestUtils.createRandomArchivedEvent(testUser, Optional.empty()).toEntity());
-        var eventIdToTest = "123";
+        var eventIdToTest = UUID.randomUUID();
 
         var countBefore = archivedEventRepository.count();
         archivedEventService.removeArchivedEvent(eventIdToTest);

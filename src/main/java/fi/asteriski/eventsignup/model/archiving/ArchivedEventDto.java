@@ -6,11 +6,12 @@ package fi.asteriski.eventsignup.model.archiving;
 
 import fi.asteriski.eventsignup.model.event.EventDto;
 import java.time.ZonedDateTime;
+import java.util.UUID;
 import lombok.Builder;
 
 @Builder
 public record ArchivedEventDto(
-        String id,
+        UUID id,
         EventDto originalEvent,
         ZonedDateTime dateArchived,
         Long numberOfParticipants,

@@ -7,6 +7,7 @@ package fi.asteriski.eventsignup.service.admin;
 import fi.asteriski.eventsignup.model.event.EventDto;
 import fi.asteriski.eventsignup.model.signup.ParticipantDto;
 import java.util.List;
+import java.util.UUID;
 
 public interface AdminService {
     List<EventDto> getAllEvents();
@@ -15,5 +16,5 @@ public interface AdminService {
 
     List<ParticipantDto> getAllParticipants();
 
-    List<ParticipantDto> getAllParticipantsForEvent(String eventId);
+    List<ParticipantDto> getAllParticipantsForEvent(UUID eventId);
 }

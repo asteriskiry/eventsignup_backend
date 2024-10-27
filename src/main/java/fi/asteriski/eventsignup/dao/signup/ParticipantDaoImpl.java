@@ -10,6 +10,7 @@ import fi.asteriski.eventsignup.repo.signup.ParticipantRepository;
 import jakarta.validation.constraints.NotNull;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -21,24 +22,24 @@ public class ParticipantDaoImpl implements ParticipantDao {
     private ParticipantRepository participantRepository;
 
     @Override
-    public long countAllByEvent(@NotNull final String eventId) {
+    public long countAllByEvent(@NotNull final UUID eventId) {
         return participantRepository.countAllByEvent(eventId);
     }
 
     @Override
-    public void deleteAllByEventIds(@NotNull final List<String> eventIds) {
+    public void deleteAllByEventIds(@NotNull final List<UUID> eventIds) {
         participantRepository.deleteAllByEventIn(eventIds);
     }
 
     @Override
-    public List<ParticipantDto> findAllByEvent(@NotNull final String eventId) {
+    public List<ParticipantDto> findAllByEvent(@NotNull final UUID eventId) {
         return participantRepository.findAllByEvent(eventId).stream()
                 .map(ParticipantEntity::toDto)
                 .toList();
     }
 
     @Override
-    public void deleteAllByEvent(@NotNull final String eventId) {
+    public void deleteAllByEvent(@NotNull final UUID eventId) {
         participantRepository.deleteAllByEvent(eventId);
     }
 
@@ -48,12 +49,12 @@ public class ParticipantDaoImpl implements ParticipantDao {
     }
 
     @Override
-    public Optional<ParticipantDto> findById(String participantId) {
+    public Optional<ParticipantDto> findById(UUID participantId) {
         return participantRepository.findById(participantId).map(ParticipantEntity::toDto);
     }
 
     @Override
-    public void deleteParticipantByEventAndId(String eventId, String participantId) {
+    public void deleteParticipantByEventAndId(UUID eventId, UUID participantId) {
         participantRepository.deleteParticipantByEventAndId(eventId, participantId);
     }
 

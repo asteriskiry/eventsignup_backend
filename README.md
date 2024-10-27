@@ -11,17 +11,18 @@ Backend microservice for event signup system. Includes Keycloak integration for 
 - Springboot 3.2.x
 - Apache IO Commons
 - Gradle
-- MongoDB 5.0.5
+- Postgres 17
 - JUnit 5 & Mockito
 - Project lombok
 - Keycloak for authentication
 - Quartz scheduler
 - OpenApi
 - Spotless for code formatting
+- [Flyway](https://docs.spring.io/spring-boot/docs/2.1.7.RELEASE/reference/html/howto-database-initialization.html#howto-use-a-higher-level-database-migration-tool)
 
 ## Development
 
-- Expects Mongodb at `localhost:27017`
+- Expects Postgres at `localhost:5432`
 - Server will be at `localhost:8080`
 - OpenAPI definitions are available at http://localhost:8080/v1/api-docs.<yaml | json>
 - OpenAPI swagger ui is available at http://localhost:8080/swagger-ui/index.html
@@ -37,7 +38,7 @@ To run the service:
    2. Linux: Install from your distro's repo
    3. [macOs](https://adoptium.net/temurin/releases/?os=mac&version=21)
 2. Install podman or docker. See [container setup](#running-locally)
-   1. Run mongodb in a container: `podman run -dt --pod new:eventsignup -p 27017:27017 -p 8080:8080 mongo:5.0.5` or `docker run -d -p 27017:27017 --name mongodb mongo:5.0.5`
+   1. Run Postgres in a container: `podman run -dt --pod new:postgres17 -e POSTGRES_PASSWORD=1234 -p 5432:5432 postgres:17.0` or `docker run -d -p 5432:5432 --name postgres17 postgres:17.0`
 3. Import existing sources as a new project in your favorite IDE (e.g. IntelliJ IDEA)
 4. Import Gradle project
 
@@ -75,11 +76,19 @@ Automatically format code with Spotless:
 
     $ ./gradlew spotlessApply
 
+## Migrations with Flyway
+
+Hibernate is able to update the database schema by itself pretty well though there are things it cannot/won't do
+e.g. remove a column from a table. For these instances we use [Flyway](https://docs.spring.io/spring-boot/docs/2.1.7.RELEASE/reference/html/howto-database-initialization.html#howto-use-a-higher-level-database-migration-tool)
+to migrate the database schema.
+
 ## How to run with containers only
 
 If you just need the service up and running e.g. for front-end development or prod deployment here's how to do it.
 
 ### Running locally
+
+Note: Never use these commands in production!
 
 1. Install Podman or docker
    1. Podman
@@ -88,8 +97,8 @@ If you just need the service up and running e.g. for front-end development or pr
       3. [macOs](https://podman-desktop.io/docs/installation/macos-install)
    2. Docker Desktop: [Windows](https://docs.docker.com/desktop/install/windows-install/), [Linux](https://docs.docker.com/desktop/install/linux-install/), [MacOs](https://docs.docker.com/desktop/install/mac-install/)
 2. Run Mongodb
-   1. `docker run -d -p 27017:27017 --name mongodb mongo:5.0.5` or
-   2. `podman run -dt --pod new:eventsignup -p 27017:27017 -p 8080:8080 mongo:5.0.5`
+   1. `docker run -d -p 5432:5432 --name postgresql17 postgres:17.0` or
+   2. `podman run -dt --pod new:eventsignup -p 8080:8080 -e POSTGRES_PASSWORD=1234 -p 5432:5432 postgres:17.0`
 3. Authenticate to [GHCR](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-container-registry#authenticating-with-a-personal-access-token-classic)
 4. Download .env-dev file from this repo
 5. (Only for podman) `podman run -d --pod=eventsignup --env-file=path/to/.env-dev ghcr.io/asteriskiry/eventsignup_backend:latest`
@@ -105,11 +114,11 @@ If Podman gives an error try adding `--network=slirp4netns:enable_ipv6=false` to
 
 ### Running in production
 
-Prerequisite: Mongodb should be already running somewhere.
+Prerequisite: Postgres should be already running somewhere and the database exists.
 
 1. Create a .env file somewhere with values for all the variables listed in [environment variables](#environment-variables) table.
 2. Run container 
-   1. `podman run -d --pod=new:eventsignup -p 8080:8080 --env-file=path/to/.env ghcr.io/asteriskiry/eventsignup_backend:<tag>`
+   1. `podman run -d --pod=new:eventsignup -p 8080:8080 --env-file=path/to/.env ghcr.io/asteriskiry/eventsignup_backend:<tag>` or
    2. `docker run -d -p 8080:8080 --env-file=path/to/.env ghcr.io/asteriskiry/eventsignup_backend:<tag>`
 
 Note
@@ -124,11 +133,11 @@ For production these variables are needed.
 |             SERVER_PORT             |           Which port the server is listening in           |                  8080                  |
 |             SERVER_HOST             |                         Hostname                          |               localhost                |
 |          SERVER_ENABLE_SSL          |               Whether to enable SSL support               |                  true                  |
-|             MONGO_HOST              |                Hostname of mongodb server                 |               localhost                |
-|             MONGO_PORT              |               Which port mongodb is running               |                 27017                  |
-|         MONGO_DATABASE_NAME         |                 Name of the used database                 |              databaseName              |
-|           MONGO_USERNAME            |                User to connect to db with                 |                  user                  |
-|           MONGO_PASSWORD            |                 Database user's password                  |                password                |
+|               DB_HOST               |               Hostname of postgresql server               |               localhost                |
+|               DB_PORT               |             Which port postgresql is running              |                  5432                  |
+|               DB_NAME               |                 Name of the used database                 |              databaseName              |
+|             DB_USERNAME             |                User to connect to db with                 |                  user                  |
+|             DB_PASSWORD             |                 Database user's password                  |                password                |
 |              SMTP_HOST              |                  Hostname of SMTP server                  |               localhost                |
 |              SMTP_PORT              |             Port what SMTP server listens to              |                   25                   |
 |            SMTP_USERNAME            |                     SMTP servers user                     |                  user                  |
@@ -136,7 +145,7 @@ For production these variables are needed.
 |        DEFAULT_SENDER_EMAIL         |             Email address for outgoing email              |          noreply@example.com           |
 | DEFAULT_DAYS_TO_ARCHIVE_PAST_EVENTS | After how many days old events are automatically archived |                  180                   |
 |         DEFAULT_IMAGE_PATH          |       Directory where uploaded pictures are stored        |                  /tmp                  |
-|              BASE_URL               |              Used to generate urls in emails              |           http://exapmle.org           |
+|              BASE_URL               |              Used to generate urls in emails              |           http://example.org           |
 |         KEYCLOAK_ISSUER_URI         |              Url where Keycloak can be found              | http://localhost:9090/realms/realmName |
 |        KEYCLOAK_CLIENT_NAME         |                  Client name in Keycloak                  |                example                 |
 |         KEYCLOAK_CLIENT_ID          |                   Client id in Keycloak                   |                example                 |

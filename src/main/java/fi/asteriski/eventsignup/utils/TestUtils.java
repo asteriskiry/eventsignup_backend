@@ -21,10 +21,7 @@ import java.nio.file.StandardCopyOption;
 import java.time.Instant;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Random;
+import java.util.*;
 import java.util.function.Supplier;
 import org.apache.commons.io.IOUtils;
 
@@ -65,7 +62,7 @@ public final class TestUtils {
         return returnValue;
     }
 
-    public static List<ParticipantDto> createRandomParticipants(String eventId) {
+    public static List<ParticipantDto> createRandomParticipants(UUID eventId) {
         var returnValue = new ArrayList<ParticipantDto>();
         for (int i = 0; i < random.nextInt(10, 101); i++) {
             returnValue.add(createRandomParticipant(eventId));
@@ -73,8 +70,8 @@ public final class TestUtils {
         return returnValue;
     }
 
-    public static ParticipantDto createRandomParticipant(String eventId) {
-        eventId = eventId != null ? eventId : Utils.generateRandomString(random.nextInt(5, 15));
+    public static ParticipantDto createRandomParticipant(UUID eventId) {
+        eventId = eventId != null ? eventId : UUID.randomUUID();
         return ParticipantDto.builder()
                 .name(Utils.generateRandomString(random.nextInt(5, 15)))
                 .email(Utils.generateRandomString(random.nextInt(5, 15)))
@@ -131,10 +128,10 @@ public final class TestUtils {
                 .build();
     }
 
-    public static List<String> createRandomIdList() {
+    public static List<UUID> createRandomIdList() {
         return random.ints()
                 .limit(random.nextLong(20, 200))
-                .mapToObj(i -> Utils.generateRandomString(10))
+                .mapToObj(i -> UUID.randomUUID())
                 .toList();
     }
 }

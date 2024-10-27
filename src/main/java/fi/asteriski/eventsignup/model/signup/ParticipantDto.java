@@ -6,16 +6,17 @@ package fi.asteriski.eventsignup.model.signup;
 
 import java.time.Instant;
 import java.util.Map;
+import java.util.UUID;
 import lombok.Builder;
 import lombok.Data;
 
 @Builder
 @Data
 public class ParticipantDto {
-    private final String id;
+    private final UUID id;
     private final String name;
     private final String email;
-    private final String event;
+    private final UUID event;
     private final Gender gender;
     private final MealChoice mealChoice;
     private final Map<String, String> drinkChoice;
