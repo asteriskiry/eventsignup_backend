@@ -6,11 +6,12 @@ package fi.asteriski.eventsignup.model.signup;
 
 import fi.asteriski.eventsignup.model.event.Form;
 import java.time.ZonedDateTime;
+import java.util.UUID;
 import lombok.Builder;
 
 @Builder
 public record SignupEvent(
-        String id,
+        UUID id,
         String name,
         ZonedDateTime startDate,
         String place,

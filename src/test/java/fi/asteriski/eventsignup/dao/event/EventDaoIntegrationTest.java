@@ -14,13 +14,14 @@ import fi.asteriski.eventsignup.utils.TestUtils;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Random;
+import java.util.UUID;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
-@DataMongoTest
+@DataJpaTest
 class EventDaoIntegrationTest {
 
     private static final Random rnd = new Random();
@@ -55,7 +56,7 @@ class EventDaoIntegrationTest {
 
     @Test
     void findById_givenEventDoesNotExist_expectEmptyOptional() {
-        var result = eventDao.findById("not_exist");
+        var result = eventDao.findById(UUID.randomUUID());
 
         assertTrue(result.isEmpty());
     }
@@ -118,7 +119,7 @@ class EventDaoIntegrationTest {
 
     @Test
     void existsById_givenDataDoesNotExist_expectFalse() {
-        var result = eventDao.existsById("notExist");
+        var result = eventDao.existsById(UUID.randomUUID());
 
         assertFalse(result);
     }
@@ -127,7 +128,7 @@ class EventDaoIntegrationTest {
     void findAllByStartDateIsBeforeOrEndDateIsBefore_givenDataExistsInDatabase_expectNonEmptyList() {
         var events = TestUtils.getRandomEvents(testUser);
         eventRepository.saveAll(events.stream().map(EventDto::toEntity).toList());
-        var startDate = events.get(0).getStartDate();
+        var startDate = events.getFirst().getStartDate();
         var endDate = getEndDate(startDate, events);
 
         var result = eventDao.findAllByStartDateIsBeforeOrEndDateIsBefore(startDate.toInstant(), endDate.toInstant());
@@ -139,7 +140,7 @@ class EventDaoIntegrationTest {
     void findAllByStartDateIsBeforeOrEndDateIsBefore_givenDataDoesNotExistInDatabase_expectEmptyList() {
         eventRepository.deleteAll();
         var events = TestUtils.getRandomEvents(testUser);
-        var startDate = events.get(0).getStartDate();
+        var startDate = events.getFirst().getStartDate();
         var endDate = getEndDate(startDate, events);
 
         var result = eventDao.findAllByStartDateIsBeforeOrEndDateIsBefore(startDate.toInstant(), endDate.toInstant());

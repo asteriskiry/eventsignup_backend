@@ -13,26 +13,27 @@ import java.time.ZoneId;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.function.Supplier;
 
 public interface EventService {
-    EventDto getEvent(String id, Locale usersLocale, Optional<Supplier<? extends EventSignupException>> errorSupplier);
+    EventDto getEvent(UUID id, Locale usersLocale, Optional<Supplier<? extends EventSignupException>> errorSupplier);
 
     List<EventDto> getAllEventsForUser(String user);
 
-    List<ParticipantDto> getParticipants(String eventId);
+    List<ParticipantDto> getParticipants(UUID eventId);
 
     EventDto createNewEvent(EventDto eventDto, Locale usersLocale, ZoneId userTimeZone);
 
     EventDto editExistingEvent(EventDto newEventDto, Locale usersLocale, ZoneId userTimeZone);
 
-    void removeEventAndParticipants(String eventId);
+    void removeEventAndParticipants(UUID eventId);
 
-    boolean eventExists(String eventId);
+    boolean eventExists(UUID eventId);
 
     List<EventDto> findAllByStartDateIsBeforeOrEndDateIsBefore(Instant dateLimit, Instant dateLimit1);
 
-    void deleteAllByIds(List<String> eventIds);
+    void deleteAllByIds(List<UUID> eventIds);
 
     List<EventDto> findAllByStartDateIsBetween(Instant date1, Instant date2);
 
