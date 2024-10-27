@@ -15,6 +15,7 @@ import fi.asteriski.eventsignup.model.signup.ParticipantDto;
 import fi.asteriski.eventsignup.service.admin.AdminServiceImpl;
 import fi.asteriski.eventsignup.utils.TestUtils;
 import java.util.List;
+import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -64,8 +65,8 @@ class AdminControllerUnitTest {
     @Test
     @DisplayName("Get participants for a specific event.")
     void getAllParticipantsForEvent() {
-        var eventId = "123";
-        var valueCapture = ArgumentCaptor.forClass(String.class);
+        var eventId = UUID.randomUUID();
+        var valueCapture = ArgumentCaptor.forClass(UUID.class);
         when(adminService.getAllParticipantsForEvent(valueCapture.capture())).thenReturn(participantDtos);
         adminController.getAllParticipantsForEvent(eventId);
         verify(adminService).getAllParticipantsForEvent(eventId);

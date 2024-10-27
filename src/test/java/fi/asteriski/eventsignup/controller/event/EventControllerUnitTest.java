@@ -14,6 +14,7 @@ import java.time.ZoneId;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
+import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -35,25 +36,28 @@ class EventControllerUnitTest {
     @Test
     @DisplayName("Get an existing event.")
     void getExistingEvent() {
-        when(eventService.getEvent(eq("123"), any(Locale.class), any())).thenReturn(this.eventDto);
-        assertInstanceOf(EventDto.class, eventController.getEvent("123", Locale.getDefault(), ZoneId.systemDefault()));
+        var id = UUID.randomUUID();
+        when(eventService.getEvent(eq(id), any(Locale.class), any())).thenReturn(this.eventDto);
+        assertInstanceOf(EventDto.class, eventController.getEvent(id, Locale.getDefault(), ZoneId.systemDefault()));
     }
 
     @Test
     @DisplayName("Getting an existing event doesn't throw an exception")
     void getExistingEventWithNoExceptionThrown() {
-        when(eventService.getEvent(eq("123"), any(Locale.class), any())).thenReturn(this.eventDto);
-        assertDoesNotThrow(() -> eventController.getEvent("123", null, null));
+        var id = UUID.randomUUID();
+        when(eventService.getEvent(eq(id), any(Locale.class), any())).thenReturn(this.eventDto);
+        assertDoesNotThrow(() -> eventController.getEvent(id, null, null));
     }
 
     @Test
     @DisplayName("Try to get non-existent event.")
     void tryToGetNonExistentEvent() {
-        when(eventService.getEvent(eq("not-exist"), any(Locale.class), any()))
+        var id = UUID.randomUUID();
+        when(eventService.getEvent(eq(id), any(Locale.class), any()))
                 .thenThrow(new EventNotFoundException("not-exist"));
         assertThrows(
                 EventNotFoundException.class,
-                () -> eventController.getEvent("not-exist", Locale.getDefault(), ZoneId.systemDefault()));
+                () -> eventController.getEvent(id, Locale.getDefault(), ZoneId.systemDefault()));
     }
 
     @Test
@@ -77,21 +81,23 @@ class EventControllerUnitTest {
     @Test
     @DisplayName("Get a non-empty list of participants for an event.")
     void getParticipantsForEventWithParticipants() {
+        var id = UUID.randomUUID();
         var participantEntities = List.of(ParticipantDto.builder()
                 .name("John Doe")
                 .email("john@example.com")
-                .event("123")
+                .event(id)
                 .build());
-        when(eventService.getParticipants("123")).thenReturn(participantEntities);
-        assertInstanceOf(List.class, eventController.getParticipants("123"));
-        assertFalse(eventController.getParticipants("123").isEmpty());
+        when(eventService.getParticipants(id)).thenReturn(participantEntities);
+        assertInstanceOf(List.class, eventController.getParticipants(id));
+        assertFalse(eventController.getParticipants(id).isEmpty());
     }
 
     @Test
     @DisplayName("Get an empty list of participants for an event.")
     void getParticipantsForEventWithNoParticipants() {
-        when(eventService.getParticipants("123")).thenReturn(new LinkedList<>());
-        assertInstanceOf(List.class, eventController.getParticipants("123"));
-        assertTrue(eventController.getParticipants("123").isEmpty());
+        var id = UUID.randomUUID();
+        when(eventService.getParticipants(id)).thenReturn(new LinkedList<>());
+        assertInstanceOf(List.class, eventController.getParticipants(id));
+        assertTrue(eventController.getParticipants(id).isEmpty());
     }
 }

@@ -15,6 +15,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import java.util.List;
+import java.util.UUID;
 import lombok.AllArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -95,7 +96,7 @@ public class AdminController {
                         })
             })
     @GetMapping("participants/{eventId}")
-    public List<ParticipantDto> getAllParticipantsForEvent(@PathVariable String eventId) {
+    public List<ParticipantDto> getAllParticipantsForEvent(@PathVariable UUID eventId) {
         return adminService.getAllParticipantsForEvent(eventId);
     }
 }

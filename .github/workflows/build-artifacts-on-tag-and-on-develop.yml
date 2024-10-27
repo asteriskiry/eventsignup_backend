@@ -49,20 +49,22 @@ jobs:
     runs-on: ubuntu-latest
     container: eclipse-temurin:21
     env:
-      MONGO_HOST: mongodb
+      DB_HOST: postgres
+      DB_PORT: ${{ job.services.postgres.ports[5432] }}
       KEYCLOAK_URL: localhost
       SPRING_PROFILES_ACTIVE: dev
       GIT_TAG: ${GITHUB_REF_NAME}
     services:
-      mongodb:
-        image: mongo:5.0.5
+      postgres:
+        image: postgres:17.0
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: postgres
         ports:
-          - 27017:27017
-        options: >-
-          --health-cmd mongo
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
+          - 5432:5432
+        # needed because the postgres container does not provide a healthcheck
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
     steps:
       - uses: actions/checkout@v3
 

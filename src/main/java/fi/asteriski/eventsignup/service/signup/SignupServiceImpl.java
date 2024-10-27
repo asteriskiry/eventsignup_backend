@@ -17,10 +17,7 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
-import java.util.List;
-import java.util.Locale;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.context.MessageSource;
@@ -37,7 +34,7 @@ public class SignupServiceImpl implements SignupService {
     private MessageSource messageSource;
 
     @Override
-    public SignupEvent getEventForSignUp(String eventId, Locale usersLocale, ZoneId userTimeZone) {
+    public SignupEvent getEventForSignUp(UUID eventId, Locale usersLocale, ZoneId userTimeZone) {
         var event = eventService.getEvent(eventId, usersLocale, Optional.empty());
         var now = ZonedDateTime.now(UTC_TIME_ZONE);
         if (event.getSignupStarts() != null && event.getSignupStarts().isAfter(now)) {
@@ -68,7 +65,7 @@ public class SignupServiceImpl implements SignupService {
 
     @Override
     public ParticipantDto addParticipantToEvent(
-            String eventId, ParticipantDto participant, Locale usersLocale, ZoneId userTimeZone) {
+            UUID eventId, ParticipantDto participant, Locale usersLocale, ZoneId userTimeZone) {
         if (!Objects.equals(eventId, participant.getEvent())) {
             throw new EventNotFoundException(String.format(
                     messageSource.getMessage("event.not.found.message", null, usersLocale), participant.getEvent()));
@@ -85,8 +82,7 @@ public class SignupServiceImpl implements SignupService {
     }
 
     @Override
-    public void removeParticipantFromEvent(
-            String eventId, String participantId, Locale usersLocale, ZoneId userTimeZone) {
+    public void removeParticipantFromEvent(UUID eventId, UUID participantId, Locale usersLocale, ZoneId userTimeZone) {
         if (!eventService.eventExists(eventId)) {
             throw new EventNotFoundException(
                     String.format(messageSource.getMessage("event.not.found.message", null, usersLocale), eventId));

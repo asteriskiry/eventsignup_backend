@@ -9,9 +9,10 @@ import fi.asteriski.eventsignup.model.archiving.ArchivedEventResponse;
 import java.time.Instant;
 import java.util.List;
 import java.util.Locale;
+import java.util.UUID;
 
 public interface ArchivedEventService {
-    ArchivedEventDto archiveEvent(String eventId, Locale usersLocale);
+    ArchivedEventDto archiveEvent(UUID eventId, Locale usersLocale);
 
     void archivePastEvents();
 
@@ -21,7 +22,7 @@ public interface ArchivedEventService {
 
     void removeArchivedEventsBeforeDate(Instant dateLimit);
 
-    void removeArchivedEvent(String archivedEventId);
+    void removeArchivedEvent(UUID archivedEventId);
 
     void removeArchivedEventsOlderThanOneYear();
 }

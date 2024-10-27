@@ -7,37 +7,50 @@ package fi.asteriski.eventsignup.model.archiving;
 import static fi.asteriski.eventsignup.utils.Constants.UTC_TIME_ZONE;
 
 import fi.asteriski.eventsignup.model.event.EventEntity;
+import io.hypersistence.utils.hibernate.type.json.JsonType;
+import jakarta.persistence.*;
 import java.time.Instant;
 import java.time.ZonedDateTime;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NonNull;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.index.Indexed;
-import org.springframework.data.mongodb.core.mapping.Document;
+import java.util.UUID;
+import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.SourceType;
+import org.hibernate.annotations.Type;
+import org.hibernate.annotations.UpdateTimestamp;
 
-@Document(collection = "ArchivedEvent")
+@Entity
 @Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@Table(
+        name = "archived_events",
+        indexes = {@Index(name = "idx_originalOwner", columnList = "originalOwner")})
 public class ArchivedEventEntity {
 
     @Id
-    private String id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
 
     @NonNull
-    private final EventEntity originalEvent;
+    @Type(JsonType.class)
+    @Column(columnDefinition = "json")
+    private EventEntity originalEvent;
 
     @NonNull
-    private final Instant dateArchived;
+    @CreationTimestamp(source = SourceType.DB)
+    private Instant dateArchived;
 
     @NonNull
-    private final Long numberOfParticipants;
+    private Long numberOfParticipants;
 
     @NonNull
-    @Indexed
-    private final String originalOwner;
+    private String originalOwner;
 
-    private final String bannerImage;
+    private String bannerImage;
+
+    @UpdateTimestamp(source = SourceType.DB)
+    private Instant dateUpdated;
 
     public ArchivedEventDto toDto() {
         return ArchivedEventDto.builder()

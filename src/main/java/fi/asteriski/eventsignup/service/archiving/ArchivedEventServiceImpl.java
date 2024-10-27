@@ -14,6 +14,7 @@ import fi.asteriski.eventsignup.model.event.EventDto;
 import fi.asteriski.eventsignup.service.event.EventService;
 import fi.asteriski.eventsignup.service.event.ImageService;
 import fi.asteriski.eventsignup.service.signup.ParticipantService;
+import jakarta.annotation.Resource;
 import java.time.Instant;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
@@ -51,8 +52,11 @@ public class ArchivedEventServiceImpl implements ArchivedEventService {
     @NonNull
     private MessageSource messageSource;
 
+    @Resource
+    private ArchivedEventServiceImpl archivedEventService;
+
     @Override
-    public ArchivedEventDto archiveEvent(String eventId, Locale usersLocale) {
+    public ArchivedEventDto archiveEvent(UUID eventId, Locale usersLocale) {
         Supplier<EventNotFoundException> errorSupplier = (() -> {
             log.error(String.format(
                     "%s Unable to archive event. Old event with id <%s> was not found!", LOG_PREFIX, eventId));
@@ -128,7 +132,7 @@ public class ArchivedEventServiceImpl implements ArchivedEventService {
     }
 
     @Override
-    public void removeArchivedEvent(String archivedEventId) {
+    public void removeArchivedEvent(UUID archivedEventId) {
         archivedEventDao.deleteById(archivedEventId);
     }
 

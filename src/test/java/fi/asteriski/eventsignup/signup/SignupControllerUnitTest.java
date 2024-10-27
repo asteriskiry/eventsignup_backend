@@ -19,6 +19,7 @@ import fi.asteriski.eventsignup.service.signup.SignupServiceImpl;
 import fi.asteriski.eventsignup.utils.TestUtils;
 import java.time.ZoneId;
 import java.util.Locale;
+import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -41,57 +42,62 @@ class SignupControllerUnitTest {
 
     @Test
     void getEventForSignup_givenEventExists_expectSignupEventInstance() {
-        when(signupService.getEventForSignUp(eq("123"), any(Locale.class), any(ZoneId.class)))
+        var id = UUID.randomUUID();
+        when(signupService.getEventForSignUp(eq(id), any(Locale.class), any(ZoneId.class)))
                 .thenReturn(event.toSignupEvent());
 
         assertInstanceOf(
-                SignupEvent.class,
-                signupController.getEventForSignup("123", Locale.getDefault(), ZoneId.systemDefault()));
+                SignupEvent.class, signupController.getEventForSignup(id, Locale.getDefault(), ZoneId.systemDefault()));
     }
 
     @Test
     void getEventForSignup_givenEventDoesNotExist_throwsEventNotFoundException() {
-        when(signupService.getEventForSignUp(eq("123"), any(Locale.class), any(ZoneId.class)))
+        var id = UUID.randomUUID();
+        when(signupService.getEventForSignUp(eq(id), any(Locale.class), any(ZoneId.class)))
                 .thenThrow(EventNotFoundException.class);
 
         assertThrows(
                 EventNotFoundException.class,
-                () -> signupController.getEventForSignup("123", Locale.getDefault(), ZoneId.systemDefault()));
+                () -> signupController.getEventForSignup(id, Locale.getDefault(), ZoneId.systemDefault()));
     }
 
     @Test
     void getEventForSignup_givenEventExistAndItIsAlreadyFull_throwsEventFullException() {
-        when(signupService.getEventForSignUp(eq("123"), any(Locale.class), any(ZoneId.class)))
+        var id = UUID.randomUUID();
+        when(signupService.getEventForSignUp(eq(id), any(Locale.class), any(ZoneId.class)))
                 .thenThrow(EventFullException.class);
 
         assertThrows(
                 EventFullException.class,
-                () -> signupController.getEventForSignup("123", Locale.getDefault(), ZoneId.systemDefault()));
+                () -> signupController.getEventForSignup(id, Locale.getDefault(), ZoneId.systemDefault()));
     }
 
     @Test
     void getEventForSignup_eventExistsButSignupHasNotStarted_throwsSignupNotStartedException() {
-        when(signupService.getEventForSignUp(eq("123"), any(Locale.class), any(ZoneId.class)))
+        var id = UUID.randomUUID();
+        when(signupService.getEventForSignUp(eq(id), any(Locale.class), any(ZoneId.class)))
                 .thenThrow(SignupNotStartedException.class);
 
         assertThrows(
                 SignupNotStartedException.class,
-                () -> signupController.getEventForSignup("123", Locale.getDefault(), ZoneId.systemDefault()));
+                () -> signupController.getEventForSignup(id, Locale.getDefault(), ZoneId.systemDefault()));
     }
 
     @Test
     void getEventForSignup_eventExistsButSignupHasEnded_throwsSignupEndedException() {
-        when(signupService.getEventForSignUp(eq("123"), any(Locale.class), any(ZoneId.class)))
+        var id = UUID.randomUUID();
+        when(signupService.getEventForSignUp(eq(id), any(Locale.class), any(ZoneId.class)))
                 .thenThrow(SignupEndedException.class);
 
         assertThrows(
                 SignupEndedException.class,
-                () -> signupController.getEventForSignup("123", Locale.getDefault(), ZoneId.systemDefault()));
+                () -> signupController.getEventForSignup(id, Locale.getDefault(), ZoneId.systemDefault()));
     }
 
     @Test
     void addParticipantToEvent_eventExistsAndIsNotFull_participantIsAddedToEvent() {
-        var valueCapture = ArgumentCaptor.forClass(String.class);
+        var id = UUID.randomUUID();
+        var valueCapture = ArgumentCaptor.forClass(UUID.class);
         var valueCapture2 = ArgumentCaptor.forClass(ParticipantDto.class);
         var valueCapture3 = ArgumentCaptor.forClass(Locale.class);
         var valueCapture4 = ArgumentCaptor.forClass(ZoneId.class);
@@ -104,16 +110,18 @@ class SignupControllerUnitTest {
                         valueCapture4.capture()))
                 .thenReturn(this.participant);
 
-        signupController.addParticipantToEvent("123", participant, defaultLocale, defaultTimeZone);
+        signupController.addParticipantToEvent(id, participant, defaultLocale, defaultTimeZone);
 
-        verify(signupService).addParticipantToEvent("123", participant, defaultLocale, defaultTimeZone);
-        assertEquals("123", valueCapture.getValue());
+        verify(signupService).addParticipantToEvent(id, participant, defaultLocale, defaultTimeZone);
+        assertEquals(id, valueCapture.getValue());
         assertEquals(participant, valueCapture2.getValue());
     }
 
     @Test
     void removeParticipantFromEvent_eventExistsAndParticipantHasSignedUpToIt_participantIsRemovedFromEvent() {
-        var valueCapture = ArgumentCaptor.forClass(String.class);
+        var id = UUID.randomUUID();
+        var id2 = UUID.randomUUID();
+        var valueCapture = ArgumentCaptor.forClass(UUID.class);
         var valueCapture3 = ArgumentCaptor.forClass(Locale.class);
         var valueCapture4 = ArgumentCaptor.forClass(ZoneId.class);
         doNothing()
@@ -124,10 +132,10 @@ class SignupControllerUnitTest {
                         valueCapture3.capture(),
                         valueCapture4.capture());
 
-        signupController.removeParticipantFromEvent("123", "456", Locale.getDefault(), ZoneId.systemDefault());
+        signupController.removeParticipantFromEvent(id, id2, Locale.getDefault(), ZoneId.systemDefault());
 
-        verify(signupService).removeParticipantFromEvent(eq("123"), eq("456"), any(Locale.class), any(ZoneId.class));
-        assertEquals("123", valueCapture.getAllValues().get(0));
-        assertEquals("456", valueCapture.getAllValues().get(1));
+        verify(signupService).removeParticipantFromEvent(eq(id), eq(id2), any(Locale.class), any(ZoneId.class));
+        assertEquals(id, valueCapture.getAllValues().get(0));
+        assertEquals(id2, valueCapture.getAllValues().get(1));
     }
 }

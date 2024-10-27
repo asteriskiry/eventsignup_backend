@@ -6,9 +6,11 @@ package fi.asteriski.eventsignup.model.event;
 
 import fi.asteriski.eventsignup.model.signup.SignupEvent;
 import jakarta.validation.constraints.NotNull;
+import java.time.Instant;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NonNull;
@@ -16,7 +18,7 @@ import lombok.NonNull;
 @Builder
 @Data
 public class EventDto {
-    private String id;
+    private UUID id;
 
     @NonNull // For lombok
     @NotNull // For openApi
@@ -49,6 +51,8 @@ public class EventDto {
     private String bannerImg;
     private final Map<String, Object> otherData;
     private final Map<String, Object> metaData;
+    private final Instant createdAt;
+    private final Instant updatedAt;
 
     public EventEntity toEntity() {
         var event = EventEntity.builder()
@@ -66,6 +70,8 @@ public class EventDto {
                 .bannerImg(bannerImg)
                 .otherData(otherData)
                 .metaData(metaData)
+                .createdAt(createdAt)
+                .updatedAt(updatedAt)
                 .build();
 
         if (signupStarts != null) {

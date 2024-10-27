@@ -8,6 +8,7 @@ import fi.asteriski.eventsignup.dao.signup.ParticipantDao;
 import fi.asteriski.eventsignup.model.signup.ParticipantDto;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,22 +20,22 @@ public class ParticipantServiceImpl implements ParticipantService {
     private ParticipantDao participantDao;
 
     @Override
-    public long countAllByEvent(String eventId) {
+    public long countAllByEvent(UUID eventId) {
         return participantDao.countAllByEvent(eventId);
     }
 
     @Override
-    public void deleteAllByEventIn(List<String> eventIds) {
+    public void deleteAllByEventIn(List<UUID> eventIds) {
         participantDao.deleteAllByEventIds(eventIds);
     }
 
     @Override
-    public List<ParticipantDto> findAllByEvent(String eventId) {
+    public List<ParticipantDto> findAllByEvent(UUID eventId) {
         return participantDao.findAllByEvent(eventId);
     }
 
     @Override
-    public void deleteAllByEvent(String eventId) {
+    public void deleteAllByEvent(UUID eventId) {
         participantDao.deleteAllByEvent(eventId);
     }
 
@@ -44,12 +45,12 @@ public class ParticipantServiceImpl implements ParticipantService {
     }
 
     @Override
-    public Optional<ParticipantDto> findById(String participantId) {
+    public Optional<ParticipantDto> findById(UUID participantId) {
         return participantDao.findById(participantId);
     }
 
     @Override
-    public void deleteParticipantByEventAndId(String eventId, String participantId) {
+    public void deleteParticipantByEventAndId(UUID eventId, UUID participantId) {
         participantDao.deleteParticipantByEventAndId(eventId, participantId);
     }
 

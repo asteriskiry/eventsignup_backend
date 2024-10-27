@@ -7,21 +7,22 @@ package fi.asteriski.eventsignup.service.signup;
 import fi.asteriski.eventsignup.model.signup.ParticipantDto;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 public interface ParticipantService {
-    long countAllByEvent(String eventId);
+    long countAllByEvent(UUID eventId);
 
-    void deleteAllByEventIn(List<String> eventIds);
+    void deleteAllByEventIn(List<UUID> eventIds);
 
-    List<ParticipantDto> findAllByEvent(String eventId);
+    List<ParticipantDto> findAllByEvent(UUID eventId);
 
-    void deleteAllByEvent(String eventId);
+    void deleteAllByEvent(UUID eventId);
 
     ParticipantDto save(ParticipantDto participantDto);
 
-    Optional<ParticipantDto> findById(String participantId);
+    Optional<ParticipantDto> findById(UUID participantId);
 
-    void deleteParticipantByEventAndId(String eventId, String participantId);
+    void deleteParticipantByEventAndId(UUID eventId, UUID participantId);
 
     List<ParticipantDto> findAll();
 }
