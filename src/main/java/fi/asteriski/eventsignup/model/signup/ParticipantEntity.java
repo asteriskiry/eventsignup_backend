@@ -4,30 +4,39 @@ Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
  */
 package fi.asteriski.eventsignup.model.signup;
 
+import io.hypersistence.utils.hibernate.type.json.JsonType;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import java.time.Instant;
 import java.util.Map;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NonNull;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.index.CompoundIndex;
-import org.springframework.data.mongodb.core.index.Indexed;
-import org.springframework.data.mongodb.core.mapping.Document;
+import java.util.UUID;
+import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.SourceType;
+import org.hibernate.annotations.Type;
+import org.hibernate.annotations.UpdateTimestamp;
 
-@CompoundIndex(name = "id_event", def = "{'id' : 1, 'event': 1}")
-@Document("Participant")
+@Entity
 @Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@Table(
+        name = "participants",
+        indexes = {
+            @Index(name = "idx_id_and_event", columnList = "id, event", unique = true),
+            @Index(name = "idx_event", columnList = "event")
+        })
 public class ParticipantEntity {
 
     @Id
-    private String id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
 
     @NonNull // For lombok
     @NotNull // For openApi
-    private final String name;
+    private String name;
 
     @NonNull // For lombok
     @NotNull // For openApi
@@ -36,18 +45,36 @@ public class ParticipantEntity {
 
     @NonNull // For lombok
     @NotNull // For openApi
-    @Indexed
-    private final String event;
+    private UUID event;
 
+    @Enumerated(EnumType.STRING)
     private Gender gender;
+
+    @Enumerated(EnumType.STRING)
     private MealChoice mealChoice;
+
+    @Type(JsonType.class)
+    @Column(columnDefinition = "json")
     private Map<String, String> drinkChoice;
+
     private String belongsToQuota;
     private Boolean isMember;
     private Boolean hasPaid;
     private Instant signupTime;
+
+    @Type(JsonType.class)
+    @Column(columnDefinition = "json")
     private Map<String, Object> otherData;
+
+    @Type(JsonType.class)
+    @Column(columnDefinition = "json")
     private Map<String, Object> metaData;
+
+    @CreationTimestamp(source = SourceType.DB)
+    private Instant createdAt;
+
+    @UpdateTimestamp(source = SourceType.DB)
+    private Instant updatedAt;
 
     public ParticipantDto toDto() {
         return ParticipantDto.builder()

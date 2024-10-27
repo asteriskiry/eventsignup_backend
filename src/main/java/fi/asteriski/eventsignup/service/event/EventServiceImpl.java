@@ -16,6 +16,7 @@ import java.time.ZoneId;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.function.Supplier;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -38,7 +39,7 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public EventDto getEvent(
-            String id, Locale usersLocale, Optional<Supplier<? extends EventSignupException>> errorSupplier) {
+            UUID id, Locale usersLocale, Optional<Supplier<? extends EventSignupException>> errorSupplier) {
         Supplier<EventNotFoundException> defaultErrorSupplier = () -> new EventNotFoundException(
                 String.format(messageSource.getMessage("event.not.found.message", null, usersLocale), id));
 
@@ -51,7 +52,7 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public List<ParticipantDto> getParticipants(String eventId) {
+    public List<ParticipantDto> getParticipants(UUID eventId) {
         return participantService.findAllByEvent(eventId);
     }
 
@@ -79,7 +80,7 @@ public class EventServiceImpl implements EventService {
             log.error(String.format(
                     "%s Unable to edit existing event. Old event with id <%s> was not found!",
                     LOG_PREFIX, newEventDto.getId()));
-            return new EventNotFoundException(newEventDto.getId());
+            return new EventNotFoundException(newEventDto.getId().toString());
         });
         newEventDto.setId(oldEventDto.getId());
         customEventPublisher.publishSavedEventEvent(newEventDto, authentication, usersLocale, userTimeZone);
@@ -87,13 +88,13 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public void removeEventAndParticipants(String eventId) {
+    public void removeEventAndParticipants(UUID eventId) {
         eventDao.deleteById(eventId);
         participantService.deleteAllByEvent(eventId);
     }
 
     @Override
-    public boolean eventExists(String eventId) {
+    public boolean eventExists(UUID eventId) {
         return eventDao.existsById(eventId);
     }
 
@@ -103,7 +104,7 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public void deleteAllByIds(List<String> eventIds) {
+    public void deleteAllByIds(List<UUID> eventIds) {
         eventDao.deleteAllByIds(eventIds);
     }
 

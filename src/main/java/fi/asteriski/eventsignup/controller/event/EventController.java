@@ -18,6 +18,7 @@ import java.time.ZoneId;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
+import java.util.UUID;
 import lombok.AllArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -51,7 +52,7 @@ public class EventController {
                 @ApiResponse(responseCode = "404", description = "Event not found.")
             })
     @GetMapping("get/{eventId}")
-    public EventDto getEvent(@PathVariable String eventId, Locale usersLocale, ZoneId userTimeZone) {
+    public EventDto getEvent(@PathVariable UUID eventId, Locale usersLocale, ZoneId userTimeZone) {
         return eventService.getEvent(eventId, usersLocale, Optional.empty());
     }
 
@@ -101,7 +102,7 @@ public class EventController {
                 @ApiResponse(responseCode = "401", description = "Unauthorized.")
             })
     @GetMapping("participants/{eventId}")
-    public List<ParticipantDto> getParticipants(@PathVariable String eventId) {
+    public List<ParticipantDto> getParticipants(@PathVariable UUID eventId) {
         return eventService.getParticipants(eventId);
     }
 
@@ -166,7 +167,7 @@ public class EventController {
                 @ApiResponse(responseCode = "401", description = "Unauthorized.")
             })
     @DeleteMapping("remove/{eventId}")
-    public void removeEvent(@PathVariable String eventId) {
+    public void removeEvent(@PathVariable UUID eventId) {
         eventService.removeEventAndParticipants(eventId);
     }
 }

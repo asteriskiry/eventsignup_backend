@@ -6,24 +6,32 @@ package fi.asteriski.eventsignup.model.event;
 
 import static fi.asteriski.eventsignup.utils.Constants.UTC_TIME_ZONE;
 
+import io.hypersistence.utils.hibernate.type.json.JsonType;
+import jakarta.persistence.*;
 import java.time.Instant;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Map;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NonNull;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.index.Indexed;
-import org.springframework.data.mongodb.core.mapping.Document;
+import java.util.UUID;
+import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.SourceType;
+import org.hibernate.annotations.Type;
+import org.hibernate.annotations.UpdateTimestamp;
 
-@Document("event")
+@Entity
 @Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@Table(
+        name = "events",
+        indexes = {@Index(name = "idx_owner", columnList = "owner")})
 public final class EventEntity {
 
     @Id
-    private String id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
 
     @NonNull
     private String name;
@@ -35,12 +43,14 @@ public final class EventEntity {
     private String place;
 
     @NonNull
+    @Column(columnDefinition = "TEXT")
     private String description;
 
     @NonNull
+    @Type(JsonType.class)
+    @Column(columnDefinition = "json")
     private Form form;
 
-    @Indexed
     private String owner;
 
     private Instant endDate;
@@ -48,11 +58,27 @@ public final class EventEntity {
     private Integer maxParticipants;
     private Instant signupStarts;
     private Instant signupEnds;
+
+    @Type(JsonType.class)
+    @Column(columnDefinition = "json")
     private List<Quota> quotas;
+
     private Double price;
     private String bannerImg;
+
+    @Type(JsonType.class)
+    @Column(columnDefinition = "json")
     private Map<String, Object> otherData;
+
+    @Type(JsonType.class)
+    @Column(columnDefinition = "json")
     private Map<String, Object> metaData;
+
+    @CreationTimestamp(source = SourceType.DB)
+    private Instant createdAt;
+
+    @UpdateTimestamp(source = SourceType.DB)
+    private Instant updatedAt;
 
     public EventDto toDto() {
 
@@ -74,6 +100,8 @@ public final class EventEntity {
                 .bannerImg(bannerImg)
                 .otherData(otherData)
                 .metaData(metaData)
+                .createdAt(createdAt)
+                .updatedAt(updatedAt)
                 .build();
     }
 }

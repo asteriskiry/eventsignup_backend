@@ -12,6 +12,7 @@ import jakarta.validation.constraints.NotNull;
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -22,7 +23,7 @@ public class EventDaoImpl implements EventDao {
     private EventRepository eventRepository;
 
     @Override
-    public Optional<EventDto> findById(@NotNull final String id) {
+    public Optional<EventDto> findById(@NotNull final UUID id) {
         return eventRepository.findById(id).map(EventEntity::toDto);
     }
 
@@ -39,12 +40,12 @@ public class EventDaoImpl implements EventDao {
     }
 
     @Override
-    public void deleteById(@NotNull final String eventId) {
+    public void deleteById(@NotNull final UUID eventId) {
         eventRepository.deleteById(eventId);
     }
 
     @Override
-    public boolean existsById(@NotNull final String eventId) {
+    public boolean existsById(@NotNull final UUID eventId) {
         return eventRepository.existsById(eventId);
     }
 
@@ -56,7 +57,7 @@ public class EventDaoImpl implements EventDao {
     }
 
     @Override
-    public void deleteAllByIds(@NotNull final List<String> eventIds) {
+    public void deleteAllByIds(@NotNull final List<UUID> eventIds) {
         eventRepository.deleteAllById(eventIds);
     }
 

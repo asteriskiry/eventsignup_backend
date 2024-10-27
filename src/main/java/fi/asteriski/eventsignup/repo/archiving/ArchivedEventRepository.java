@@ -7,9 +7,12 @@ package fi.asteriski.eventsignup.repo.archiving;
 import fi.asteriski.eventsignup.model.archiving.ArchivedEventEntity;
 import java.time.Instant;
 import java.util.List;
-import org.springframework.data.mongodb.repository.MongoRepository;
+import java.util.UUID;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-public interface ArchivedEventRepository extends MongoRepository<ArchivedEventEntity, String> {
+@Repository
+public interface ArchivedEventRepository extends JpaRepository<ArchivedEventEntity, UUID> {
     List<ArchivedEventEntity> findAllByOriginalOwner(String owner);
 
     void deleteAllByDateArchivedIsBefore(Instant dateLimit);

@@ -10,6 +10,7 @@ import fi.asteriski.eventsignup.service.event.EventService;
 import fi.asteriski.eventsignup.service.signup.ParticipantService;
 import java.util.Comparator;
 import java.util.List;
+import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
@@ -67,7 +68,7 @@ public class AdminServiceImpl implements AdminService {
      * @return List of participants in no particular order.
      */
     @Override
-    public List<ParticipantDto> getAllParticipantsForEvent(String eventId) {
+    public List<ParticipantDto> getAllParticipantsForEvent(UUID eventId) {
         return eventService.getParticipants(eventId);
     }
 }

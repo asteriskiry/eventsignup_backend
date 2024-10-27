@@ -17,6 +17,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import java.time.ZoneId;
 import java.util.List;
 import java.util.Locale;
+import java.util.UUID;
 import lombok.AllArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -52,7 +53,7 @@ public class SignupController {
                                 "Signup not started/signup already ended/event full. See the message in response for details.")
             })
     @GetMapping("{eventId}")
-    public SignupEvent getEventForSignup(@PathVariable String eventId, Locale usersLocale, ZoneId userTimeZone) {
+    public SignupEvent getEventForSignup(@PathVariable UUID eventId, Locale usersLocale, ZoneId userTimeZone) {
         return signupService.getEventForSignUp(eventId, usersLocale, userTimeZone);
     }
 
@@ -95,7 +96,7 @@ public class SignupController {
             })
     @PostMapping(value = "{eventId}/add", consumes = "application/json")
     public void addParticipantToEvent(
-            @PathVariable String eventId,
+            @PathVariable UUID eventId,
             @RequestBody ParticipantDto participant,
             Locale usersLocale,
             ZoneId userTimeZone) {
@@ -117,7 +118,7 @@ public class SignupController {
             })
     @DeleteMapping("cancel/{eventId}/{participantId}")
     public void removeParticipantFromEvent(
-            @PathVariable String eventId, @PathVariable String participantId, Locale usersLocale, ZoneId userTimeZone) {
+            @PathVariable UUID eventId, @PathVariable UUID participantId, Locale usersLocale, ZoneId userTimeZone) {
         signupService.removeParticipantFromEvent(eventId, participantId, usersLocale, userTimeZone);
     }
 }

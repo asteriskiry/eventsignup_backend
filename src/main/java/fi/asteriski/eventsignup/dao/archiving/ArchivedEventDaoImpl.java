@@ -10,6 +10,7 @@ import fi.asteriski.eventsignup.repo.archiving.ArchivedEventRepository;
 import jakarta.validation.constraints.NotNull;
 import java.time.Instant;
 import java.util.List;
+import java.util.UUID;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -53,7 +54,7 @@ public class ArchivedEventDaoImpl implements ArchivedEventDao {
     }
 
     @Override
-    public void deleteById(@NotNull final String archivedEventId) {
+    public void deleteById(@NotNull final UUID archivedEventId) {
         archivedEventRepository.deleteById(archivedEventId);
     }
 }
