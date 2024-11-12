@@ -51,6 +51,7 @@ jobs:
     env:
       DB_HOST: postgres
       DB_PORT: 5432
+      DB_NAME: postgres
       KEYCLOAK_URL: localhost
       SPRING_PROFILES_ACTIVE: dev
       GIT_TAG: ${GITHUB_REF_NAME}
@@ -58,13 +59,13 @@ jobs:
       postgres:
         image: postgres:17.0
         env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
           POSTGRES_DB: postgres
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: 1234
         ports:
           - 5432:5432
         # needed because the postgres container does not provide a healthcheck
-        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+        options: --health-cmd "pg_isready -U postgres" --health-interval 10s --health-timeout 5s --health-retries 5
     steps:
       - uses: actions/checkout@v3
 
