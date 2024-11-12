@@ -50,7 +50,7 @@ jobs:
     container: eclipse-temurin:21
     env:
       DB_HOST: postgres
-      DB_PORT: ${{ job.services.postgres.ports[5432] }}
+      DB_PORT: 5432
       KEYCLOAK_URL: localhost
       SPRING_PROFILES_ACTIVE: dev
       GIT_TAG: ${GITHUB_REF_NAME}
