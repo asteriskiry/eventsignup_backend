@@ -37,6 +37,9 @@ public class ImageServiceImpl implements ImageService {
 
     @Override
     public byte[] getBannerImage(String fileName) {
+        if (fileName.contains("..") || fileName.contains("/") || fileName.contains("\\")) {
+            throw new ImageNotFoundException("Invalid filename");
+        }
         File filePath = new File(String.format(FILE_PATH_TEMPLATE, rootPath, fileName));
         if (!filePath.canRead()) {
             log.info(String.format("%s Requested file %s doesn't exist and/or cannot be read.", LOG_PREFIX, fileName));
