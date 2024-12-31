@@ -16,6 +16,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
@@ -29,7 +30,9 @@ public class SpringSecurityConfig {
     public static class DevSecurityConfig {
         @Bean
         public SecurityFilterChain configureDev(@NonNull HttpSecurity http) throws Exception {
-            http.cors(Customizer.withDefaults()).csrf(Customizer.withDefaults());
+            http.authorizeHttpRequests(
+                    authorizeHttpRequests -> authorizeHttpRequests.anyRequest().permitAll());
+            http.cors(Customizer.withDefaults()).csrf(AbstractHttpConfigurer::disable);
 
             return http.build();
         }
