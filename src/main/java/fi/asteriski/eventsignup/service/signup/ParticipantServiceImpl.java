@@ -12,9 +12,11 @@ import java.util.UUID;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class ParticipantServiceImpl implements ParticipantService {
     @NonNull
     private ParticipantDao participantDao;
@@ -25,6 +27,7 @@ public class ParticipantServiceImpl implements ParticipantService {
     }
 
     @Override
+    @Transactional
     public void deleteAllByEventIn(List<UUID> eventIds) {
         participantDao.deleteAllByEventIds(eventIds);
     }
@@ -35,11 +38,13 @@ public class ParticipantServiceImpl implements ParticipantService {
     }
 
     @Override
+    @Transactional
     public void deleteAllByEvent(UUID eventId) {
         participantDao.deleteAllByEvent(eventId);
     }
 
     @Override
+    @Transactional
     public ParticipantDto save(ParticipantDto participantDto) {
         return participantDao.save(participantDto);
     }
@@ -50,6 +55,7 @@ public class ParticipantServiceImpl implements ParticipantService {
     }
 
     @Override
+    @Transactional
     public void deleteParticipantByEventAndId(UUID eventId, UUID participantId) {
         participantDao.deleteParticipantByEventAndId(eventId, participantId);
     }

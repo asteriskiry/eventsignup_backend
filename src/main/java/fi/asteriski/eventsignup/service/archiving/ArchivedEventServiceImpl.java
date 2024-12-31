@@ -26,10 +26,12 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
 @Log4j2
+@Transactional(readOnly = true)
 public class ArchivedEventServiceImpl implements ArchivedEventService {
 
     private static final String LOG_PREFIX = "[ArchivedEventServiceImpl]";
@@ -56,6 +58,7 @@ public class ArchivedEventServiceImpl implements ArchivedEventService {
     private ArchivedEventServiceImpl archivedEventService;
 
     @Override
+    @Transactional
     public ArchivedEventDto archiveEvent(UUID eventId, Locale usersLocale) {
         Supplier<EventNotFoundException> errorSupplier = (() -> {
             log.error(String.format(
@@ -78,6 +81,7 @@ public class ArchivedEventServiceImpl implements ArchivedEventService {
     }
 
     @Override
+    @Transactional
     public void archivePastEvents() {
         var now = Instant.now();
         var dateLimit = now.minus(defaultDaysToArchivePastEvents, ChronoUnit.DAYS);
@@ -127,18 +131,21 @@ public class ArchivedEventServiceImpl implements ArchivedEventService {
     }
 
     @Override
+    @Transactional
     public void removeArchivedEventsBeforeDate(Instant dateLimit) {
         archivedEventDao.deleteAllByDateArchivedIsBefore(dateLimit);
     }
 
     @Override
+    @Transactional
     public void removeArchivedEvent(UUID archivedEventId) {
         archivedEventDao.deleteById(archivedEventId);
     }
 
     @Override
+    @Transactional
     public void removeArchivedEventsOlderThanOneYear() {
         var dateLimit = Instant.now().minus(1, ChronoUnit.YEARS);
-        removeArchivedEventsBeforeDate(dateLimit);
+        archivedEventService.removeArchivedEventsBeforeDate(dateLimit);
     }
 }

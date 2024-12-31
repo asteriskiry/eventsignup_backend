@@ -22,10 +22,12 @@ import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Log4j2
 @AllArgsConstructor
 @Service
+@Transactional(readOnly = true)
 public class SignupServiceImpl implements SignupService {
 
     private EventService eventService;
@@ -64,6 +66,7 @@ public class SignupServiceImpl implements SignupService {
     }
 
     @Override
+    @Transactional
     public ParticipantDto addParticipantToEvent(
             UUID eventId, ParticipantDto participant, Locale usersLocale, ZoneId userTimeZone) {
         if (!Objects.equals(eventId, participant.getEvent())) {
@@ -82,6 +85,7 @@ public class SignupServiceImpl implements SignupService {
     }
 
     @Override
+    @Transactional
     public void removeParticipantFromEvent(UUID eventId, UUID participantId, Locale usersLocale, ZoneId userTimeZone) {
         if (!eventService.eventExists(eventId)) {
             throw new EventNotFoundException(

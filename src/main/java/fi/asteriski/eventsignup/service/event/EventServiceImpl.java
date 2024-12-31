@@ -23,11 +23,13 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.context.MessageSource;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 @Log4j2
 @AllArgsConstructor
 @Service
+@Transactional(readOnly = true)
 public class EventServiceImpl implements EventService {
 
     private static final String LOG_PREFIX = "[EventServiceImpl]";
@@ -57,6 +59,7 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
+    @Transactional
     public EventDto createNewEvent(EventDto eventDto, Locale usersLocale, ZoneId userTimeZone) {
         var authentication = SecurityContextHolder.getContext().getAuthentication();
         eventDto.setOwner(authentication.getName());
@@ -74,6 +77,7 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
+    @Transactional
     public EventDto editExistingEvent(EventDto newEventDto, Locale usersLocale, ZoneId userTimeZone) {
         var authentication = SecurityContextHolder.getContext().getAuthentication();
         var oldEventDto = eventDao.findById(newEventDto.getId()).orElseThrow(() -> {
@@ -88,6 +92,7 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
+    @Transactional
     public void removeEventAndParticipants(UUID eventId) {
         eventDao.deleteById(eventId);
         participantService.deleteAllByEvent(eventId);
@@ -104,6 +109,7 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
+    @Transactional
     public void deleteAllByIds(List<UUID> eventIds) {
         eventDao.deleteAllByIds(eventIds);
     }
