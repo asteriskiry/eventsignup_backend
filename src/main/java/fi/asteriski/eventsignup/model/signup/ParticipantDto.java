@@ -4,7 +4,7 @@ Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
  */
 package fi.asteriski.eventsignup.model.signup;
 
-import java.time.Instant;
+import java.time.ZonedDateTime;
 import java.util.Map;
 import java.util.UUID;
 import lombok.Builder;
@@ -23,7 +23,7 @@ public class ParticipantDto {
     private final String belongsToQuota;
     private final Boolean isMember;
     private final Boolean hasPaid;
-    private Instant signupTime;
+    private ZonedDateTime signupTime;
     private final Map<String, Object> otherData;
     private final Map<String, Object> metaData;
 

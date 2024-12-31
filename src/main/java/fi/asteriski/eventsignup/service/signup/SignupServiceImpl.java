@@ -74,7 +74,7 @@ public class SignupServiceImpl implements SignupService {
             throw new EventNotFoundException(
                     String.format(messageSource.getMessage("event.not.found.message", null, usersLocale), eventId));
         }
-        participant.setSignupTime(Instant.now());
+        participant.setSignupTime(ZonedDateTime.now());
         participant = participantService.save(participant);
         customEventPublisher.publishSignupSuccessfulEvent(
                 eventService.getEvent(eventId, usersLocale, Optional.empty()), participant, usersLocale, userTimeZone);

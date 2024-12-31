@@ -8,7 +8,7 @@ import io.hypersistence.utils.hibernate.type.json.JsonType;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
-import java.time.Instant;
+import java.time.ZonedDateTime;
 import java.util.Map;
 import java.util.UUID;
 import lombok.*;
@@ -60,7 +60,7 @@ public class ParticipantEntity {
     private String belongsToQuota;
     private Boolean isMember;
     private Boolean hasPaid;
-    private Instant signupTime;
+    private ZonedDateTime signupTime;
 
     @Type(JsonType.class)
     @Column(columnDefinition = "json")
@@ -71,10 +71,10 @@ public class ParticipantEntity {
     private Map<String, Object> metaData;
 
     @CreationTimestamp(source = SourceType.DB)
-    private Instant createdAt;
+    private ZonedDateTime createdAt;
 
     @UpdateTimestamp(source = SourceType.DB)
-    private Instant updatedAt;
+    private ZonedDateTime updatedAt;
 
     public ParticipantDto toDto() {
         return ParticipantDto.builder()

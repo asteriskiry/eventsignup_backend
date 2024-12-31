@@ -6,7 +6,6 @@ package fi.asteriski.eventsignup.model.event;
 
 import fi.asteriski.eventsignup.model.signup.SignupEvent;
 import jakarta.validation.constraints.NotNull;
-import java.time.Instant;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Map;
@@ -51,14 +50,14 @@ public class EventDto {
     private String bannerImg;
     private final Map<String, Object> otherData;
     private final Map<String, Object> metaData;
-    private final Instant createdAt;
-    private final Instant updatedAt;
+    private final ZonedDateTime createdAt;
+    private final ZonedDateTime updatedAt;
 
     public EventEntity toEntity() {
-        var event = EventEntity.builder()
+        return EventEntity.builder()
                 .id(id)
                 .name(name)
-                .startDate(startDate.toInstant())
+                .startDate(startDate)
                 .place(place)
                 .description(description)
                 .form(form)
@@ -72,19 +71,10 @@ public class EventDto {
                 .metaData(metaData)
                 .createdAt(createdAt)
                 .updatedAt(updatedAt)
+                .endDate(endDate)
+                .signupStarts(signupStarts)
+                .signupEnds(signupEnds)
                 .build();
-
-        if (signupStarts != null) {
-            event.setEndDate(signupStarts.toInstant());
-        }
-        if (endDate != null) {
-            event.setEndDate(endDate.toInstant());
-        }
-        if (signupEnds != null) {
-            event.setSignupEnds(signupEnds.toInstant());
-        }
-
-        return event;
     }
 
     public SignupEvent toSignupEvent() {

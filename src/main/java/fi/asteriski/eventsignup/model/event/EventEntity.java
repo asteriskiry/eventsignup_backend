@@ -4,11 +4,8 @@ Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
  */
 package fi.asteriski.eventsignup.model.event;
 
-import static fi.asteriski.eventsignup.utils.Constants.UTC_TIME_ZONE;
-
 import io.hypersistence.utils.hibernate.type.json.JsonType;
 import jakarta.persistence.*;
-import java.time.Instant;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Map;
@@ -37,7 +34,7 @@ public final class EventEntity {
     private String name;
 
     @NonNull
-    private Instant startDate;
+    private ZonedDateTime startDate;
 
     @NonNull
     private String place;
@@ -53,11 +50,11 @@ public final class EventEntity {
 
     private String owner;
 
-    private Instant endDate;
+    private ZonedDateTime endDate;
     private Integer minParticipants;
     private Integer maxParticipants;
-    private Instant signupStarts;
-    private Instant signupEnds;
+    private ZonedDateTime signupStarts;
+    private ZonedDateTime signupEnds;
 
     @Type(JsonType.class)
     @Column(columnDefinition = "json")
@@ -75,20 +72,20 @@ public final class EventEntity {
     private Map<String, Object> metaData;
 
     @CreationTimestamp(source = SourceType.DB)
-    private Instant createdAt;
+    private ZonedDateTime createdAt;
 
     @UpdateTimestamp(source = SourceType.DB)
-    private Instant updatedAt;
+    private ZonedDateTime updatedAt;
 
     public EventDto toDto() {
 
         return EventDto.builder()
                 .id(id)
                 .name(name)
-                .startDate(ZonedDateTime.ofInstant(startDate, UTC_TIME_ZONE))
-                .endDate(endDate != null ? ZonedDateTime.ofInstant(endDate, UTC_TIME_ZONE) : null)
-                .signupStarts(signupStarts != null ? ZonedDateTime.ofInstant(signupStarts, UTC_TIME_ZONE) : null)
-                .signupEnds(signupEnds != null ? ZonedDateTime.ofInstant(signupStarts, UTC_TIME_ZONE) : null)
+                .startDate(startDate)
+                .endDate(endDate)
+                .signupStarts(signupStarts)
+                .signupEnds(signupEnds)
                 .place(place)
                 .description(description)
                 .form(form)

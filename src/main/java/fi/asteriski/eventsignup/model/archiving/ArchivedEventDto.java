@@ -21,7 +21,7 @@ public record ArchivedEventDto(
         return ArchivedEventEntity.builder()
                 .id(id)
                 .originalEvent(originalEvent.toEntity())
-                .dateArchived(dateArchived.toInstant())
+                .dateArchived(dateArchived)
                 .numberOfParticipants(numberOfParticipants)
                 .originalOwner(originalOwner)
                 .bannerImage(bannerImage)

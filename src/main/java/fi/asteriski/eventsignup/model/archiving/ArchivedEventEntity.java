@@ -4,12 +4,9 @@ Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
  */
 package fi.asteriski.eventsignup.model.archiving;
 
-import static fi.asteriski.eventsignup.utils.Constants.UTC_TIME_ZONE;
-
 import fi.asteriski.eventsignup.model.event.EventEntity;
 import io.hypersistence.utils.hibernate.type.json.JsonType;
 import jakarta.persistence.*;
-import java.time.Instant;
 import java.time.ZonedDateTime;
 import java.util.UUID;
 import lombok.*;
@@ -39,7 +36,7 @@ public class ArchivedEventEntity {
 
     @NonNull
     @CreationTimestamp(source = SourceType.DB)
-    private Instant dateArchived;
+    private ZonedDateTime dateArchived;
 
     @NonNull
     private Long numberOfParticipants;
@@ -50,13 +47,13 @@ public class ArchivedEventEntity {
     private String bannerImage;
 
     @UpdateTimestamp(source = SourceType.DB)
-    private Instant dateUpdated;
+    private ZonedDateTime dateUpdated;
 
     public ArchivedEventDto toDto() {
         return ArchivedEventDto.builder()
                 .id(id)
                 .originalEvent(originalEvent.toDto())
-                .dateArchived(ZonedDateTime.ofInstant(this.dateArchived, UTC_TIME_ZONE))
+                .dateArchived(dateArchived)
                 .numberOfParticipants(numberOfParticipants)
                 .originalOwner(originalOwner)
                 .bannerImage(bannerImage)
