@@ -5,12 +5,11 @@ Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
 package fi.asteriski.eventsignup.utils;
 
 import java.util.Random;
+import lombok.experimental.UtilityClass;
 
 /** Class for non-testing related utility methods. */
+@UtilityClass
 public final class Utils {
-
-    // To prevent instantiation of the class.
-    private Utils() {}
 
     public static String generateRandomString(int targetStringLength) {
         // Source: https://www.baeldung.com/java-random-string

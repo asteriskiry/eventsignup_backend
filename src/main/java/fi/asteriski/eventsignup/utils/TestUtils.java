@@ -23,17 +23,16 @@ import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.function.Supplier;
+import lombok.experimental.UtilityClass;
 import org.apache.commons.io.IOUtils;
 
 /** Class for utility methods used in testing. */
+@UtilityClass
 public final class TestUtils {
 
     private static final Random random = new Random();
     private static final Supplier<Instant> defaultDateArchivedSupplier =
             () -> Instant.now().minus(random.nextInt(10, 400), ChronoUnit.DAYS);
-
-    // To prevent instantiation of the class.
-    private TestUtils() {}
 
     public static EventDto createRandomEvent(String owner) {
         var form = new Form();

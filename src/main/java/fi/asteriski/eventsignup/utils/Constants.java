@@ -5,9 +5,10 @@ Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
 package fi.asteriski.eventsignup.utils;
 
 import java.time.ZoneId;
+import lombok.experimental.UtilityClass;
 
+@UtilityClass
 public final class Constants {
-    private Constants() {}
 
     public static final String API_PATH_ARCHIVE = "/api/v1/archive";
     public static final String API_PATH_ADMIN = "/api/v1/admin";
