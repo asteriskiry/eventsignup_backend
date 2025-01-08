@@ -96,12 +96,13 @@ Note: Never use these commands in production!
       2. Linux: install from your distro's repo
       3. [macOs](https://podman-desktop.io/docs/installation/macos-install)
    2. Docker Desktop: [Windows](https://docs.docker.com/desktop/install/windows-install/), [Linux](https://docs.docker.com/desktop/install/linux-install/), [MacOs](https://docs.docker.com/desktop/install/mac-install/)
-2. Run Mongodb
-   1. `docker run -d -p 5432:5432 --name postgresql17 postgres:17.0` or
+2. Run Postgres
+   1. `docker run -d -p 5432:5432 --name postgresql17 -e POSTGRES_PASSWORD=1234 postgres:17.0` or
    2. `podman run -dt --pod new:eventsignup -p 8080:8080 -e POSTGRES_PASSWORD=1234 -p 5432:5432 postgres:17.0`
 3. Authenticate to [GHCR](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-container-registry#authenticating-with-a-personal-access-token-classic)
-4. Download .env-dev file from this repo
-5. (Only for podman) `podman run -d --pod=eventsignup --env-file=path/to/.env-dev ghcr.io/asteriskiry/eventsignup_backend:latest`
+4. Create the `eventsignup` database
+5. Download .env-dev file from this repo
+6. (Only for podman) `podman run -d --pod=eventsignup --env-file=path/to/.env-dev ghcr.io/asteriskiry/eventsignup_backend:latest`
    1. Note `latest` gives you the most recent CI pipeline built container which can be a dev snapshot. Use a version tag to get a specific version e.g. 1.0.0.
 
 TODO complete docker instructions.
