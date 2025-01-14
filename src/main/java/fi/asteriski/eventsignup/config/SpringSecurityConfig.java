@@ -16,7 +16,6 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
@@ -32,7 +31,7 @@ public class SpringSecurityConfig {
         public SecurityFilterChain configureDev(@NonNull HttpSecurity http) throws Exception {
             http.authorizeHttpRequests(
                     authorizeHttpRequests -> authorizeHttpRequests.anyRequest().permitAll());
-            http.cors(Customizer.withDefaults()).csrf(AbstractHttpConfigurer::disable);
+            http.cors(Customizer.withDefaults());
 
             return http.build();
         }
@@ -45,9 +44,6 @@ public class SpringSecurityConfig {
 
         @Value("${fi.asteriski.config.security.logout-redirect-url}")
         private String redirectUrl;
-
-        @Value("${fi.asteriski.config.security.allowed-cors-domain}")
-        private String allowedCorsOrigin;
 
         @Bean
         public SecurityFilterChain configureProd(@NonNull HttpSecurity http) throws Exception {
@@ -107,22 +103,27 @@ public class SpringSecurityConfig {
 
             return http.build();
         }
+    }
 
-        private CorsConfiguration getCorsConfiguration() {
-            CorsConfiguration configuration = new CorsConfiguration();
+    public static class ServiceCorsConfiguration extends CorsConfiguration {
+        @Value("${fi.asteriski.config.security.allowed-cors-domain}")
+        private String allowedCorsOrigin;
+
+        @Bean
+        public CorsConfigurationSource corsConfigurationSource() {
+            var configuration = getCorsConfiguration();
+            UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+            source.registerCorsConfiguration("/**", configuration);
+            return source;
+        }
+
+        private ServiceCorsConfiguration getCorsConfiguration() {
+            var configuration = new ServiceCorsConfiguration();
             configuration.setAllowedOrigins(List.of(allowedCorsOrigin));
             configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE"));
             configuration.setAllowedHeaders(List.of("*"));
             configuration.setAllowCredentials(true);
             return configuration;
-        }
-
-        @Bean
-        public CorsConfigurationSource corsConfigurationSource() {
-            CorsConfiguration configuration = getCorsConfiguration();
-            UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-            source.registerCorsConfiguration("/**", configuration);
-            return source;
         }
     }
 }
