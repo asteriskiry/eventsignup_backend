@@ -4,13 +4,9 @@ Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
  */
 package fi.asteriski.eventsignup.utils;
 
-import static fi.asteriski.eventsignup.utils.Constants.UTC_TIME_ZONE;
-
-import fi.asteriski.eventsignup.model.archiving.ArchivedEventDto;
 import fi.asteriski.eventsignup.model.event.EventDto;
 import fi.asteriski.eventsignup.model.event.Form;
 import fi.asteriski.eventsignup.model.signup.ParticipantDto;
-import jakarta.validation.constraints.NotNull;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -21,7 +17,10 @@ import java.nio.file.StandardCopyOption;
 import java.time.Instant;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+import java.util.UUID;
 import java.util.function.Supplier;
 import lombok.experimental.UtilityClass;
 import org.apache.commons.io.IOUtils;
@@ -103,29 +102,29 @@ public final class TestUtils {
         finalFile.deleteOnExit();
         return file;
     }
-
-    public static List<ArchivedEventDto> getRandomArchivedEvents(
-            @NotNull String owner, Optional<Supplier<Instant>> dateArchivedSupplier) {
-        var events = new ArrayList<ArchivedEventDto>();
-        for (int i = 0; i < random.nextInt(200, 1001); i++) {
-            events.add(createRandomArchivedEvent(owner, dateArchivedSupplier));
-        }
-        return events;
-    }
-
-    public static ArchivedEventDto createRandomArchivedEvent(
-            @NotNull String owner, Optional<Supplier<Instant>> dateArchivedSupplier) {
-        var event = createRandomEvent(owner);
-        var dateArchived =
-                dateArchivedSupplier.orElse(defaultDateArchivedSupplier).get();
-        return ArchivedEventDto.builder()
-                .originalEvent(event)
-                .dateArchived(ZonedDateTime.ofInstant(dateArchived, UTC_TIME_ZONE))
-                .numberOfParticipants(random.nextLong(20, 200))
-                .originalOwner(owner)
-                .bannerImage("test_test")
-                .build();
-    }
+    //
+    //    public static List<ArchivedEventDto> getRandomArchivedEvents(
+    //            @NotNull String owner, Optional<Supplier<Instant>> dateArchivedSupplier) {
+    //        var events = new ArrayList<ArchivedEventDto>();
+    //        for (int i = 0; i < random.nextInt(200, 1001); i++) {
+    //            events.add(createRandomArchivedEvent(owner, dateArchivedSupplier));
+    //        }
+    //        return events;
+    //    }
+    //
+    //    public static ArchivedEventDto createRandomArchivedEvent(
+    //            @NotNull String owner, Optional<Supplier<Instant>> dateArchivedSupplier) {
+    //        var event = createRandomEvent(owner);
+    //        var dateArchived =
+    //                dateArchivedSupplier.orElse(defaultDateArchivedSupplier).get();
+    //        return ArchivedEventDto.builder()
+    //                .originalEvent(event)
+    //                .dateArchived(ZonedDateTime.ofInstant(dateArchived, UTC_TIME_ZONE))
+    //                .numberOfParticipants(random.nextLong(20, 200))
+    //                .originalOwner(owner)
+    //                .bannerImage("test_test")
+    //                .build();
+    //    }
 
     public static List<UUID> createRandomIdList() {
         return random.ints()
