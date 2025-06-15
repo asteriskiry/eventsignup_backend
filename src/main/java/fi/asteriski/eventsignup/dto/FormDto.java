@@ -7,7 +7,9 @@ package fi.asteriski.eventsignup.dto;
 import jakarta.validation.constraints.Email;
 import java.util.List;
 import java.util.UUID;
+import lombok.Builder;
 
+@Builder
 public record FormDto(
         UUID id,
         UUID eventId,

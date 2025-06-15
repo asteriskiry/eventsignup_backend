@@ -4,15 +4,17 @@ Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
  */
 package fi.asteriski.eventsignup.service.event;
 
-import fi.asteriski.eventsignup.dao.event.EventDao;
-import fi.asteriski.eventsignup.dto.EventDto;
-import fi.asteriski.eventsignup.dto.MyEvents;
-import fi.asteriski.eventsignup.dto.UsersEvents;
-import fi.asteriski.eventsignup.utils.CustomEventPublisher;
+import static fi.asteriski.eventsignup.utils.Utils.getUserName;
+
+import fi.asteriski.eventsignup.dao.EventDao;
+import fi.asteriski.eventsignup.dao.entity.EventEntity;
+import fi.asteriski.eventsignup.dao.entity.FormEntity;
+import fi.asteriski.eventsignup.dto.*;
+import fi.asteriski.eventsignup.exception.EventNotFoundException;
 import jakarta.validation.constraints.NotNull;
+import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,106 +24,65 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class EventService {
 
-    private EventDao eventDao;
-    private CustomEventPublisher customEventPublisher;
-    private MessageSource messageSource;
+    private final EventDao eventDao;
+    private final FormService formService;
 
     @Transactional
-    public void createNewEvent(@NotNull final EventDto eventDto) {}
+    public void createNewEvent(@NotNull final EventDto eventDto) {
+        eventDao.createNewEvent(eventDto);
+    }
 
-    public MyEvents fetchEvents() {
-        return null;
+    public EventsDto fetchEvents() {
+        var newEvents = eventDao.fetchNewestEvents();
+        var upcomingEvents = eventDao.fetchUpcomingEvents();
+        var pastEvents = eventDao.fetchPastEvents();
+        var events = MyEvents.builder()
+                .newEvents(newEvents.stream().map(EventEntity::toDto).toList())
+                .upcomingEvents(upcomingEvents.stream().map(EventEntity::toDto).toList())
+                .pastEvents(pastEvents.stream().map(EventEntity::toDto).toList())
+                .build();
+        var forms = MyForms.builder()
+                .newEventsForms(newEvents.stream()
+                        .map(EventEntity::getForm)
+                        .map(FormEntity::toDto)
+                        .toList())
+                .upcomingEventsForms(upcomingEvents.stream()
+                        .map(EventEntity::getForm)
+                        .map(FormEntity::toDto)
+                        .toList())
+                .pastEventsForms(pastEvents.stream()
+                        .map(EventEntity::getForm)
+                        .map(FormEntity::toDto)
+                        .toList())
+                .build();
+
+        return EventsDto.builder().myEvents(events).myForms(forms).build();
     }
 
     @Transactional
-    public void updateEvent(@NotNull final EventDto eventDto) {}
+    public void updateEvent(@NotNull final EventDto eventDto) {
+        eventDao.updateEvent(eventDto);
+    }
 
     public UsersEvents fetchUsersEvents() {
-        return null;
+        var events = eventDao.fetchUsersEvents(getUserName());
+        return UsersEvents.builder()
+                .myEvents(events)
+                .myForms(
+                        formService.fetchForms(events.stream().map(EventDto::id).toList()))
+                .build();
     }
 
-    //    @Override
-    //    public EventDto getEvent(
-    //            UUID id, Locale usersLocale, Optional<Supplier<? extends EventSignupException>> errorSupplier) {
-    //        Supplier<EventNotFoundException> defaultErrorSupplier = () -> new EventNotFoundException(
-    //                String.format(messageSource.getMessage("event.not.found.message", null, usersLocale), id));
-    //
-    //        return eventDao.findById(id).orElseThrow(errorSupplier.orElse(defaultErrorSupplier));
-    //    }
-    //
-    //    @Override
-    //    public List<EventDto> getAllEventsForUser(String user) {
-    //        return eventDao.findAllByOwner(user);
-    //    }
-    //
-    //    @Override
-    //    public List<ParticipantDto> getParticipants(UUID eventId) {
-    //        return participantService.findAllByEvent(eventId);
-    //    }
-    //
-    //    @Override
-    //    @Transactional
-    //    public EventDto createNewEvent(EventDto eventDto, Locale usersLocale, ZoneId userTimeZone) {
-    //        var authentication = SecurityContextHolder.getContext().getAuthentication();
-    //        eventDto.setOwner(authentication.getName());
-    //        if (StringUtils.hasText(eventDto.getBannerImg())) {
-    //            eventDto.setBannerImg(String.format("%s_%s", authentication.getName(), eventDto.getBannerImg()));
-    //        }
-    //        if (eventDto.getForm().getUserCreated() == null) {
-    //            eventDto.getForm().setUserCreated(authentication.getName());
-    //        }
-    //        if (eventDto.getForm().getDateCreated() == null) {
-    //            eventDto.getForm().setDateCreated(Instant.now());
-    //        }
-    //        customEventPublisher.publishSavedEventEvent(eventDto, authentication, usersLocale, userTimeZone);
-    //        return eventDao.save(eventDto);
-    //    }
-    //
-    //    @Override
-    //    @Transactional
-    //    public EventDto editExistingEvent(EventDto newEventDto, Locale usersLocale, ZoneId userTimeZone) {
-    //        var authentication = SecurityContextHolder.getContext().getAuthentication();
-    //        var oldEventDto = eventDao.findById(newEventDto.getId()).orElseThrow(() -> {
-    //            log.error(String.format(
-    //                    "%s Unable to edit existing event. Old event with id <%s> was not found!",
-    //                    LOG_PREFIX, newEventDto.getId()));
-    //            return new EventNotFoundException(newEventDto.getId().toString());
-    //        });
-    //        newEventDto.setId(oldEventDto.getId());
-    //        customEventPublisher.publishSavedEventEvent(newEventDto, authentication, usersLocale, userTimeZone);
-    //        return eventDao.save(newEventDto);
-    //    }
-    //
-    //    @Override
-    //    @Transactional
-    //    public void removeEventAndParticipants(UUID eventId) {
-    //        eventDao.deleteById(eventId);
-    //        participantService.deleteAllByEvent(eventId);
-    //    }
-    //
-    //    @Override
-    //    public boolean eventExists(UUID eventId) {
-    //        return eventDao.existsById(eventId);
-    //    }
-    //
-    //    @Override
-    //    public List<EventDto> findAllByStartDateIsBeforeOrEndDateIsBefore(Instant dateLimit, Instant dateLimit1) {
-    //        return eventDao.findAllByStartDateIsBeforeOrEndDateIsBefore(dateLimit, dateLimit1);
-    //    }
-    //
-    //    @Override
-    //    @Transactional
-    //    public void deleteAllByIds(List<UUID> eventIds) {
-    //        eventDao.deleteAllByIds(eventIds);
-    //    }
-    //
-    //    @Override
-    //    public List<EventDto> findAllByStartDateIsBetween(Instant date1, Instant date2) {
-    //        return eventDao.findAllByStartDateIsBetween(date1, date2);
-    //    }
-    //
-    //    @Override
-    //    public List<EventDto> findAll() {
-    //        return eventDao.findAll();
-    //    }
+    public EventDto fetchEventById(UUID eventId) {
+        return eventDao.fetchEventById(eventId).orElseThrow(() -> new EventNotFoundException("Event not found."));
+    }
+
+    public EventEntity fetchEventForSignupById(UUID eventId) {
+        return eventDao.fetchEventForSignup(eventId).orElseThrow(() -> new EventNotFoundException("Event not found."));
+    }
+
+    @Transactional
+    public void save(EventEntity event) {
+        eventDao.save(event);
+    }
 }

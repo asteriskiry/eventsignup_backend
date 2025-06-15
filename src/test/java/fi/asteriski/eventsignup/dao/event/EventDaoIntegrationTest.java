@@ -5,6 +5,7 @@ Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
 
 package fi.asteriski.eventsignup.dao.event;
 
+import fi.asteriski.eventsignup.dao.EventDao;
 import fi.asteriski.eventsignup.repo.event.EventRepository;
 import java.util.Random;
 import org.junit.jupiter.api.AfterEach;
@@ -20,12 +21,12 @@ class EventDaoIntegrationTest {
     @Autowired
     private EventRepository eventRepository;
 
-    private EventDaoImpl eventDao;
+    private EventDao eventDao;
     private final String testUser = "testUser";
 
     @BeforeEach
     void setUp() {
-        eventDao = new EventDaoImpl(eventRepository);
+        eventDao = new EventDao(eventRepository);
     }
 
     @AfterEach

@@ -5,6 +5,7 @@ Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
 package fi.asteriski.eventsignup.dto;
 
 import java.util.List;
+import lombok.Builder;
 
-public record MyEvents(
-        List<EventDto> uusimmatTapahtumat, List<EventDto> tulevatTapahtumat, List<EventDto> menneetTapahtumat) {}
+@Builder
+public record MyEvents(List<EventDto> newEvents, List<EventDto> upcomingEvents, List<EventDto> pastEvents) {}

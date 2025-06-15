@@ -5,5 +5,7 @@ Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
 package fi.asteriski.eventsignup.dto;
 
 import java.util.List;
+import lombok.Builder;
 
+@Builder
 public record UsersEvents(List<EventDto> myEvents, List<FormDto> myForms) {}

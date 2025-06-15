@@ -12,9 +12,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.time.Instant;
-import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.UUID;
@@ -30,49 +28,49 @@ public final class TestUtils {
     private static final Supplier<Instant> defaultDateArchivedSupplier =
             () -> Instant.now().minus(random.nextInt(10, 400), ChronoUnit.DAYS);
 
-    public static EventDto createRandomEvent(String owner) {
-        var form = new Form();
-        var instant = random.nextBoolean()
-                ? ZonedDateTime.now().minusDays(random.nextLong(10, 100))
-                : ZonedDateTime.now().plusDays(random.nextLong(10, 100));
-        var event = EventDto.builder()
-                .name(Utils.generateRandomString(random.nextInt(5, 15)))
-                .startDate(instant)
-                .endDate(instant.plusDays(random.nextLong(10, 100)))
-                .place(Utils.generateRandomString(random.nextInt(5, 15)))
-                .description(Utils.generateRandomString(random.nextInt(20, 50)))
-                .form(form)
-                .build();
-        if (owner != null) {
-            event.setOwner(owner);
-        }
-        return event;
-    }
-
-    public static List<EventDto> getRandomEvents(String owner) {
-        var returnValue = new ArrayList<EventDto>();
-        for (int i = 0; i < random.nextInt(10, 101); i++) {
-            returnValue.add(createRandomEvent(owner));
-        }
-        return returnValue;
-    }
-
-    public static List<ParticipantDto> createRandomParticipants(UUID eventId) {
-        var returnValue = new ArrayList<ParticipantDto>();
-        for (int i = 0; i < random.nextInt(10, 101); i++) {
-            returnValue.add(createRandomParticipant(eventId));
-        }
-        return returnValue;
-    }
-
-    public static ParticipantDto createRandomParticipant(UUID eventId) {
-        eventId = eventId != null ? eventId : UUID.randomUUID();
-        return ParticipantDto.builder()
-                .name(Utils.generateRandomString(random.nextInt(5, 15)))
-                .email(Utils.generateRandomString(random.nextInt(5, 15)))
-                .event(eventId)
-                .build();
-    }
+    //    public static EventDto createRandomEvent(String owner) {
+    //        var form = new Form();
+    //        var instant = random.nextBoolean()
+    //                ? ZonedDateTime.now().minusDays(random.nextLong(10, 100))
+    //                : ZonedDateTime.now().plusDays(random.nextLong(10, 100));
+    //        var event = EventDto.builder()
+    //                .name(Utils.generateRandomString(random.nextInt(5, 15)))
+    //                .startDate(instant)
+    //                .endDate(instant.plusDays(random.nextLong(10, 100)))
+    //                .place(Utils.generateRandomString(random.nextInt(5, 15)))
+    //                .description(Utils.generateRandomString(random.nextInt(20, 50)))
+    //                .form(form)
+    //                .build();
+    //        if (owner != null) {
+    //            event.setOwner(owner);
+    //        }
+    //        return event;
+    //    }
+    //
+    //    public static List<EventDto> getRandomEvents(String owner) {
+    //        var returnValue = new ArrayList<EventDto>();
+    //        for (int i = 0; i < random.nextInt(10, 101); i++) {
+    //            returnValue.add(createRandomEvent(owner));
+    //        }
+    //        return returnValue;
+    //    }
+    //
+    //    public static List<ParticipantDto> createRandomParticipants(UUID eventId) {
+    //        var returnValue = new ArrayList<ParticipantDto>();
+    //        for (int i = 0; i < random.nextInt(10, 101); i++) {
+    //            returnValue.add(createRandomParticipant(eventId));
+    //        }
+    //        return returnValue;
+    //    }
+    //
+    //    public static ParticipantDto createRandomParticipant(UUID eventId) {
+    //        eventId = eventId != null ? eventId : UUID.randomUUID();
+    //        return ParticipantDto.builder()
+    //                .name(Utils.generateRandomString(random.nextInt(5, 15)))
+    //                .email(Utils.generateRandomString(random.nextInt(5, 15)))
+    //                .event(eventId)
+    //                .build();
+    //    }
 
     /**
      * Copies test file to a location expected by the application and returns it as byte[].<br>

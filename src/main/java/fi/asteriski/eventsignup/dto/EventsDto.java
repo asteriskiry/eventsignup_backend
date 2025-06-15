@@ -4,4 +4,7 @@ Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
  */
 package fi.asteriski.eventsignup.dto;
 
+import lombok.Builder;
+
+@Builder
 public record EventsDto(MyEvents myEvents, MyForms myForms) {}

@@ -7,7 +7,7 @@ package fi.asteriski.eventsignup.controller.event;
 import static fi.asteriski.eventsignup.utils.Constants.API_PATH_EVENT;
 
 import fi.asteriski.eventsignup.dto.EventDto;
-import fi.asteriski.eventsignup.dto.MyEvents;
+import fi.asteriski.eventsignup.dto.EventsDto;
 import fi.asteriski.eventsignup.dto.UsersEvents;
 import fi.asteriski.eventsignup.service.event.EventService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -36,12 +36,12 @@ public class EventController {
                         content = {
                             @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    schema = @Schema(implementation = MyEvents.class))
+                                    schema = @Schema(implementation = EventsDto.class))
                         }),
                 @ApiResponse(responseCode = "401", description = "Unauthorized."),
             })
     @GetMapping("/events")
-    public MyEvents fetchEvents() {
+    public EventsDto fetchEvents() {
         return eventService.fetchEvents();
     }
 

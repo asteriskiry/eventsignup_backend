@@ -11,9 +11,11 @@ import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import lombok.Builder;
 
 @EventEndDateIsAfterStartDay(message = "{validation.date.eventEndDateMustBeAfterStartDay}")
 @SignupEndDateIsAfterStartDay(message = "{validation.date.signupEndDateMustBeAfterStartDay}")
+@Builder
 public record EventDto(
         UUID id,
         @NotBlank UUID formId,
