@@ -1,3 +1,6 @@
+import groovy.json.JsonOutput
+import groovy.json.JsonSlurper
+
 plugins {
     id 'java'
     id 'org.springframework.boot' version '3.2.11'
@@ -74,8 +77,34 @@ bootJar {
     archiveFileName = 'eventsignup.jar'
 }
 
-tasks.register('generateTsTypes', NpxTask) {
+tasks.register('filterOpenApiJson') {
     dependsOn('generateOpenApiDocs')
+    doLast {
+        def openApiFile = file("${project.projectDir}/build/openapi.json")
+        def json = new JsonSlurper().parse(openApiFile)
+
+        // Filter out Spring internal schemas
+        def filteredSchemas = json.components.schemas.findAll { key, value ->
+            !key.startsWith('Application') &&
+                !key.startsWith('Autowire') &&
+                !key.startsWith('Bean') &&
+                !key.startsWith('Environment') &&
+                !key.startsWith('Filter') &&
+                !key.startsWith('Servlet') &&
+                !key.startsWith('Session') &&
+                !key.startsWith('Http') &&
+                !key.startsWith('Jsp') &&
+                !key.startsWith('Redirect')
+        }
+
+        json.components.schemas = filteredSchemas
+
+        openApiFile.text = JsonOutput.prettyPrint(JsonOutput.toJson(json))
+    }
+}
+
+tasks.register('generateTsTypes', NpxTask) {
+    dependsOn('filterOpenApiJson')
     command = "openapi-typescript"
     args = ["${project.projectDir}/build/openapi.json", "--output", "${project.projectDir}/typesPlugin/src/generated/events-types.ts"]
 }
