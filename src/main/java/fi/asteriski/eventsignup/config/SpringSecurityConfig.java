@@ -5,6 +5,7 @@ Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
 package fi.asteriski.eventsignup.config;
 
 import static fi.asteriski.eventsignup.utils.Constants.*;
+import static org.springframework.http.HttpHeaders.*;
 
 import java.util.List;
 import lombok.NonNull;
@@ -16,6 +17,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
@@ -32,6 +34,7 @@ public class SpringSecurityConfig {
             http.authorizeHttpRequests(
                     authorizeHttpRequests -> authorizeHttpRequests.anyRequest().permitAll());
             http.cors(Customizer.withDefaults());
+            http.csrf(AbstractHttpConfigurer::disable);
 
             return http.build();
         }
@@ -47,16 +50,20 @@ public class SpringSecurityConfig {
 
         @Bean
         public SecurityFilterChain configureProd(@NonNull HttpSecurity http) throws Exception {
-            http.oauth2Client(Customizer.withDefaults())
+            http.cors(Customizer.withDefaults())
+                    .csrf(AbstractHttpConfigurer::disable) // Disabled as we're using token-based auth
+                    .oauth2Client(Customizer.withDefaults())
                     .oauth2Login(httpSecurityOAuth2LoginConfigurer -> {
                         httpSecurityOAuth2LoginConfigurer.tokenEndpoint(Customizer.withDefaults());
                         httpSecurityOAuth2LoginConfigurer.userInfoEndpoint(Customizer.withDefaults());
                     })
-                    .sessionManagement(
-                            sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.ALWAYS))
+                    .sessionManagement(sessionManagement ->
+                            sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                     .authorizeHttpRequests(authorizeHttpRequests -> authorizeHttpRequests
                             .requestMatchers("/unauthenticated", "/oauth2/**", "/login/**")
                             .permitAll()
+                            .requestMatchers(HttpMethod.OPTIONS, "/**")
+                            .permitAll() // Allow CORS preflight requests
                             .requestMatchers(HttpMethod.GET, API_PATH_ADMIN + "/**")
                             .hasRole(ROLE_ADMIN)
                             .requestMatchers(HttpMethod.POST, API_PATH_ADMIN + "/**")
@@ -95,6 +102,7 @@ public class SpringSecurityConfig {
                             .hasRole(ROLE_ADMIN)
                             .requestMatchers(HttpMethod.GET, "/api-docs.json")
                             .hasRole(ROLE_ADMIN))
+                    .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults())) // Add JWT support
                     .logout(httpSecurityLogoutConfigurer -> {
                         var url = String.format(
                                 "%s/protocol/openid-connect/logout?redirect=%s", keycloakUrl, redirectUrl);
@@ -105,25 +113,31 @@ public class SpringSecurityConfig {
         }
     }
 
-    public static class ServiceCorsConfiguration extends CorsConfiguration {
+    @Configuration
+    public static class CorsConfig {
         @Value("${fi.asteriski.config.security.allowed-cors-domain}")
         private String allowedCorsOrigin;
 
         @Bean
         public CorsConfigurationSource corsConfigurationSource() {
-            var configuration = getCorsConfiguration();
+            var configuration = new CorsConfiguration();
+            configuration.setAllowedOrigins(List.of(allowedCorsOrigin));
+            configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+            configuration.setAllowedHeaders(List.of(
+                    AUTHORIZATION,
+                    CONTENT_TYPE,
+                    "X-Requested-With",
+                    ACCEPT,
+                    ORIGIN,
+                    ACCESS_CONTROL_REQUEST_METHOD,
+                    ACCESS_CONTROL_REQUEST_HEADERS));
+            configuration.setExposedHeaders(List.of(ACCESS_CONTROL_ALLOW_ORIGIN, ACCESS_CONTROL_ALLOW_CREDENTIALS));
+            configuration.setAllowCredentials(true);
+            configuration.setMaxAge(3600L);
+
             UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
             source.registerCorsConfiguration("/**", configuration);
             return source;
-        }
-
-        private ServiceCorsConfiguration getCorsConfiguration() {
-            var configuration = new ServiceCorsConfiguration();
-            configuration.setAllowedOrigins(List.of(allowedCorsOrigin));
-            configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE"));
-            configuration.setAllowedHeaders(List.of("*"));
-            configuration.setAllowCredentials(true);
-            return configuration;
         }
     }
 }

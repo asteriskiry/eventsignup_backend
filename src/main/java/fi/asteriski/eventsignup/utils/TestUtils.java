@@ -4,9 +4,6 @@ Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
  */
 package fi.asteriski.eventsignup.utils;
 
-import fi.asteriski.eventsignup.model.event.EventDto;
-import fi.asteriski.eventsignup.model.event.Form;
-import fi.asteriski.eventsignup.model.signup.ParticipantDto;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;

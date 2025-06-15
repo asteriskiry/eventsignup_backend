@@ -6,6 +6,7 @@ package fi.asteriski.eventsignup.utils;
 
 import java.util.Random;
 import lombok.experimental.UtilityClass;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 /** Class for non-testing related utility methods. */
 @UtilityClass
@@ -22,5 +23,10 @@ public final class Utils {
                 .limit(targetStringLength)
                 .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
                 .toString();
+    }
+
+    public static String getUserName() {
+        final var authentication = SecurityContextHolder.getContext().getAuthentication();
+        return authentication != null ? authentication.getName() : "testUser";
     }
 }

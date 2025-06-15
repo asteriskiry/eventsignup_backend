@@ -1,22 +1,22 @@
 /*
-Copyright Juhani Vähä-Mäkilä (juhani@fmail.co.uk) 2022.
+Copyright Juhani Vähä-Mäkilä (juhani@fmail.co.uk) 2025.
 Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
  */
 package fi.asteriski.eventsignup.controller.signup;
 
-import fi.asteriski.eventsignup.model.signup.ParticipantDto;
-import fi.asteriski.eventsignup.model.signup.SignupEvent;
+import static fi.asteriski.eventsignup.utils.Constants.API_PATH_SIGNUP;
+
+import fi.asteriski.eventsignup.dto.EventDto;
+import fi.asteriski.eventsignup.dto.FormDto;
+import fi.asteriski.eventsignup.dto.ParticipantDto;
 import fi.asteriski.eventsignup.service.signup.SignupService;
-import fi.asteriski.eventsignup.utils.Constants;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import java.time.ZoneId;
-import java.util.List;
-import java.util.Locale;
+import jakarta.validation.Valid;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
 import org.springframework.http.MediaType;
@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.*;
 
 @AllArgsConstructor
 @RestController
-@RequestMapping(Constants.API_PATH_SIGNUP)
+@RequestMapping(API_PATH_SIGNUP)
 public class SignupController {
 
     private SignupService signupService;
@@ -33,8 +33,6 @@ public class SignupController {
             summary = "Get an event for signup purposes.",
             parameters = {
                 @Parameter(name = "eventId", description = "Event's id"),
-                @Parameter(name = "usersLocale", description = "Automatically inserted based on request headers."),
-                @Parameter(name = "userTimeZone", description = "Automatically inserted based on request headers.")
             })
     @ApiResponses(
             value = {
@@ -44,7 +42,7 @@ public class SignupController {
                         content = {
                             @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    schema = @Schema(implementation = SignupEvent.class))
+                                    schema = @Schema(implementation = EventDto.class))
                         }),
                 @ApiResponse(responseCode = "404", description = "Event was already held."),
                 @ApiResponse(
@@ -52,73 +50,36 @@ public class SignupController {
                         description =
                                 "Signup not started/signup already ended/event full. See the message in response for details.")
             })
-    @GetMapping("{eventId}")
-    public SignupEvent getEventForSignup(@PathVariable UUID eventId, Locale usersLocale, ZoneId userTimeZone) {
-        return signupService.getEventForSignUp(eventId, usersLocale, userTimeZone);
+    @GetMapping("/{eventId}")
+    public EventDto fetchSignupEvent(@PathVariable final UUID eventId) {
+        return signupService.fetchSignupEvent(eventId);
     }
 
     @Operation(
-            summary = "Get a list of upcoming events at to selected days.",
-            parameters = {@Parameter(name = "days", description = "How many days into the future events are wanted.")})
+            summary = "Get an event for signup purposes.",
+            parameters = {
+                @Parameter(name = "formId", description = "Form's id"),
+            })
     @ApiResponses(
             value = {
                 @ApiResponse(
                         responseCode = "200",
-                        description = "The events requested.",
+                        description = "The form requested.",
                         content = {
                             @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    schema = @Schema(implementation = SignupEvent.class))
-                        })
+                                    schema = @Schema(implementation = FormDto.class))
+                        }),
+                @ApiResponse(responseCode = "404", description = "Form not found."),
             })
-    @GetMapping("upcomingEvents/{days}")
-    public List<SignupEvent> getUpcomingEvents(@PathVariable String days) {
-        return signupService.getUpcomingEvents(days);
+    @GetMapping(" /form/{formId}")
+    public FormDto fetchSignupForm(@PathVariable final UUID formId) {
+        return signupService.fetchSignupForm(formId);
     }
 
-    @Operation(
-            summary = "Signup for an event (i.e. add a participant).",
-            requestBody =
-                    @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                            content = {
-                                @Content(
-                                        mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                        schema = @Schema(implementation = ParticipantDto.class))
-                            }),
-            parameters = {
-                @Parameter(name = "usersLocale", description = "Automatically inserted based on request headers."),
-                @Parameter(name = "userTimeZone", description = "Automatically inserted based on request headers.")
-            })
-    @ApiResponses(
-            value = {
-                @ApiResponse(responseCode = "200", description = "Signup successful."),
-                @ApiResponse(responseCode = "404", description = "Event not found."),
-            })
-    @PostMapping(value = "{eventId}/add", consumes = "application/json")
-    public void addParticipantToEvent(
-            @PathVariable UUID eventId,
-            @RequestBody ParticipantDto participant,
-            Locale usersLocale,
-            ZoneId userTimeZone) {
-        signupService.addParticipantToEvent(eventId, participant, usersLocale, userTimeZone);
-    }
-
-    @Operation(
-            summary = "Cancel participation to an event.",
-            parameters = {
-                @Parameter(name = "eventId", description = "Event's id where to cancel from."),
-                @Parameter(name = "participantId", description = "Participant's id (who's cancelling)."),
-                @Parameter(name = "usersLocale", description = "Automatically inserted based on request headers."),
-                @Parameter(name = "userTimeZone", description = "Automatically inserted based on request headers.")
-            })
-    @ApiResponses(
-            value = {
-                @ApiResponse(responseCode = "200", description = "Cancellation successful."),
-                @ApiResponse(responseCode = "404", description = "Event not found"),
-            })
-    @DeleteMapping("cancel/{eventId}/{participantId}")
-    public void removeParticipantFromEvent(
-            @PathVariable UUID eventId, @PathVariable UUID participantId, Locale usersLocale, ZoneId userTimeZone) {
-        signupService.removeParticipantFromEvent(eventId, participantId, usersLocale, userTimeZone);
+    @PostMapping("/{eventId}/add")
+    public void signupToAnEvent(
+            @PathVariable final UUID eventId, @Valid @RequestBody final ParticipantDto participantDto) {
+        signupService.signupForAnEvent(eventId, participantDto);
     }
 }
