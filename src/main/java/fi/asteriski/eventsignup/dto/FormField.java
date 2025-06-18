@@ -4,4 +4,6 @@ Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
  */
 package fi.asteriski.eventsignup.dto;
 
-public record FormField(Integer order, String label, String type, String value) {}
+import java.util.List;
+
+public record FormField(Integer order, String label, String type, List<String> value) {}
