@@ -4,13 +4,13 @@ Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
  */
 package fi.asteriski.eventsignup.service.event;
 
+import static fi.asteriski.eventsignup.utils.Constants.EVENT_NOT_FOUND_EXCEPTION_SUPPLIER;
 import static fi.asteriski.eventsignup.utils.Utils.getUserName;
 
 import fi.asteriski.eventsignup.dao.EventDao;
 import fi.asteriski.eventsignup.dao.entity.EventEntity;
 import fi.asteriski.eventsignup.dao.entity.FormEntity;
 import fi.asteriski.eventsignup.dto.*;
-import fi.asteriski.eventsignup.exception.EventNotFoundException;
 import jakarta.validation.constraints.NotNull;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
@@ -29,7 +29,8 @@ public class EventService {
 
     @Transactional
     public void createNewEvent(@NotNull final EventDto eventDto) {
-        eventDao.createNewEvent(eventDto);
+        var form = formService.fetchForm(eventDto.formId());
+        eventDao.createNewEvent(eventDto, form);
     }
 
     public EventsDto fetchEvents() {
@@ -73,12 +74,12 @@ public class EventService {
                 .build();
     }
 
-    public EventDto fetchEventById(UUID eventId) {
-        return eventDao.fetchEventById(eventId).orElseThrow(() -> new EventNotFoundException("Event not found."));
+    public EventDto fetchEventById(@NotNull final UUID eventId) {
+        return eventDao.fetchEventById(eventId).orElseThrow(EVENT_NOT_FOUND_EXCEPTION_SUPPLIER);
     }
 
-    public EventEntity fetchEventForSignupById(UUID eventId) {
-        return eventDao.fetchEventForSignup(eventId).orElseThrow(() -> new EventNotFoundException("Event not found."));
+    public EventEntity fetchEventForSignupById(@NotNull final UUID eventId) {
+        return eventDao.fetchEventEntity(eventId).orElseThrow(EVENT_NOT_FOUND_EXCEPTION_SUPPLIER);
     }
 
     @Transactional

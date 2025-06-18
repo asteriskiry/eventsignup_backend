@@ -6,7 +6,7 @@ Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
 package fi.asteriski.eventsignup.dao.event;
 
 import fi.asteriski.eventsignup.dao.EventDao;
-import fi.asteriski.eventsignup.repo.event.EventRepository;
+import fi.asteriski.eventsignup.dao.repository.EventRepository;
 import java.util.Random;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;

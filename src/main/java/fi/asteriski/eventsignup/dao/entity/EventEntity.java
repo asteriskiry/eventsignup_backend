@@ -9,10 +9,8 @@ import io.hypersistence.utils.hibernate.type.json.JsonType;
 import jakarta.persistence.*;
 import java.time.ZonedDateTime;
 import java.util.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
+import lombok.*;
+import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -34,6 +32,8 @@ import org.hibernate.annotations.UpdateTimestamp;
                     name = "graph_event_participants",
                     attributeNodes = {@NamedAttributeNode(value = "participants")})
         })
+@BatchSize(size = 100)
+@Builder
 public final class EventEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)

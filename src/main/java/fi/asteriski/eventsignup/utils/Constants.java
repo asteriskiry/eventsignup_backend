@@ -4,11 +4,23 @@ Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
  */
 package fi.asteriski.eventsignup.utils;
 
+import fi.asteriski.eventsignup.exception.EventNotFoundException;
+import fi.asteriski.eventsignup.exception.FormNotFoundException;
 import java.time.ZoneId;
+import java.util.function.Supplier;
 import lombok.experimental.UtilityClass;
+import org.springframework.data.domain.Limit;
+import org.springframework.data.domain.Sort;
 
 @UtilityClass
 public final class Constants {
+
+    public static final Limit MAX_FETCHED_EVENTS = Limit.of(5);
+    public static final Sort SORT_BY_CREATED_AT_DESC = Sort.by(Sort.Direction.DESC, "createdAt");
+    public static final Supplier<EventNotFoundException> EVENT_NOT_FOUND_EXCEPTION_SUPPLIER =
+            () -> new EventNotFoundException("Event not found.");
+    public static final Supplier<FormNotFoundException> FORM_NOT_FOUND_EXCEPTION_SUPPLIER =
+            () -> new FormNotFoundException("Form not found");
 
     public static final String API_PATH_ARCHIVE = "/api/v1/archive";
     public static final String API_PATH_ADMIN = "/api/v1/admin";

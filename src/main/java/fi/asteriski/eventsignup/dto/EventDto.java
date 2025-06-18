@@ -4,6 +4,7 @@ Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
  */
 package fi.asteriski.eventsignup.dto;
 
+import fi.asteriski.eventsignup.dao.entity.EventEntity;
 import fi.asteriski.eventsignup.validation.EventEndDateIsAfterStartDay;
 import fi.asteriski.eventsignup.validation.SignupEndDateIsAfterStartDay;
 import jakarta.validation.constraints.*;
@@ -35,4 +36,28 @@ public record EventDto(
         Map<String, Object> metaData,
         ZonedDateTime createdAt,
         ZonedDateTime updatedAt,
-        List<ParticipantDto> participants) {}
+        List<ParticipantDto> participants) {
+
+    public EventEntity toEntity(FormDto formDto) {
+        var form = formDto.toEntity();
+        var event = EventEntity.builder()
+                .id(id)
+                .name(name)
+                .description(description)
+                .place(place)
+                .startDate(startDate)
+                .endDate(endDate)
+                .minParticipants(minParticipants)
+                .maxParticipants(maxParticipants)
+                .signupStarts(signupStarts)
+                .signupEnds(signupEnds)
+                .price(price)
+                .bannerImg(bannerImg)
+                .metaData(metaData)
+                .build();
+
+        form.addEvent(event);
+
+        return event;
+    }
+}
