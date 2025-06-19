@@ -7,13 +7,14 @@ package fi.asteriski.eventsignup.dao.entity;
 import fi.asteriski.eventsignup.dto.EventDto;
 import io.hypersistence.utils.hibernate.type.json.JsonType;
 import jakarta.persistence.*;
-import java.time.ZonedDateTime;
-import java.util.*;
 import lombok.*;
 import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.UpdateTimestamp;
+
+import java.time.ZonedDateTime;
+import java.util.*;
 
 @Data
 @Entity
@@ -75,10 +76,12 @@ public final class EventEntity {
     private String owner;
 
     @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @Builder.Default
     private Set<ParticipantEntity> participants = new LinkedHashSet<>();
 
     @Type(JsonType.class)
     @Column(columnDefinition = "json")
+    @Builder.Default
     private Map<String, Object> metaData = new LinkedHashMap<>();
 
     @UpdateTimestamp
