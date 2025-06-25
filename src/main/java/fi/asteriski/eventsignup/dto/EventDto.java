@@ -20,7 +20,7 @@ import java.util.UUID;
 @Builder
 public record EventDto(
         UUID id,
-        @NotNull UUID formId,
+        @NotNull FormDto formDto,
         @NotBlank(message = "{validation.event.name.notBlank}") String name,
         @NotBlank(message = "{validation.event.description.notBlank}") String description,
         @NotBlank(message = "{validation.event.place.notBlank}") String place,
@@ -39,7 +39,7 @@ public record EventDto(
         ZonedDateTime updatedAt,
         List<ParticipantDto> participants) {
 
-    public EventEntity toEntity(FormDto formDto) {
+    public EventEntity toEntity() {
         var form = formDto.toEntity();
         var event = EventEntity.builder()
                 .id(id)

@@ -4,10 +4,7 @@ Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
  */
 package fi.asteriski.eventsignup.controller.signup;
 
-import static fi.asteriski.eventsignup.utils.Constants.API_PATH_SIGNUP;
-
 import fi.asteriski.eventsignup.dto.EventDto;
-import fi.asteriski.eventsignup.dto.FormDto;
 import fi.asteriski.eventsignup.dto.ParticipantDto;
 import fi.asteriski.eventsignup.service.signup.SignupService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -17,10 +14,13 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
-import java.util.UUID;
 import lombok.AllArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.UUID;
+
+import static fi.asteriski.eventsignup.utils.Constants.API_PATH_SIGNUP;
 
 @AllArgsConstructor
 @RestController
@@ -55,27 +55,27 @@ public class SignupController {
         return signupService.fetchSignupEvent(eventId);
     }
 
-    @Operation(
-            summary = "Get an event for signup purposes.",
-            parameters = {
-                @Parameter(name = "formId", description = "Form's id"),
-            })
-    @ApiResponses(
-            value = {
-                @ApiResponse(
-                        responseCode = "200",
-                        description = "The form requested.",
-                        content = {
-                            @Content(
-                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    schema = @Schema(implementation = FormDto.class))
-                        }),
-                @ApiResponse(responseCode = "404", description = "Form not found."),
-            })
-    @GetMapping(" /form/{formId}")
-    public FormDto fetchSignupForm(@PathVariable final UUID formId) {
-        return signupService.fetchSignupForm(formId);
-    }
+//    @Operation(
+//            summary = "Get an event's form for signup purposes.",
+//            parameters = {
+//                @Parameter(name = "formDto", description = "Form's id"),
+//            })
+//    @ApiResponses(
+//            value = {
+//                @ApiResponse(
+//                        responseCode = "200",
+//                        description = "The form requested.",
+//                        content = {
+//                            @Content(
+//                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+//                                    schema = @Schema(implementation = FormDto.class))
+//                        }),
+//                @ApiResponse(responseCode = "404", description = "Form not found."),
+//            })
+//    @GetMapping(" /form/{formId}")
+//    public FormDto fetchSignupForm(@PathVariable final UUID formId) {
+//        return signupService.fetchSignupForm(formId);
+//    }
 
     @PostMapping("/{eventId}/add")
     public void signupToAnEvent(

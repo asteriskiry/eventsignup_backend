@@ -4,19 +4,20 @@ Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
  */
 package fi.asteriski.eventsignup.service.event;
 
-import static fi.asteriski.eventsignup.utils.Constants.EVENT_NOT_FOUND_EXCEPTION_SUPPLIER;
-import static fi.asteriski.eventsignup.utils.Utils.getUserName;
-
 import fi.asteriski.eventsignup.dao.EventDao;
 import fi.asteriski.eventsignup.dao.entity.EventEntity;
 import fi.asteriski.eventsignup.dao.entity.FormEntity;
 import fi.asteriski.eventsignup.dto.*;
 import jakarta.validation.constraints.NotNull;
-import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.UUID;
+
+import static fi.asteriski.eventsignup.utils.Constants.EVENT_NOT_FOUND_EXCEPTION_SUPPLIER;
+import static fi.asteriski.eventsignup.utils.Utils.getUserName;
 
 @Log4j2
 @AllArgsConstructor
@@ -29,8 +30,7 @@ public class EventService {
 
     @Transactional
     public void createNewEvent(@NotNull final EventDto eventDto) {
-        var form = formService.fetchForm(eventDto.formId());
-        eventDao.createNewEvent(eventDto, form);
+        eventDao.createNewEvent(eventDto);
     }
 
     public EventsDto fetchEvents() {

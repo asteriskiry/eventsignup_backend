@@ -5,20 +5,20 @@ Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
 
 package fi.asteriski.eventsignup.dao;
 
-import static fi.asteriski.eventsignup.utils.Constants.*;
-
 import fi.asteriski.eventsignup.dao.entity.EventEntity;
 import fi.asteriski.eventsignup.dao.repository.EventRepository;
 import fi.asteriski.eventsignup.dto.EventDto;
-import fi.asteriski.eventsignup.dto.FormDto;
 import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Component;
+
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import lombok.AllArgsConstructor;
-import org.springframework.data.domain.Sort;
-import org.springframework.stereotype.Component;
+
+import static fi.asteriski.eventsignup.utils.Constants.*;
 
 @Component
 @AllArgsConstructor
@@ -35,8 +35,8 @@ public class EventDao {
         eventRepository.save(event);
     }
 
-    public void createNewEvent(@NotNull final EventDto eventDto, FormDto form) {
-        save(eventDto.toEntity(form));
+    public void createNewEvent(@NotNull final EventDto eventDto) {
+        save(eventDto.toEntity());
     }
 
     public List<EventEntity> fetchNewestEvents() {
