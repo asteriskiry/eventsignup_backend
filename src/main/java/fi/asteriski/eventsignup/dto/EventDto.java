@@ -8,18 +8,19 @@ import fi.asteriski.eventsignup.dao.entity.EventEntity;
 import fi.asteriski.eventsignup.validation.EventEndDateIsAfterStartDay;
 import fi.asteriski.eventsignup.validation.SignupEndDateIsAfterStartDay;
 import jakarta.validation.constraints.*;
+import lombok.Builder;
+
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import lombok.Builder;
 
 @EventEndDateIsAfterStartDay(message = "{validation.date.eventEndDateMustBeAfterStartDay}")
 @SignupEndDateIsAfterStartDay(message = "{validation.date.signupEndDateMustBeAfterStartDay}")
 @Builder
 public record EventDto(
         UUID id,
-        @NotBlank UUID formId,
+        @NotNull UUID formId,
         @NotBlank(message = "{validation.event.name.notBlank}") String name,
         @NotBlank(message = "{validation.event.description.notBlank}") String description,
         @NotBlank(message = "{validation.event.place.notBlank}") String place,
