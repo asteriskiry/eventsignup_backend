@@ -13,7 +13,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Data
@@ -57,18 +57,18 @@ public final class EventEntity {
 
     @NonNull
     @Column(nullable = false)
-    private ZonedDateTime startDate;
+    private LocalDateTime startDate;
 
-    private ZonedDateTime endDate;
+    private LocalDateTime endDate;
     private Double price;
     private Integer minParticipants;
     private Integer maxParticipants;
 
     @NonNull
     @Column(nullable = false)
-    private ZonedDateTime signupStarts;
+    private LocalDateTime signupStarts;
 
-    private ZonedDateTime signupEnds;
+    private LocalDateTime signupEnds;
     private String bannerImg;
 
     @NonNull
@@ -86,11 +86,11 @@ public final class EventEntity {
 
     @UpdateTimestamp
     @Column(nullable = false)
-    private ZonedDateTime updatedAt;
+    private LocalDateTime updatedAt;
 
     @CreationTimestamp
     @Column(nullable = false)
-    private ZonedDateTime createdAt;
+    private LocalDateTime createdAt;
 
     public void addParticipant(ParticipantEntity participant) {
         participants.add(participant);

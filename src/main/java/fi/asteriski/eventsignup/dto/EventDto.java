@@ -10,7 +10,7 @@ import fi.asteriski.eventsignup.validation.SignupEndDateIsAfterStartDay;
 import jakarta.validation.constraints.*;
 import lombok.Builder;
 
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -20,29 +20,30 @@ import java.util.UUID;
 @Builder
 public record EventDto(
         UUID id,
-        @NotNull FormDto formDto,
+        @NotNull UUID formId,
         @NotBlank(message = "{validation.event.name.notBlank}") String name,
         @NotBlank(message = "{validation.event.description.notBlank}") String description,
         @NotBlank(message = "{validation.event.place.notBlank}") String place,
         @NotNull(message = "{validation.event.startDate.notNull}")
                 @Future(message = "{validation.event.date.inTheFuture}")
-                ZonedDateTime startDate,
-        ZonedDateTime endDate,
+            LocalDateTime startDate,
+        LocalDateTime endDate,
         @Positive(message = "{validation.event.number.positive}") Integer minParticipants,
         @Positive(message = "{validation.event.number.positive}") Integer maxParticipants,
-        @NotNull @FutureOrPresent(message = "{validation.event.signupDate.inTheFuture") ZonedDateTime signupStarts,
-        ZonedDateTime signupEnds,
+        @NotNull @FutureOrPresent(message = "{validation.event.signupDate.inTheFuture") LocalDateTime signupStarts,
+        LocalDateTime signupEnds,
         @Positive(message = "{validation.event.number.positive}") Double price,
         String bannerImg,
         Map<String, Object> metaData,
-        ZonedDateTime createdAt,
-        ZonedDateTime updatedAt,
+        LocalDateTime createdAt,
+        LocalDateTime updatedAt,
         List<ParticipantDto> participants) {
 
-    public EventEntity toEntity() {
-        var form = formDto.toEntity();
+    public EventEntity toEntity(FormDto form, String user) {
+        var formEntity = form.toEntity();
         var event = EventEntity.builder()
                 .id(id)
+                .owner(user)
                 .name(name)
                 .description(description)
                 .place(place)
@@ -57,7 +58,7 @@ public record EventDto(
                 .metaData(metaData)
                 .build();
 
-        form.addEvent(event);
+        formEntity.addEvent(event);
 
         return event;
     }

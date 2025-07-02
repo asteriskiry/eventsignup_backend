@@ -8,6 +8,9 @@ package fi.asteriski.eventsignup.dao;
 import fi.asteriski.eventsignup.dao.entity.EventEntity;
 import fi.asteriski.eventsignup.dao.repository.EventRepository;
 import fi.asteriski.eventsignup.dto.EventDto;
+import fi.asteriski.eventsignup.dto.NewEventAndFormRequest;
+import fi.asteriski.eventsignup.utils.Utils;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Sort;
@@ -35,8 +38,9 @@ public class EventDao {
         eventRepository.save(event);
     }
 
-    public void createNewEvent(@NotNull final EventDto eventDto) {
-        save(eventDto.toEntity());
+    public void createNewEvent(final @Valid NewEventAndFormRequest eventDto) {
+        var user = Utils.getUserName();
+        save(eventDto.event().toEntity(eventDto.form(), user));
     }
 
     public List<EventEntity> fetchNewestEvents() {

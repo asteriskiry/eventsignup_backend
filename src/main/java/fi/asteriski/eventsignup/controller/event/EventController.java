@@ -8,6 +8,7 @@ import static fi.asteriski.eventsignup.utils.Constants.API_PATH_EVENT;
 
 import fi.asteriski.eventsignup.dto.EventDto;
 import fi.asteriski.eventsignup.dto.EventsDto;
+import fi.asteriski.eventsignup.dto.NewEventAndFormRequest;
 import fi.asteriski.eventsignup.dto.UsersEvents;
 import fi.asteriski.eventsignup.service.event.EventService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -70,7 +71,7 @@ public class EventController {
                             content = {
                                 @Content(
                                         mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                        schema = @Schema(implementation = EventDto.class))
+                                        schema = @Schema(implementation = NewEventAndFormRequest.class))
                             }))
     @ApiResponses(
             value = {
@@ -78,7 +79,7 @@ public class EventController {
                 @ApiResponse(responseCode = "401", description = "Unauthorized.")
             })
     @PostMapping("/create")
-    public void createNewEvent(@Valid @RequestBody final EventDto eventDto) {
+    public void createNewEvent(@Valid @RequestBody final NewEventAndFormRequest eventDto) {
         eventService.createNewEvent(eventDto);
     }
 

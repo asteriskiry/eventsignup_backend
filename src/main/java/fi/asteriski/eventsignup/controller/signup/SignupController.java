@@ -58,7 +58,7 @@ public class SignupController {
 //    @Operation(
 //            summary = "Get an event's form for signup purposes.",
 //            parameters = {
-//                @Parameter(name = "formDto", description = "Form's id"),
+//                @Parameter(name = "formId", description = "Form's id"),
 //            })
 //    @ApiResponses(
 //            value = {

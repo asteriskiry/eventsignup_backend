@@ -8,6 +8,7 @@ import fi.asteriski.eventsignup.dao.EventDao;
 import fi.asteriski.eventsignup.dao.entity.EventEntity;
 import fi.asteriski.eventsignup.dao.entity.FormEntity;
 import fi.asteriski.eventsignup.dto.*;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -29,7 +30,7 @@ public class EventService {
     private final FormService formService;
 
     @Transactional
-    public void createNewEvent(@NotNull final EventDto eventDto) {
+    public void createNewEvent(final @Valid NewEventAndFormRequest eventDto) {
         eventDao.createNewEvent(eventDto);
     }
 
