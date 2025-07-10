@@ -5,6 +5,8 @@ Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
 package fi.asteriski.eventsignup.dao.repository;
 
 import fi.asteriski.eventsignup.dao.entity.EventEntity;
+
+import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -19,8 +21,8 @@ public interface EventRepository extends JpaRepository<EventEntity, UUID> {
     @EntityGraph("graph_event_participants")
     List<EventEntity> findAllByOwner(String owner);
 
-    List<EventEntity> findAllByCreatedAtIsBefore(ZonedDateTime createdAtBefore, Sort sort, Limit limit);
+    List<EventEntity> findAllByCreatedAtIsBefore(LocalDateTime createdAtBefore, Sort sort, Limit limit);
 
     List<EventEntity> findAllByEndDateBetween(
-            ZonedDateTime endDateAfter, ZonedDateTime endDateBefore, Sort sort, Limit limit);
+            LocalDateTime endDateAfter, LocalDateTime endDateBefore, Sort sort, Limit limit);
 }

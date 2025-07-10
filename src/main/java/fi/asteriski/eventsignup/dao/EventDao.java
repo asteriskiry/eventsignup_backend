@@ -45,19 +45,19 @@ public class EventDao {
 
     public List<EventEntity> fetchNewestEvents() {
         return eventRepository.findAllByCreatedAtIsBefore(
-                ZonedDateTime.now().plusDays(1), SORT_BY_CREATED_AT_DESC, MAX_FETCHED_EVENTS);
+                ZonedDateTime.now().plusDays(1).toLocalDateTime(), SORT_BY_CREATED_AT_DESC, MAX_FETCHED_EVENTS);
     }
 
     public List<EventEntity> fetchUpcomingEvents() {
         var now = ZonedDateTime.now();
         return eventRepository.findAllByEndDateBetween(
-                now, now.plusDays(90), SORT_BY_START_DATE_DESC, MAX_FETCHED_EVENTS);
+                now.toLocalDateTime(), now.plusDays(90).toLocalDateTime(), SORT_BY_START_DATE_DESC, MAX_FETCHED_EVENTS);
     }
 
     public List<EventEntity> fetchPastEvents() {
         var now = ZonedDateTime.now();
         return eventRepository.findAllByEndDateBetween(
-                now, now.minusDays(90), SORT_BY_START_DATE_DESC, MAX_FETCHED_EVENTS);
+                now.toLocalDateTime(), now.minusDays(90).toLocalDateTime(), SORT_BY_START_DATE_DESC, MAX_FETCHED_EVENTS);
     }
 
     public void updateEvent(@NotNull final EventDto eventDto) {

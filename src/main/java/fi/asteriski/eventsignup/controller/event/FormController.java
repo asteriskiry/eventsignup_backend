@@ -6,13 +6,13 @@ package fi.asteriski.eventsignup.controller.event;
 
 import static fi.asteriski.eventsignup.utils.Constants.API_PATH_FORM;
 
+import fi.asteriski.eventsignup.dto.EventDto;
 import fi.asteriski.eventsignup.dto.FormDto;
 import fi.asteriski.eventsignup.service.event.FormService;
 import lombok.AllArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.UUID;
 
 @AllArgsConstructor
 @RestController(API_PATH_FORM)
@@ -28,5 +28,10 @@ public class FormController {
     @PostMapping("/create")
     public void createForm(@RequestBody final FormDto formDto) {
         formService.createForm(formDto);
+    }
+
+    @GetMapping("/{formId}")
+    public FormDto fetchForm(@PathVariable final UUID formId) {
+        return formService.fetchForm(formId);
     }
 }
