@@ -6,8 +6,9 @@ package fi.asteriski.eventsignup.service.event;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import fi.asteriski.eventsignup.exception.ImageNotFoundException;
-import fi.asteriski.eventsignup.utils.TestUtils;
+import fi.asteriski.eventsignup.components.service.ImageServiceImpl;
+import fi.asteriski.eventsignup.supporting.exception.ImageNotFoundException;
+import fi.asteriski.eventsignup.supporting.utils.TestUtils;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
