@@ -25,7 +25,7 @@ public final class Constants {
     public static final String API_PATH_ARCHIVE = "/api/v1/archive";
     public static final String API_PATH_ADMIN = "/api/v1/admin";
     public static final String API_PATH_EVENT = "/api/v1/event";
-    public static final String API_PATH_PARTICIPANT = "/api/v1/participant";
+    public static final String API_PATH_PARTICIPANT = "/api/v1/form";
     public static final String API_PATH_SIGNUP = "/api/v1/signup";
     public static final String API_PATH_FORM = "/api/v1/form";
     public static final ZoneId UTC_TIME_ZONE = ZoneId.of("Z");

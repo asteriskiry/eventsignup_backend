@@ -44,6 +44,7 @@ public final class ParticipantEntity {
     private List<Answer> answers;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "form_id", nullable = false)
     private FormEntity form;
 
     @Override

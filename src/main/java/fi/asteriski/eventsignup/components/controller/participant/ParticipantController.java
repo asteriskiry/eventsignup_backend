@@ -21,7 +21,8 @@ import java.util.UUID;
 import static fi.asteriski.eventsignup.supporting.utils.Constants.API_PATH_PARTICIPANT;
 
 @AllArgsConstructor
-@RestController(API_PATH_PARTICIPANT)
+@RestController
+@RequestMapping(API_PATH_PARTICIPANT)
 public class ParticipantController {
 
     private final ParticipantService participantService;
@@ -43,19 +44,20 @@ public class ParticipantController {
                 }),
             @ApiResponse(responseCode = "404", description = "Form not found."),
         })
-    @GetMapping("/forms/{formId}/participants")
+    @GetMapping("/{formId}/participants")
     public List<ParticipantDto> fetchForm(@PathVariable final UUID formId) {
         return participantService.getAllByFormId(formId);
     }
 
     @Operation(
-        summary = "Add a participant to the form",
+        summary = "Add a participant to a form",
         parameters = {
             @Parameter(name = "formId", description = "Form's id"),
         })
-    @GetMapping("/forms/{formId}/signup")
+    @PostMapping("/{formId}/signup")
     public ParticipantDto add(@PathVariable UUID formId,
                               @RequestBody @Valid ParticipantDto dto) {
+        System.out.println("Request received");
         return participantService.addParticipant(formId, dto);
     }
 }

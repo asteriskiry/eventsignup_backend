@@ -30,6 +30,8 @@ public class ParticipantService {
 
     @Transactional
     public ParticipantDto addParticipant(UUID formId, ParticipantDto participantDto) {
+        System.out.println("ASDAR:::");
+        System.out.println(participantDto);
         // 1. fetch the FormEntity (or getReference for the FK proxy)
         FormEntity form = formService.fetchForm(formId).toEntity();
 
