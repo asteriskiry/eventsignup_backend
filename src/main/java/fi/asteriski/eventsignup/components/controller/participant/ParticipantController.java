@@ -2,6 +2,7 @@ package fi.asteriski.eventsignup.components.controller.participant;
 
 import fi.asteriski.eventsignup.components.dto.FormDto;
 import fi.asteriski.eventsignup.components.dto.ParticipantDto;
+import fi.asteriski.eventsignup.components.dto.ParticipantNameDto;
 import fi.asteriski.eventsignup.components.service.FormService;
 import fi.asteriski.eventsignup.components.service.ParticipantService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -28,7 +29,38 @@ public class ParticipantController {
     private final ParticipantService participantService;
 
     @Operation(
-        summary = "Get the names of all the participants who have signed up on a form",
+        summary = "Add a participant to a form",
+        parameters = {
+            @Parameter(name = "formId", description = "Form's id"),
+        })
+    @PostMapping("/{formId}/signup")
+    public ParticipantDto add(@PathVariable UUID formId,
+                              @RequestBody @Valid ParticipantDto dto) {
+        System.out.println("Request received");
+        return participantService.addParticipant(formId, dto);
+    }
+
+    @GetMapping("/{formId}/participants/names")
+    @ApiResponses({
+        @ApiResponse(
+            responseCode = "200",
+            description = "List of participant names.",
+            content = @Content(
+                mediaType = MediaType.APPLICATION_JSON_VALUE,
+                schema = @Schema(implementation = ParticipantNameDto.class, type = "array")
+            )
+        ),
+        @ApiResponse(responseCode = "404", description = "Form not found.")
+    })
+    public List<ParticipantNameDto> fetchParticipantNames(@PathVariable UUID formId) {
+        return participantService.findNamesByFormId(formId)
+            .stream()
+            .map(ParticipantNameDto::new)
+            .toList();
+    }
+
+    @Operation(
+        summary = "Get all participant data on participants who have signed up on a form",
         parameters = {
             @Parameter(name = "formId", description = "Form's id"),
         })
@@ -36,7 +68,7 @@ public class ParticipantController {
         value = {
             @ApiResponse(
                 responseCode = "200",
-                description = "The participant names requested.",
+                description = "The full participant data requested.",
                 content = {
                     @Content(
                         mediaType = MediaType.APPLICATION_JSON_VALUE,
@@ -47,17 +79,5 @@ public class ParticipantController {
     @GetMapping("/{formId}/participants")
     public List<ParticipantDto> fetchForm(@PathVariable final UUID formId) {
         return participantService.getAllByFormId(formId);
-    }
-
-    @Operation(
-        summary = "Add a participant to a form",
-        parameters = {
-            @Parameter(name = "formId", description = "Form's id"),
-        })
-    @PostMapping("/{formId}/signup")
-    public ParticipantDto add(@PathVariable UUID formId,
-                              @RequestBody @Valid ParticipantDto dto) {
-        System.out.println("Request received");
-        return participantService.addParticipant(formId, dto);
     }
 }

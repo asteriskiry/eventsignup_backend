@@ -21,13 +21,6 @@ public class ParticipantService {
     private final ParticipantDao participantDao;
     private final FormService formService;
 
-    public List<ParticipantDto> getAllByFormId(UUID formId) {
-        return participantRepository.findAllByFormId(formId)
-            .stream()
-            .map(ParticipantEntity::toDto)
-            .toList();
-    }
-
     @Transactional
     public ParticipantDto addParticipant(UUID formId, ParticipantDto participantDto) {
         System.out.println("ASDAR:::");
@@ -41,6 +34,18 @@ public class ParticipantService {
         // 3. persist and return DTO
         ParticipantEntity saved = participantRepository.save(entity);
         return saved.toDto();
+    }
+
+    public List<String> findNamesByFormId(UUID formId) {
+        // delegates to repository
+        return participantRepository.findNamesByFormId(formId);
+    }
+
+    public List<ParticipantDto> getAllByFormId(UUID formId) {
+        return participantRepository.findAllByFormId(formId)
+            .stream()
+            .map(ParticipantEntity::toDto)
+            .toList();
     }
 
     @Transactional
