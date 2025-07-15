@@ -46,6 +46,11 @@ public class FormDao {
         save(oldForm);
     }
 
+    //According to convention
+    FormEntity fetchFormEntity(UUID formId) {
+        return formRepository.findById(formId).orElseThrow(FORM_NOT_FOUND_EXCEPTION_SUPPLIER);
+    }
+
     private void save(FormEntity entity) {
         formRepository.save(entity);
     }

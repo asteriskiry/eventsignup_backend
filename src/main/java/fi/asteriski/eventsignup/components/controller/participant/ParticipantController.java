@@ -13,6 +13,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,6 +25,7 @@ import static fi.asteriski.eventsignup.supporting.utils.Constants.API_PATH_PARTI
 @AllArgsConstructor
 @RestController
 @RequestMapping(API_PATH_PARTICIPANT)
+@Log4j2
 public class ParticipantController {
 
     private final ParticipantService participantService;
@@ -36,7 +38,7 @@ public class ParticipantController {
     @PostMapping("/{formId}/signup")
     public ParticipantDto add(@PathVariable UUID formId,
                               @RequestBody @Valid ParticipantDto dto) {
-        System.out.println("Request received");
+        log.info("Request received");
         return participantService.addParticipant(formId, dto);
     }
 

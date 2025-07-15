@@ -20,7 +20,8 @@ import jakarta.validation.constraints.NotNull;
 public class ParticipantDao {
 
     private final ParticipantRepository participantRepository;
-    private final FormService formService;
+    private final FormService formService; //TODO käytä dao servisen sijaan
+    private final FormDao formDao;
 
     public List<ParticipantDto> findAllByFormId(@NotNull UUID formId) {
         return participantRepository
@@ -38,6 +39,17 @@ public class ParticipantDao {
         ParticipantEntity entity = dto.toEntity(form);
 
         // 3. save and map back to DTO
+        ParticipantEntity saved = participantRepository.save(entity);
+        return saved.toDto();
+    }
+
+    public ParticipantDto addParticipant(UUID formId, ParticipantDto participantDto) {
+        FormEntity form = formDao.fetchFormEntity(formId);
+
+        // 2. map → ParticipantEntity
+        ParticipantEntity entity = participantDto.toEntity(form);
+
+        // 3. persist and return DTO
         ParticipantEntity saved = participantRepository.save(entity);
         return saved.toDto();
     }

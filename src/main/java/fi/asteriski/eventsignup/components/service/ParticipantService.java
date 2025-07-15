@@ -23,17 +23,8 @@ public class ParticipantService {
 
     @Transactional
     public ParticipantDto addParticipant(UUID formId, ParticipantDto participantDto) {
-        System.out.println("ASDAR:::");
-        System.out.println(participantDto);
         // 1. fetch the FormEntity (or getReference for the FK proxy)
-        FormEntity form = formService.fetchForm(formId).toEntity();
-
-        // 2. map → ParticipantEntity
-        ParticipantEntity entity = participantDto.toEntity(form);
-
-        // 3. persist and return DTO
-        ParticipantEntity saved = participantRepository.save(entity);
-        return saved.toDto();
+        return participantDao.addParticipant(formId, participantDto);
     }
 
     public List<String> findNamesByFormId(UUID formId) {
