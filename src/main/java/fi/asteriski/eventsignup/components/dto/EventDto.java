@@ -20,7 +20,6 @@ import java.util.UUID;
 @Builder
 public record EventDto(
         UUID id,
-        @NotNull UUID formId,
         @NotBlank(message = "{validation.event.name.notBlank}") String name,
         @NotBlank(message = "{validation.event.description.notBlank}") String description,
         @NotBlank(message = "{validation.event.place.notBlank}") String place,
@@ -36,8 +35,8 @@ public record EventDto(
         String bannerImg,
         Map<String, Object> metaData,
         LocalDateTime createdAt,
-        LocalDateTime updatedAt,
-        List<ParticipantDto> participants) {
+        LocalDateTime updatedAt)
+    {
 
     public EventEntity toEntity(FormDto form, String user) {
         var formEntity = form.toEntity();
@@ -58,7 +57,7 @@ public record EventDto(
                 .metaData(metaData)
                 .build();
 
-        formEntity.addEvent(event);
+        formEntity.setEvent(event);
 
         return event;
     }

@@ -39,11 +39,12 @@ public class FormDao {
         save(formDto.toEntity());
     }
 
-    public void updateForm(@NotNull final FormDto formDto) {
+    public FormDto updateForm(@NotNull final FormDto formDto) {
         var oldForm = formRepository.findById(formDto.id()).orElseThrow(FORM_NOT_FOUND_EXCEPTION_SUPPLIER);
         EventEntity event = getEventEntity(formDto, oldForm);
         oldForm.update(formDto, event);
-        save(oldForm);
+        FormEntity saved = formRepository.save(oldForm);
+        return saved.toDto();
     }
 
     //According to convention
@@ -58,9 +59,9 @@ public class FormDao {
     private EventEntity getEventEntity(@NotNull final FormDto formDto, @NotNull final FormEntity oldForm) {
         EventEntity event = null;
         if (!oldForm.getEvent().getId().equals(formDto.eventId())) {
-            event = eventService.fetchEventEntity(formDto.eventId())
+            return eventService.fetchEventEntity(formDto.eventId())
                 .orElseThrow(EVENT_NOT_FOUND_EXCEPTION_SUPPLIER);
         }
-        return event;
+        return oldForm.getEvent();
     }
 }

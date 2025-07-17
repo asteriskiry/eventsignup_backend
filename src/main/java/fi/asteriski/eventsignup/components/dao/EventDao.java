@@ -59,10 +59,12 @@ public class EventDao {
                 now.toLocalDateTime(), now.minusDays(90).toLocalDateTime(), SORT_BY_START_DATE_DESC, MAX_FETCHED_EVENTS);
     }
 
-    public void updateEvent(@NotNull final EventDto eventDto) {
-        var oldEvent = fetchEventEntity(eventDto.id()).orElseThrow(EVENT_NOT_FOUND_EXCEPTION_SUPPLIER);
-        oldEvent.update(eventDto);
-        save(oldEvent);
+    public EventDto updateEvent(@NotNull EventDto eventDto) {
+        var existing = fetchEventEntity(eventDto.id())
+            .orElseThrow(EVENT_NOT_FOUND_EXCEPTION_SUPPLIER);
+        existing.update(eventDto);
+        var saved = eventRepository.save(existing);
+        return saved.toDto();           // ← map the truly updated entity
     }
 
     public List<EventDto> fetchUsersEvents(@NotNull final String userName) {

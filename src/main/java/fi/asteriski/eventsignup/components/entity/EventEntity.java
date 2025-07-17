@@ -17,6 +17,7 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 @Data
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
@@ -32,10 +33,27 @@ import java.util.*;
 public final class EventEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
+    @EqualsAndHashCode.Include
     private UUID id;
 
-    @OneToOne(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true)
-    private FormEntity form;
+    @OneToMany(
+        mappedBy   = "event",
+        fetch      = FetchType.LAZY,
+        cascade    = CascadeType.ALL,
+        orphanRemoval = true
+    )
+    @Builder.Default
+    private Set<FormEntity> forms = new LinkedHashSet<>();
+
+    //AI:n add ja remove:
+    public void addForm(FormEntity form) {
+        form.setEvent(this);
+    }
+
+    public void removeForm(FormEntity form) {
+        form.setEvent(null);
+    }
+
 
     @NonNull
     @Column(nullable = false)

@@ -27,8 +27,8 @@ public class FormController {
     private final FormService formService;
 
     @PutMapping("/update")
-    public void updateForm(@RequestBody final FormDto formDto) {
-        formService.updateForm(formDto);
+    public FormDto updateForm(@RequestBody final FormDto formDto) {
+        return formService.updateForm(formDto);
     }
 
     @PostMapping("/create")

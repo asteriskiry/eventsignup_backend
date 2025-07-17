@@ -14,9 +14,8 @@ import lombok.Builder;
 public record FormDto(
         UUID id,
         UUID eventId,
-        @Email(message = "{validation.signup.email.notValid}") String userEmail,
         List<FormField> fields) {
     public FormEntity toEntity() {
-        return FormEntity.builder().id(id).fields(fields).userEmail(userEmail).build();
+        return FormEntity.builder().id(id).fields(fields).build();
     }
 }

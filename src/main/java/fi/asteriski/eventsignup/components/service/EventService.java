@@ -44,16 +44,18 @@ public class EventService {
                 .pastEvents(pastEvents.stream().map(EventEntity::toDto).toList())
                 .build();
         var forms = MyForms.builder()
-                .newEventsForms(newEvents.stream()
-                        .map(EventEntity::getForm)
-                        .map(FormEntity::toDto)
-                        .toList())
-                .upcomingEventsForms(upcomingEvents.stream()
-                        .map(EventEntity::getForm)
+                .newEventsForms(
+                    newEvents.stream()
+                        .flatMap(event -> event.getForms().stream())  // Stream<FormEntity>
+                        .map(FormEntity::toDto)                       // Stream<FormDto>
+                        .toList())                                      // List<FormDto>
+                .upcomingEventsForms(
+                    upcomingEvents.stream()
+                        .flatMap(event -> event.getForms().stream())
                         .map(FormEntity::toDto)
                         .toList())
                 .pastEventsForms(pastEvents.stream()
-                        .map(EventEntity::getForm)
+                        .flatMap(event -> event.getForms().stream())
                         .map(FormEntity::toDto)
                         .toList())
                 .build();
@@ -62,8 +64,8 @@ public class EventService {
     }
 
     @Transactional
-    public void updateEvent(@NotNull final EventDto eventDto) {
-        eventDao.updateEvent(eventDto);
+    public EventDto updateEvent(@NotNull final EventDto eventDto) {
+        return eventDao.updateEvent(eventDto);
     }
 
     public UsersEvents fetchUsersEvents() {

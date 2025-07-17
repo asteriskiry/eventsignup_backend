@@ -22,8 +22,8 @@ public class FormService {
     private final FormDao formDao;
 
     @Transactional
-    public void updateForm(@NotNull final FormDto formDto) {
-        formDao.updateForm(formDto);
+    public FormDto updateForm(@NotNull final FormDto formDto) {
+        return formDao.updateForm(formDto);
     }
 
     @Transactional

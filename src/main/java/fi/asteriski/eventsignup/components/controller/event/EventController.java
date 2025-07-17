@@ -98,7 +98,7 @@ public class EventController {
                 @ApiResponse(responseCode = "401", description = "Unauthorized.")
             })
     @PutMapping("/update")
-    public void updateEvent(@Valid @RequestBody final EventDto eventDto) {
-        eventService.updateEvent(eventDto);
+    public EventDto updateEvent(@Valid @RequestBody final EventDto eventDto) {
+        return eventService.updateEvent(eventDto);
     }
 }

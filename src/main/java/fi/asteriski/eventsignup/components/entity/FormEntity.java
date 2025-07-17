@@ -12,15 +12,13 @@ import jakarta.validation.constraints.NotNull;
 
 import java.util.*;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.Type;
 
 @Entity
 @Data
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Table(
         name = "forms",
         indexes = {@Index(name = "idx_event_id", columnList = "event_id")})
@@ -31,9 +29,10 @@ import org.hibernate.annotations.Type;
 public final class FormEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
+    @EqualsAndHashCode.Include
     private UUID id;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "event_id", nullable = false)
     private EventEntity event;
 
@@ -45,35 +44,45 @@ public final class FormEntity {
     @Column(columnDefinition = "json", nullable = false)
     private List<FormField> fields;
 
-    private String userEmail;
-
-    public void addEvent(EventEntity event) {
+//    public void addEvent(EventEntity event) {
+//        this.event = event;
+//        event.setForm(this);
+//    }
+    // JA AI:n ehdotus --------------->
+    public void setEvent(EventEntity event) {
+        // 1) Detach from any previous event
+        if (this.event != null) {
+            this.event.getForms().remove(this);
+        }
+        // 2) Attach to the new event
         this.event = event;
-        event.setForm(this);
-    }
-
-    public void removeEvent(EventEntity entity) {
-        if (Objects.equals(this.event, entity)) {
-            this.event.setForm(null);
-            this.event = null;
+        if (event != null) {
+            event.getForms().add(this);
         }
     }
+//
+//    public void removeEvent(EventEntity entity) {
+//        if (Objects.equals(this.event, entity)) {
+//            this.event.setForm(null);
+//            this.event = null;
+//        }
+//    }
 
-    @OneToMany(
-        mappedBy = "form",
-        cascade = CascadeType.ALL,
-        orphanRemoval = true,
-        fetch = FetchType.LAZY
-    )
-    public void addParticipant(ParticipantEntity participant) {
-        participants.add(participant);
-        participant.setForm(this);
-    }
+//    @OneToMany(
+//        mappedBy = "form",
+//        cascade = CascadeType.ALL,
+//        orphanRemoval = true,
+//        fetch = FetchType.LAZY
+//    )
+//    public void addParticipant(ParticipantEntity participant) {
+//        participants.add(participant);
+//        participant.setForm(this);
+//    }
 
-    public void removeParticipant(ParticipantEntity participant) {
-        participants.remove(participant);
-        participant.setForm(null);
-    }
+//    public void removeParticipant(ParticipantEntity participant) {
+//        participants.remove(participant);
+//        participant.setForm(null);
+//    }
 
     public FormDto toDto() {
         return FormDto.builder().id(id).eventId(event.getId()).fields(fields).build();
@@ -81,10 +90,7 @@ public final class FormEntity {
 
     public void update(@NotNull FormDto formDto, EventEntity event) {
         fields = formDto.fields();
-        userEmail = formDto.userEmail();
-        if (event != null) {
-            removeEvent(getEvent());
-            addEvent(event);
-        }
+        // Sync parent event:
+        setEvent(event);
     }
 }
