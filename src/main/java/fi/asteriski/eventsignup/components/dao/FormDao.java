@@ -30,6 +30,11 @@ public class FormDao {
             .map(FormEntity::toDto)
             .toList();
     }
+    public List<FormDto> fetchFormsByEventIds(@NotNull List<UUID> eventIds) {
+        return formRepository.findAllByEvent_IdIn(eventIds).stream()
+            .map(FormEntity::toDto)
+            .toList();
+    }
     public Optional<FormDto> fetchForm(@NotNull UUID formId) {
         return formRepository.findById(formId)
             .map(FormEntity::toDto);

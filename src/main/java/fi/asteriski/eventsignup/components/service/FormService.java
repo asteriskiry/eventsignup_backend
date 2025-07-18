@@ -39,4 +39,7 @@ public class FormService {
     public List<FormDto> fetchForms(@NotNull final List<UUID> formIds) {
         return formDao.fetchForms(formIds);
     }
+    public List<FormDto> fetchFormsByEventIds(@NotNull final List<UUID> EventIds) {
+        return formDao.fetchFormsByEventIds(EventIds);
+    }
 }

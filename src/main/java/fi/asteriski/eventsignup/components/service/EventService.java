@@ -15,6 +15,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.UUID;
 
 import static fi.asteriski.eventsignup.supporting.utils.Constants.EVENT_NOT_FOUND_EXCEPTION_SUPPLIER;
@@ -68,13 +69,33 @@ public class EventService {
         return eventDao.updateEvent(eventDto);
     }
 
-    public UsersEvents fetchUsersEvents() {
-        var events = eventDao.fetchUsersEvents(getUserName());
+//    public UsersEvents fetchUsersEventsNForms() {
+//        var events = eventDao.fetchUsersEvents(getUserName());
+//        return UsersEvents.builder()
+//                .myEvents(events)
+//                .myForms(
+//                        formService.fetchForms(events.stream().map(EventDto::id).toList()))
+//                .build();
+//    }
+
+    public UsersEvents fetchUsersEventsNForms() {
+        //String user = auth.getCurrentUsername();
+        String user = getUserName();
+        List<EventDto> events = eventDao.fetchUsersEvents(user);
+
+        // extract all the event IDs
+        List<UUID> ids = events.stream()
+            .map(EventDto::id)
+            .toList();
+
+        //Eli täs yritetään hakee formeja listalla eventID:tä, muttaniitä verrataan formidhen
+        //Loogisestihan me voitais tehdä fetchFormsByEventIds -> tää on paras
+        List<FormDto> forms = formService.fetchFormsByEventIds(events.stream().map(EventDto::id).toList());
+
         return UsersEvents.builder()
-                .myEvents(events)
-                .myForms(
-                        formService.fetchForms(events.stream().map(EventDto::id).toList()))
-                .build();
+            .myEvents(events)
+            .myForms(forms)
+            .build();
     }
 
     public EventDto fetchEventById(@NotNull final UUID eventId) {

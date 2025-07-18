@@ -61,7 +61,7 @@ public class EventController {
             })
     @GetMapping("/users-events")
     public UsersEvents fetchUsersEvents() {
-        return eventService.fetchUsersEvents();
+        return eventService.fetchUsersEventsNForms();
     }
 
     @Operation(

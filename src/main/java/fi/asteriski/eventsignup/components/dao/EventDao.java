@@ -44,7 +44,7 @@ public class EventDao {
 
     public List<EventEntity> fetchNewestEvents() {
         return eventRepository.findAllByCreatedAtIsBefore(
-                ZonedDateTime.now().plusDays(1).toLocalDateTime(), SORT_BY_CREATED_AT_DESC, MAX_FETCHED_EVENTS);
+                ZonedDateTime.now().toLocalDateTime(), SORT_BY_CREATED_AT_DESC, MAX_FETCHED_EVENTS);
     }
 
     public List<EventEntity> fetchUpcomingEvents() {
