@@ -8,6 +8,7 @@ import fi.asteriski.eventsignup.components.dao.EventDao;
 import fi.asteriski.eventsignup.components.entity.EventEntity;
 import fi.asteriski.eventsignup.components.entity.FormEntity;
 import fi.asteriski.eventsignup.components.dto.*;
+import fi.asteriski.eventsignup.components.entity.ParticipantEntity;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -44,6 +45,11 @@ public class EventService {
                 .upcomingEvents(upcomingEvents.stream().map(EventEntity::toDto).toList())
                 .pastEvents(pastEvents.stream().map(EventEntity::toDto).toList())
                 .build();
+
+        //Eventtilistoja vastaavat formit
+        var newForms = newEvents.stream().flatMap(event -> event.getForms().stream()).toList();
+        var upcomingForms = upcomingEvents.stream().flatMap(event -> event.getForms().stream()).toList();
+        var pastForms = pastEvents.stream().flatMap(event -> event.getForms().stream()).toList();
         var forms = MyForms.builder()
                 .newEventsForms(
                     newEvents.stream()
@@ -61,7 +67,22 @@ public class EventService {
                         .toList())
                 .build();
 
-        return EventsDto.builder().myEvents(events).myForms(forms).build();
+        //Formeja vastaavat participantit
+        var newParticipants = newForms.stream()
+            .flatMap(form -> form.getParticipants().stream())
+            .map(ParticipantEntity::toDto).toList();
+        var upcomingParticipants = upcomingForms.stream()
+            .flatMap(form -> form.getParticipants().stream())
+            .map(ParticipantEntity::toDto).toList();
+        var pastParticipants = pastForms.stream()
+            .flatMap(form -> form.getParticipants().stream())
+            .map(ParticipantEntity::toDto).toList();
+        var participants = MyParticipants.builder()
+            .newParticipants(newParticipants)
+            .upcomingParticipants(upcomingParticipants)
+            .pastParticipants(pastParticipants).build();
+
+        return EventsDto.builder().myEvents(events).myForms(forms).myParticipants(participants).build();
     }
 
     @Transactional
@@ -83,13 +104,11 @@ public class EventService {
         String user = getUserName();
         List<EventDto> events = eventDao.fetchUsersEvents(user);
 
-        // extract all the event IDs
-        List<UUID> ids = events.stream()
-            .map(EventDto::id)
-            .toList();
+//        // extract all the event IDs
+//        List<UUID> ids = events.stream()
+//            .map(EventDto::id)
+//            .toList();
 
-        //Eli täs yritetään hakee formeja listalla eventID:tä, muttaniitä verrataan formidhen
-        //Loogisestihan me voitais tehdä fetchFormsByEventIds -> tää on paras
         List<FormDto> forms = formService.fetchFormsByEventIds(events.stream().map(EventDto::id).toList());
 
         return UsersEvents.builder()

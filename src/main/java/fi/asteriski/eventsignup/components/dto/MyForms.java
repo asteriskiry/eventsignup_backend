@@ -8,4 +8,8 @@ import java.util.List;
 import lombok.Builder;
 
 @Builder
-public record MyForms(List<FormDto> newEventsForms, List<FormDto> upcomingEventsForms, List<FormDto> pastEventsForms) {}
+public record MyForms(
+    List<FormDto> newEventsForms,
+    List<FormDto> upcomingEventsForms,
+    List<FormDto> pastEventsForms
+) {}

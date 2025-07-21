@@ -18,8 +18,15 @@ import org.springframework.stereotype.Repository;
 public interface EventRepository extends JpaRepository<EventEntity, UUID> {
     List<EventEntity> findAllByOwner(String owner);
 
-    List<EventEntity> findAllByCreatedAtIsBefore(LocalDateTime createdAtBefore, Sort sort, Limit limit);
+    List<EventEntity> findAllByCreatedAtIsBefore(
+        LocalDateTime createdAtBefore,
+        Sort sort,
+        Limit limit
+    );
 
     List<EventEntity> findAllByEndDateBetween(
-        LocalDateTime endDateBefore, LocalDateTime endDateAfter, Sort sort, Limit limit);
+        LocalDateTime start,
+        LocalDateTime end,
+        Sort sort,
+        Limit limit);
 }

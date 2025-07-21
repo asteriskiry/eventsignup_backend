@@ -7,4 +7,4 @@ package fi.asteriski.eventsignup.components.dto;
 import lombok.Builder;
 
 @Builder
-public record EventsDto(MyEvents myEvents, MyForms myForms) {}
+public record EventsDto(MyEvents myEvents, MyForms myForms, MyParticipants myParticipants) {}

@@ -26,6 +26,8 @@ import java.util.UUID;
 @AllArgsConstructor
 public class EventDao {
     private static final Sort SORT_BY_START_DATE_DESC = Sort.by(Sort.Direction.DESC, "startDate");
+    private static final Sort SORT_BY_END_DATE_DESC = Sort.by(Sort.Direction.DESC, "endDate");
+    private static final Sort SORT_BY_END_DATE_ASC = Sort.by(Sort.Direction.ASC, "endDate");
 
     private final EventRepository eventRepository;
 
@@ -50,13 +52,13 @@ public class EventDao {
     public List<EventEntity> fetchUpcomingEvents() {
         var now = ZonedDateTime.now();
         return eventRepository.findAllByEndDateBetween(
-                now.toLocalDateTime(), now.plusDays(90).toLocalDateTime(), SORT_BY_START_DATE_DESC, MAX_FETCHED_EVENTS);
+                now.toLocalDateTime(), now.plusDays(360).toLocalDateTime(), SORT_BY_END_DATE_ASC, MAX_FETCHED_EVENTS);
     }
 
     public List<EventEntity> fetchPastEvents() {
         var now = ZonedDateTime.now();
         return eventRepository.findAllByEndDateBetween(
-                now.toLocalDateTime(), now.minusDays(90).toLocalDateTime(), SORT_BY_START_DATE_DESC, MAX_FETCHED_EVENTS);
+            now.minusDays(360).toLocalDateTime(), now.toLocalDateTime(), SORT_BY_END_DATE_DESC, MAX_FETCHED_EVENTS);
     }
 
     public EventDto updateEvent(@NotNull EventDto eventDto) {
