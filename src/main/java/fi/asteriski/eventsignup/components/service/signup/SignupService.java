@@ -24,6 +24,7 @@ import static fi.asteriski.eventsignup.supporting.utils.Constants.EVENT_NOT_FOUN
 @AllArgsConstructor
 @Service
 @Transactional(readOnly = true)
+//Not used, currently using participantservice for signups
 public class SignupService {
 
     private final EventService eventService;

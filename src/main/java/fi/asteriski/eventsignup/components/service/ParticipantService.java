@@ -19,7 +19,6 @@ public class ParticipantService {
 
     private final ParticipantRepository participantRepository;
     private final ParticipantDao participantDao;
-    private final FormService formService;
 
     @Transactional
     public ParticipantDto addParticipant(UUID formId, ParticipantDto participantDto) {
