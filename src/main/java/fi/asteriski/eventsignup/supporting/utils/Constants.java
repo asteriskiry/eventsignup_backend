@@ -31,4 +31,6 @@ public final class Constants {
     public static final ZoneId UTC_TIME_ZONE = ZoneId.of("Z");
     public static final String ROLE_ADMIN = "ADMIN";
     public static final String ROLE_USER = "USER";
+
+    public static final String UUID_REGEX = "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}";
 }
