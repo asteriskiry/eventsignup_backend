@@ -5,7 +5,7 @@ Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
 package fi.asteriski.eventsignup.components.dto;
 
 import fi.asteriski.eventsignup.components.entity.FormEntity;
-import jakarta.validation.constraints.Email;
+
 import java.util.List;
 import java.util.UUID;
 import lombok.Builder;

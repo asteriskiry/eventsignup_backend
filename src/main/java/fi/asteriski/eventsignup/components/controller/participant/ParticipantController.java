@@ -1,9 +1,7 @@
 package fi.asteriski.eventsignup.components.controller.participant;
 
-import fi.asteriski.eventsignup.components.dto.FormDto;
 import fi.asteriski.eventsignup.components.dto.ParticipantDto;
 import fi.asteriski.eventsignup.components.dto.ParticipantNameDto;
-import fi.asteriski.eventsignup.components.service.FormService;
 import fi.asteriski.eventsignup.components.service.ParticipantService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;

@@ -11,7 +11,6 @@ import jakarta.validation.constraints.*;
 import lombok.Builder;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -31,7 +30,7 @@ public record EventDto(
         @Positive(message = "{validation.event.number.positive}") Integer maxParticipants,
         @NotNull @FutureOrPresent(message = "{validation.event.signupDate.inTheFuture") LocalDateTime signupStarts,
         LocalDateTime signupEnds,
-        @Positive(message = "{validation.event.number.positive}") Double price,
+        @PositiveOrZero(message = "{validation.event.number.positive}") Double price,
         String bannerImg,
         Map<String, Object> metaData,
         LocalDateTime createdAt,

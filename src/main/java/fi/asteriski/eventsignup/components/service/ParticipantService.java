@@ -1,7 +1,6 @@
 package fi.asteriski.eventsignup.components.service;
 
 import fi.asteriski.eventsignup.components.dao.ParticipantDao;
-import fi.asteriski.eventsignup.components.entity.FormEntity;
 import fi.asteriski.eventsignup.components.entity.ParticipantEntity;
 import fi.asteriski.eventsignup.components.dao.repository.ParticipantRepository;
 import fi.asteriski.eventsignup.components.dto.ParticipantDto;

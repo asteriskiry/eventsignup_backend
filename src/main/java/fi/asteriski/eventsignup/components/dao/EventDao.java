@@ -31,17 +31,17 @@ public class EventDao {
 
     private final EventRepository eventRepository;
 
+    public EventEntity createNewEvent(final @Valid NewEventAndFormRequest requestEnF) {
+        var user = Utils.getUserName();
+        return save(requestEnF.event().toEntity(requestEnF.form(), user));
+    }
+
     public Optional<EventDto> fetchEventById(@NotNull final UUID eventId) {
         return eventRepository.findById(eventId).map(EventEntity::toDto);
     }
 
-    public void save(@NotNull final EventEntity event) {
-        eventRepository.save(event);
-    }
-
-    public void createNewEvent(final @Valid NewEventAndFormRequest eventDto) {
-        var user = Utils.getUserName();
-        save(eventDto.event().toEntity(eventDto.form(), user));
+    public EventEntity save(@NotNull final EventEntity event) {
+        return eventRepository.save(event);
     }
 
     public List<EventEntity> fetchNewestEvents() {

@@ -40,8 +40,7 @@ public final class EventEntity {
         mappedBy   = "event",
         fetch      = FetchType.LAZY,
         cascade    = CascadeType.ALL,
-        orphanRemoval = true
-    )
+        orphanRemoval = true )
     @Builder.Default
     private Set<FormEntity> forms = new LinkedHashSet<>();
 
@@ -53,7 +52,6 @@ public final class EventEntity {
     public void removeForm(FormEntity form) {
         form.setEvent(null);
     }
-
 
     @NonNull
     @Column(nullable = false)

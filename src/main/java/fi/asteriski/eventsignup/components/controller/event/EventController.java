@@ -10,7 +10,6 @@ import fi.asteriski.eventsignup.components.dto.*;
 import fi.asteriski.eventsignup.components.service.AdminService;
 import fi.asteriski.eventsignup.components.service.EventService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -39,12 +38,18 @@ public class EventController {
             }))
     @ApiResponses(
         value = {
-            @ApiResponse(responseCode = "200", description = "Event creation successful."),
+            @ApiResponse(responseCode = "201",
+                description = "Event creation successful.",
+                content = @Content(
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = EventDto.class)
+                )
+            ),
             @ApiResponse(responseCode = "401", description = "Unauthorized.")
         })
     @PostMapping("/create")
-    public void createNewEvent(@Valid @RequestBody final NewEventAndFormRequest eventDto) {
-        eventService.createNewEvent(eventDto);
+    public EventWithFormsDto createNewEvent(@Valid @RequestBody final NewEventAndFormRequest eventDto) {
+        return eventService.createNewEvent(eventDto);
     }
 
     @Operation(summary = "Get latest, upcoming and past events.")

@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import static fi.asteriski.eventsignup.supporting.utils.Constants.EVENT_NOT_FOUND_EXCEPTION_SUPPLIER;
 import static fi.asteriski.eventsignup.supporting.utils.Utils.getUserName;
@@ -32,8 +33,15 @@ public class EventService {
     private final FormService formService;
 
     @Transactional
-    public void createNewEvent(final @Valid NewEventAndFormRequest eventDto) {
-        eventDao.createNewEvent(eventDto);
+    public EventWithFormsDto createNewEvent(final @Valid NewEventAndFormRequest requestData) {
+        EventEntity savedEvent = eventDao.createNewEvent(requestData);
+
+        EventDto eventDto = savedEvent.toDto();
+        List<FormDto> formDtos = savedEvent.getForms().stream()
+            .map(FormEntity::toDto)
+            .collect(Collectors.toList());
+
+        return new EventWithFormsDto(eventDto, formDtos);
     }
 
     public EventsDto fetchEvents() {
