@@ -10,7 +10,7 @@ import java.util.UUID;
 import lombok.Builder;
 
 @Builder
-public record FormDto(UUID id, UUID eventId, List<FormField> fields) {
+public record FormDto(UUID id, UUID eventId, List<FormField> fields, List<ParticipantDto> participants) {
     public FormEntity toEntity() {
         return FormEntity.builder().id(id).fields(fields).build();
     }

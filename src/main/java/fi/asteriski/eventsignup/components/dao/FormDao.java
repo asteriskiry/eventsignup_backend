@@ -9,7 +9,6 @@ import static fi.asteriski.eventsignup.supporting.utils.Constants.FORM_NOT_FOUND
 
 import fi.asteriski.eventsignup.components.dao.repository.FormRepository;
 import fi.asteriski.eventsignup.components.dto.FormDto;
-import fi.asteriski.eventsignup.components.dto.ParticipantDto;
 import fi.asteriski.eventsignup.components.entity.EventEntity;
 import fi.asteriski.eventsignup.components.entity.FormEntity;
 import jakarta.validation.constraints.NotNull;
@@ -69,5 +68,4 @@ public class FormDao {
         }
         return oldForm.getEvent();
     }
-
 }

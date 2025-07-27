@@ -9,6 +9,7 @@ import fi.asteriski.eventsignup.supporting.validation.EventEndDateIsAfterStartDa
 import fi.asteriski.eventsignup.supporting.validation.SignupEndDateIsAfterStartDay;
 import jakarta.validation.constraints.*;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import lombok.Builder;
@@ -33,7 +34,8 @@ public record EventDto(
         String bannerImg,
         Map<String, Object> metaData,
         LocalDateTime createdAt,
-        LocalDateTime updatedAt) {
+        LocalDateTime updatedAt,
+        List<FormDto> form) {
 
     public EventEntity toEntity(FormDto form, String user) {
         var formEntity = form.toEntity();

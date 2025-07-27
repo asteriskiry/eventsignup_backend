@@ -18,7 +18,6 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.NaturalIdCache;
 import org.hibernate.annotations.Type;
-import org.hibernate.proxy.HibernateProxy;
 
 @Data
 @Entity
@@ -62,21 +61,8 @@ public final class ParticipantEntity {
 
     // Consider moving this toDto mapper to a seperate mapper as it bloats the file
     public ParticipantDto toDto() {
-        UUID formId = null;
-        if (form != null) {
-            // trick the compiler: treat form as Object, so casting to HibernateProxy is allowed
-            Object maybeProxy = form;
-            if (maybeProxy instanceof HibernateProxy proxy) {
-                // proxy holds the FK without initializing the whole FormEntity
-                formId = (UUID) proxy.getHibernateLazyInitializer().getIdentifier();
-            } else {
-                formId = form.getId();
-            }
-        }
-
         return ParticipantDto.builder()
                 .id(id)
-                .formId(form.getId())
                 .userEmail(userEmail)
                 .name(name)
                 .answers(answers)

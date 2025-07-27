@@ -52,7 +52,7 @@ public class EventController {
         return eventService.createNewEvent(eventDto);
     }
 
-    @Operation(summary = "Get latest, upcoming and past events.")
+    @Operation(summary = "Get latest, upcoming and past events with their forms and participants.")
     @ApiResponses(
             value = {
                 @ApiResponse(
@@ -61,12 +61,12 @@ public class EventController {
                         content = {
                             @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    schema = @Schema(implementation = EventsDto.class))
+                                    schema = @Schema(implementation = MyEvents.class))
                         }),
                 @ApiResponse(responseCode = "401", description = "Unauthorized."),
             })
     @GetMapping("/events")
-    public EventsDto fetchEvents() {
+    public MyEvents fetchEvents() {
         return eventService.fetchEvents();
     }
 

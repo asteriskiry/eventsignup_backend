@@ -11,7 +11,6 @@ import fi.asteriski.eventsignup.components.dao.EventDao;
 import fi.asteriski.eventsignup.components.dto.*;
 import fi.asteriski.eventsignup.components.entity.EventEntity;
 import fi.asteriski.eventsignup.components.entity.FormEntity;
-import fi.asteriski.eventsignup.components.entity.ParticipantEntity;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import java.util.List;
@@ -42,62 +41,14 @@ public class EventService {
         return new EventWithFormsDto(eventDto, formDtos);
     }
 
-    public EventsDto fetchEvents() {
+    public MyEvents fetchEvents() {
         var newEvents = eventDao.fetchNewestEvents();
         var upcomingEvents = eventDao.fetchUpcomingEvents();
         var pastEvents = eventDao.fetchPastEvents();
-        var events = MyEvents.builder()
+        return MyEvents.builder()
                 .newEvents(newEvents.stream().map(EventEntity::toDto).toList())
                 .upcomingEvents(upcomingEvents.stream().map(EventEntity::toDto).toList())
                 .pastEvents(pastEvents.stream().map(EventEntity::toDto).toList())
-                .build();
-
-        // Eventtilistoja vastaavat formit
-        var newForms =
-                newEvents.stream().flatMap(event -> event.getForms().stream()).toList();
-        var upcomingForms = upcomingEvents.stream()
-                .flatMap(event -> event.getForms().stream())
-                .toList();
-        var pastForms =
-                pastEvents.stream().flatMap(event -> event.getForms().stream()).toList();
-        var forms = MyForms.builder()
-                .newEventsForms(newEvents.stream()
-                        .flatMap(event -> event.getForms().stream()) // Stream<FormEntity>
-                        .map(FormEntity::toDto) // Stream<FormDto>
-                        .toList()) // List<FormDto>
-                .upcomingEventsForms(upcomingEvents.stream()
-                        .flatMap(event -> event.getForms().stream())
-                        .map(FormEntity::toDto)
-                        .toList())
-                .pastEventsForms(pastEvents.stream()
-                        .flatMap(event -> event.getForms().stream())
-                        .map(FormEntity::toDto)
-                        .toList())
-                .build();
-
-        // Formeja vastaavat participantit
-        var newParticipants = newForms.stream()
-                .flatMap(form -> form.getParticipants().stream())
-                .map(ParticipantEntity::toDto)
-                .toList();
-        var upcomingParticipants = upcomingForms.stream()
-                .flatMap(form -> form.getParticipants().stream())
-                .map(ParticipantEntity::toDto)
-                .toList();
-        var pastParticipants = pastForms.stream()
-                .flatMap(form -> form.getParticipants().stream())
-                .map(ParticipantEntity::toDto)
-                .toList();
-        var participants = MyParticipants.builder()
-                .newParticipants(newParticipants)
-                .upcomingParticipants(upcomingParticipants)
-                .pastParticipants(pastParticipants)
-                .build();
-
-        return EventsDto.builder()
-                .myEvents(events)
-                .myForms(forms)
-                .myParticipants(participants)
                 .build();
     }
 

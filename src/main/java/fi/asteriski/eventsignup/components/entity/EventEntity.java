@@ -27,6 +27,14 @@ import org.hibernate.annotations.UpdateTimestamp;
             @Index(name = "idx_startDate", columnList = "startDate"),
             @Index(name = "idx_createdAt", columnList = "createdAt")
         })
+@NamedEntityGraph(
+        name = "event-with-forms-and-participants",
+        attributeNodes = {@NamedAttributeNode(value = "forms", subgraph = "forms-subgraph")},
+        subgraphs = {
+            @NamedSubgraph(
+                    name = "forms-subgraph",
+                    attributeNodes = {@NamedAttributeNode("participants")})
+        })
 @BatchSize(size = 100)
 @Builder
 public final class EventEntity {
@@ -125,6 +133,7 @@ public final class EventEntity {
                 .createdAt(createdAt)
                 .updatedAt(updatedAt)
                 .metaData(metaData)
+                .form(forms.stream().map(FormEntity::toDto).toList())
                 .build();
     }
 }

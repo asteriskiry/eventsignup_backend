@@ -9,7 +9,10 @@ import fi.asteriski.eventsignup.components.dto.FormField;
 import io.hypersistence.utils.hibernate.type.json.JsonType;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import java.util.*;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 import lombok.*;
 import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.Type;
@@ -83,7 +86,13 @@ public final class FormEntity {
     //    }
 
     public FormDto toDto() {
-        return FormDto.builder().id(id).eventId(event.getId()).fields(fields).build();
+        return FormDto.builder()
+                .id(id)
+                .eventId(event.getId())
+                .fields(fields)
+                .participants(
+                        participants.stream().map(ParticipantEntity::toDto).toList())
+                .build();
     }
 
     public void update(@NotNull FormDto formDto, EventEntity event) {

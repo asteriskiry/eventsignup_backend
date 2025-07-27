@@ -8,7 +8,6 @@ import fi.asteriski.eventsignup.components.dao.repository.ParticipantRepository;
 import fi.asteriski.eventsignup.components.dto.ParticipantDto;
 import fi.asteriski.eventsignup.components.entity.FormEntity;
 import fi.asteriski.eventsignup.components.entity.ParticipantEntity;
-import fi.asteriski.eventsignup.components.service.FormService;
 import jakarta.validation.constraints.NotNull;
 import java.util.List;
 import java.util.UUID;
