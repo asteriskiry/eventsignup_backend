@@ -5,7 +5,9 @@ Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
 
 package fi.asteriski.eventsignup.components.dao;
 
-import static fi.asteriski.eventsignup.supporting.utils.Constants.*;
+import static fi.asteriski.eventsignup.supporting.utils.Constants.EVENT_NOT_FOUND_EXCEPTION_SUPPLIER;
+import static fi.asteriski.eventsignup.supporting.utils.Constants.MAX_FETCHED_EVENTS;
+import static fi.asteriski.eventsignup.supporting.utils.Constants.SORT_BY_CREATED_AT_DESC;
 
 import fi.asteriski.eventsignup.components.dao.repository.EventRepository;
 import fi.asteriski.eventsignup.components.dto.EventDto;
@@ -25,7 +27,6 @@ import org.springframework.stereotype.Component;
 @Component
 @AllArgsConstructor
 public class EventDao {
-    private static final Sort SORT_BY_START_DATE_DESC = Sort.by(Sort.Direction.DESC, "startDate");
     private static final Sort SORT_BY_END_DATE_DESC = Sort.by(Sort.Direction.DESC, "endDate");
     private static final Sort SORT_BY_END_DATE_ASC = Sort.by(Sort.Direction.ASC, "endDate");
 
@@ -64,8 +65,7 @@ public class EventDao {
     public EventDto updateEvent(@NotNull EventDto eventDto) {
         var existing = fetchEventEntity(eventDto.id()).orElseThrow(EVENT_NOT_FOUND_EXCEPTION_SUPPLIER);
         existing.update(eventDto);
-        var saved = eventRepository.save(existing);
-        return saved.toDto(); // ← map the truly updated entity
+        return eventRepository.save(existing).toDto();
     }
 
     public List<EventDto> fetchUsersEvents(@NotNull final String userName) {

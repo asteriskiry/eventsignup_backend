@@ -39,16 +39,17 @@ public class ParticipantController {
     }
 
     @GetMapping("/{formId}/participants/names")
-    @ApiResponses({
-        @ApiResponse(
-                responseCode = "200",
-                description = "List of participant names.",
-                content =
-                        @Content(
-                                mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                schema = @Schema(implementation = ParticipantNameDto.class, type = "array"))),
-        @ApiResponse(responseCode = "404", description = "Form not found.")
-    })
+    @ApiResponses(
+            value = {
+                @ApiResponse(
+                        responseCode = "200",
+                        description = "List of participant names.",
+                        content =
+                                @Content(
+                                        mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                        schema = @Schema(implementation = ParticipantNameDto.class, type = "array"))),
+                @ApiResponse(responseCode = "404", description = "Form not found.")
+            })
     public List<ParticipantNameDto> fetchParticipantNames(@PathVariable UUID formId) {
         return participantService.findNamesByFormId(formId).stream()
                 .map(ParticipantNameDto::new)

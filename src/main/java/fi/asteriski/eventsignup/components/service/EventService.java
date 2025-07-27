@@ -15,7 +15,6 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
@@ -36,7 +35,7 @@ public class EventService {
 
         EventDto eventDto = savedEvent.toDto();
         List<FormDto> formDtos =
-                savedEvent.getForms().stream().map(FormEntity::toDto).collect(Collectors.toList());
+                savedEvent.getForms().stream().map(FormEntity::toDto).toList();
 
         return new EventWithFormsDto(eventDto, formDtos);
     }
@@ -57,24 +56,10 @@ public class EventService {
         return eventDao.updateEvent(eventDto);
     }
 
-    //    public UsersEvents fetchUsersEventsNForms() {
-    //        var events = eventDao.fetchUsersEvents(getUserName());
-    //        return UsersEvents.builder()
-    //                .myEvents(events)
-    //                .myForms(
-    //                        formService.fetchForms(events.stream().map(EventDto::id).toList()))
-    //                .build();
-    //    }
-
     public UsersEvents fetchUsersEventsNForms() {
         // String user = auth.getCurrentUsername();
         String user = getUserName();
         List<EventDto> events = eventDao.fetchUsersEvents(user);
-
-        //        // extract all the event IDs
-        //        List<UUID> ids = events.stream()
-        //            .map(EventDto::id)
-        //            .toList();
 
         List<FormDto> forms = formService.fetchFormsByEventIds(
                 events.stream().map(EventDto::id).toList());

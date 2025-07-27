@@ -62,7 +62,6 @@ public class FormDao {
     }
 
     private EventEntity getEventEntity(@NotNull final FormDto formDto, @NotNull final FormEntity oldForm) {
-        EventEntity event = null;
         if (!oldForm.getEvent().getId().equals(formDto.eventId())) {
             return eventService.fetchEventEntity(formDto.eventId()).orElseThrow(EVENT_NOT_FOUND_EXCEPTION_SUPPLIER);
         }

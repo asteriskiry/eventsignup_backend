@@ -4,9 +4,10 @@ Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
  */
 package fi.asteriski.eventsignup.components.controller.image;
 
+import static fi.asteriski.eventsignup.supporting.utils.Constants.API_PATH_EVENT;
+
 import fi.asteriski.eventsignup.components.service.ImageService;
 import fi.asteriski.eventsignup.supporting.model.event.BannerImageUploadSuccessResponse;
-import fi.asteriski.eventsignup.supporting.utils.Constants;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -20,7 +21,7 @@ import org.springframework.web.servlet.view.RedirectView;
 
 @AllArgsConstructor
 @RestController
-@RequestMapping(Constants.API_PATH_EVENT)
+@RequestMapping(API_PATH_EVENT)
 public class ImageController {
 
     private ImageService imageService;
@@ -70,6 +71,6 @@ public class ImageController {
     @PostMapping("banner/add")
     public RedirectView addBannerImg(@RequestBody byte[] file) {
         String filePath = imageService.addBannerImage(file);
-        return new RedirectView(String.format("/api/event/banner/%s", filePath));
+        return new RedirectView("%s/banner/%s".formatted(API_PATH_EVENT, filePath));
     }
 }

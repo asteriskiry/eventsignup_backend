@@ -7,7 +7,6 @@ package fi.asteriski.eventsignup.components.controller.event;
 import static fi.asteriski.eventsignup.supporting.utils.Constants.API_PATH_EVENT;
 
 import fi.asteriski.eventsignup.components.dto.*;
-import fi.asteriski.eventsignup.components.service.AdminService;
 import fi.asteriski.eventsignup.components.service.EventService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -27,7 +26,6 @@ import org.springframework.web.bind.annotation.*;
 public class EventController {
 
     private EventService eventService;
-    private AdminService adminService;
 
     @Operation(
             summary = "Create a new event.",
