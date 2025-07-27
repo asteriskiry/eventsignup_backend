@@ -16,7 +16,9 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @AllArgsConstructor
@@ -44,12 +46,12 @@ public class EventController {
                         content =
                                 @Content(
                                         mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                        schema = @Schema(implementation = EventDto.class))),
+                                        schema = @Schema(implementation = EventWithFormsDto.class))),
                 @ApiResponse(responseCode = "401", description = "Unauthorized.")
             })
     @PostMapping("/create")
-    public EventWithFormsDto createNewEvent(@Valid @RequestBody final NewEventAndFormRequest eventDto) {
-        return eventService.createNewEvent(eventDto);
+    public ResponseEntity<EventWithFormsDto> createNewEvent(@Valid @RequestBody final NewEventAndFormRequest eventDto) {
+        return ResponseEntity.status(HttpStatus.CREATED.value()).body(eventService.createNewEvent(eventDto));
     }
 
     @Operation(summary = "Get latest, upcoming and past events with their forms and participants.")
