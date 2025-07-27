@@ -9,9 +9,7 @@ import fi.asteriski.eventsignup.components.dto.FormField;
 import io.hypersistence.utils.hibernate.type.json.JsonType;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-
 import java.util.*;
-
 import lombok.*;
 import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.Type;
@@ -44,10 +42,10 @@ public final class FormEntity {
     @Column(columnDefinition = "json", nullable = false)
     private List<FormField> fields;
 
-//    public void addEvent(EventEntity event) {
-//        this.event = event;
-//        event.setForm(this);
-//    }
+    //    public void addEvent(EventEntity event) {
+    //        this.event = event;
+    //        event.setForm(this);
+    //    }
     // JA AI:n ehdotus --------------->
     public void setEvent(EventEntity event) {
         // 1) Detach from any previous event
@@ -60,29 +58,29 @@ public final class FormEntity {
             event.getForms().add(this);
         }
     }
-//
-//    public void removeEvent(EventEntity entity) {
-//        if (Objects.equals(this.event, entity)) {
-//            this.event.setForm(null);
-//            this.event = null;
-//        }
-//    }
+    //
+    //    public void removeEvent(EventEntity entity) {
+    //        if (Objects.equals(this.event, entity)) {
+    //            this.event.setForm(null);
+    //            this.event = null;
+    //        }
+    //    }
 
-//    @OneToMany(
-//        mappedBy = "form",
-//        cascade = CascadeType.ALL,
-//        orphanRemoval = true,
-//        fetch = FetchType.LAZY
-//    )
-//    public void addParticipant(ParticipantEntity participant) {
-//        participants.add(participant);
-//        participant.setForm(this);
-//    }
+    //    @OneToMany(
+    //        mappedBy = "form",
+    //        cascade = CascadeType.ALL,
+    //        orphanRemoval = true,
+    //        fetch = FetchType.LAZY
+    //    )
+    //    public void addParticipant(ParticipantEntity participant) {
+    //        participants.add(participant);
+    //        participant.setForm(this);
+    //    }
 
-//    public void removeParticipant(ParticipantEntity participant) {
-//        participants.remove(participant);
-//        participant.setForm(null);
-//    }
+    //    public void removeParticipant(ParticipantEntity participant) {
+    //        participants.remove(participant);
+    //        participant.setForm(null);
+    //    }
 
     public FormDto toDto() {
         return FormDto.builder().id(id).eventId(event.getId()).fields(fields).build();

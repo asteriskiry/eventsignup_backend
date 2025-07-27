@@ -14,11 +14,10 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import java.util.UUID;
 import lombok.AllArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.UUID;
 
 @AllArgsConstructor
 @RestController(API_PATH_FORM)
@@ -37,22 +36,22 @@ public class FormController {
     }
 
     @Operation(
-        summary = "Get an event's form for signup purposes.",
-        parameters = {
-            @Parameter(name = "formId", description = "Form's id"),
-        })
+            summary = "Get an event's form for signup purposes.",
+            parameters = {
+                @Parameter(name = "formId", description = "Form's id"),
+            })
     @ApiResponses(
-        value = {
-            @ApiResponse(
-                responseCode = "200",
-                description = "The form requested.",
-                content = {
-                    @Content(
-                        mediaType = MediaType.APPLICATION_JSON_VALUE,
-                        schema = @Schema(implementation = FormDto.class))
-                }),
-            @ApiResponse(responseCode = "404", description = "Form not found."),
-        })
+            value = {
+                @ApiResponse(
+                        responseCode = "200",
+                        description = "The form requested.",
+                        content = {
+                            @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(implementation = FormDto.class))
+                        }),
+                @ApiResponse(responseCode = "404", description = "Form not found."),
+            })
     @GetMapping("/{formId}")
     public FormDto fetchForm(@PathVariable final UUID formId) {
         return formService.fetchForm(formId);

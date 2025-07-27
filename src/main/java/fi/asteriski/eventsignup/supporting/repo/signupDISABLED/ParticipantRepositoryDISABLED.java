@@ -8,7 +8,7 @@ import fi.asteriski.eventsignup.components.entity.ParticipantEntity;
 import java.util.UUID;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-//@Repository
+// @Repository
 public interface ParticipantRepositoryDISABLED extends JpaRepository<ParticipantEntity, UUID> {
 
     //    List<ParticipantEntity> findAllByEvent(@NotNull UUID event);

@@ -7,14 +7,13 @@ package fi.asteriski.eventsignup.components.entity;
 import fi.asteriski.eventsignup.components.dto.EventDto;
 import io.hypersistence.utils.hibernate.type.json.JsonType;
 import jakarta.persistence.*;
+import java.time.LocalDateTime;
+import java.util.*;
 import lombok.*;
 import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.UpdateTimestamp;
-
-import java.time.LocalDateTime;
-import java.util.*;
 
 @Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
@@ -36,15 +35,11 @@ public final class EventEntity {
     @EqualsAndHashCode.Include
     private UUID id;
 
-    @OneToMany(
-        mappedBy   = "event",
-        fetch      = FetchType.LAZY,
-        cascade    = CascadeType.ALL,
-        orphanRemoval = true )
+    @OneToMany(mappedBy = "event", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private Set<FormEntity> forms = new LinkedHashSet<>();
 
-    //AI:n add ja remove:
+    // AI:n add ja remove:
     public void addForm(FormEntity form) {
         form.setEvent(this);
     }
@@ -112,7 +107,7 @@ public final class EventEntity {
         bannerImg = eventDto.bannerImg();
     }
 
-    //Note: The mapper is part of entity structure and not in a seperate mapper
+    // Note: The mapper is part of entity structure and not in a seperate mapper
     public EventDto toDto() {
         return EventDto.builder()
                 .id(id)

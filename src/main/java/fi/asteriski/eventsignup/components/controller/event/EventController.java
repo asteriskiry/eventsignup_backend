@@ -28,25 +28,25 @@ public class EventController {
     private AdminService adminService;
 
     @Operation(
-        summary = "Create a new event.",
-        requestBody =
-        @io.swagger.v3.oas.annotations.parameters.RequestBody(
-            content = {
-                @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = NewEventAndFormRequest.class))
-            }))
+            summary = "Create a new event.",
+            requestBody =
+                    @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                            content = {
+                                @Content(
+                                        mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                        schema = @Schema(implementation = NewEventAndFormRequest.class))
+                            }))
     @ApiResponses(
-        value = {
-            @ApiResponse(responseCode = "201",
-                description = "Event creation successful.",
-                content = @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = EventDto.class)
-                )
-            ),
-            @ApiResponse(responseCode = "401", description = "Unauthorized.")
-        })
+            value = {
+                @ApiResponse(
+                        responseCode = "201",
+                        description = "Event creation successful.",
+                        content =
+                                @Content(
+                                        mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                        schema = @Schema(implementation = EventDto.class))),
+                @ApiResponse(responseCode = "401", description = "Unauthorized.")
+            })
     @PostMapping("/create")
     public EventWithFormsDto createNewEvent(@Valid @RequestBody final NewEventAndFormRequest eventDto) {
         return eventService.createNewEvent(eventDto);
@@ -89,19 +89,19 @@ public class EventController {
     }
 
     @Operation(
-        summary = "Update an existing event.",
-        requestBody =
-        @io.swagger.v3.oas.annotations.parameters.RequestBody(
-            content = {
-                @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = EventDto.class))
-            }))
+            summary = "Update an existing event.",
+            requestBody =
+                    @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                            content = {
+                                @Content(
+                                        mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                        schema = @Schema(implementation = EventDto.class))
+                            }))
     @ApiResponses(
-        value = {
-            @ApiResponse(responseCode = "200", description = "Event updated successfully."),
-            @ApiResponse(responseCode = "401", description = "Unauthorized.")
-        })
+            value = {
+                @ApiResponse(responseCode = "200", description = "Event updated successfully."),
+                @ApiResponse(responseCode = "401", description = "Unauthorized.")
+            })
     @PutMapping("/update")
     public EventDto updateEvent(@Valid @RequestBody final EventDto eventDto) {
         return eventService.updateEvent(eventDto);

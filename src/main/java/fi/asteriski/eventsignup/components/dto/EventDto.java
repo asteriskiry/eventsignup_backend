@@ -8,11 +8,10 @@ import fi.asteriski.eventsignup.components.entity.EventEntity;
 import fi.asteriski.eventsignup.supporting.validation.EventEndDateIsAfterStartDay;
 import fi.asteriski.eventsignup.supporting.validation.SignupEndDateIsAfterStartDay;
 import jakarta.validation.constraints.*;
-import lombok.Builder;
-
 import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.UUID;
+import lombok.Builder;
 
 @EventEndDateIsAfterStartDay(message = "{validation.date.eventEndDateMustBeAfterStartDay}")
 @SignupEndDateIsAfterStartDay(message = "{validation.date.signupEndDateMustBeAfterStartDay}")
@@ -24,7 +23,7 @@ public record EventDto(
         @NotBlank(message = "{validation.event.place.notBlank}") String place,
         @NotNull(message = "{validation.event.startDate.notNull}")
                 @Future(message = "{validation.event.date.inTheFuture}")
-            LocalDateTime startDate,
+                LocalDateTime startDate,
         LocalDateTime endDate,
         @Positive(message = "{validation.event.number.positive}") Integer minParticipants,
         @Positive(message = "{validation.event.number.positive}") Integer maxParticipants,
@@ -34,8 +33,7 @@ public record EventDto(
         String bannerImg,
         Map<String, Object> metaData,
         LocalDateTime createdAt,
-        LocalDateTime updatedAt)
-    {
+        LocalDateTime updatedAt) {
 
     public EventEntity toEntity(FormDto form, String user) {
         var formEntity = form.toEntity();

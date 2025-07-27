@@ -11,13 +11,18 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class AdminService {
 
-    @Autowired private FormRepository formRepository;
-    @Autowired private EventRepository eventRepository;
-    @Autowired private ParticipantRepository participantRepository;
+    @Autowired
+    private FormRepository formRepository;
 
-    //Shouldn't do code like this, should go through the service layer,
-        //not accessing repository directly. Better would be participantservice.deleteAll
-        //but hopefully this code will be deleted for prod, it's volatile anyway
+    @Autowired
+    private EventRepository eventRepository;
+
+    @Autowired
+    private ParticipantRepository participantRepository;
+
+    // Shouldn't do code like this, should go through the service layer,
+    // not accessing repository directly. Better would be participantservice.deleteAll
+    // but hopefully this code will be deleted for prod, it's volatile anyway
     @Transactional
     public void wipeDatabase() {
         participantRepository.deleteAll();

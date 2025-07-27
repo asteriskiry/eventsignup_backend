@@ -4,20 +4,20 @@ Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
  */
 package fi.asteriski.eventsignup.components.dao;
 
-import fi.asteriski.eventsignup.components.entity.EventEntity;
-import fi.asteriski.eventsignup.components.entity.FormEntity;
+import static fi.asteriski.eventsignup.supporting.utils.Constants.EVENT_NOT_FOUND_EXCEPTION_SUPPLIER;
+import static fi.asteriski.eventsignup.supporting.utils.Constants.FORM_NOT_FOUND_EXCEPTION_SUPPLIER;
+
 import fi.asteriski.eventsignup.components.dao.repository.FormRepository;
 import fi.asteriski.eventsignup.components.dto.FormDto;
+import fi.asteriski.eventsignup.components.dto.ParticipantDto;
+import fi.asteriski.eventsignup.components.entity.EventEntity;
+import fi.asteriski.eventsignup.components.entity.FormEntity;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import org.springframework.stereotype.Component;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-
-import static fi.asteriski.eventsignup.supporting.utils.Constants.EVENT_NOT_FOUND_EXCEPTION_SUPPLIER;
-import static fi.asteriski.eventsignup.supporting.utils.Constants.FORM_NOT_FOUND_EXCEPTION_SUPPLIER;
+import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Component;
 
 @Component
 @AllArgsConstructor
@@ -25,19 +25,25 @@ public class FormDao {
     private final EventDao eventService;
     private final FormRepository formRepository;
 
+    // According to convention
+    FormEntity fetchFormEntity(UUID formId) {
+        return formRepository.findById(formId).orElseThrow(FORM_NOT_FOUND_EXCEPTION_SUPPLIER);
+    }
+
     public List<FormDto> fetchForms(@NotNull List<UUID> formIds) {
         return formRepository.findAllById(formIds).stream()
-            .map(FormEntity::toDto)
-            .toList();
+                .map(FormEntity::toDto)
+                .toList();
     }
+
     public List<FormDto> fetchFormsByEventIds(@NotNull List<UUID> eventIds) {
         return formRepository.findAllByEvent_IdIn(eventIds).stream()
-            .map(FormEntity::toDto)
-            .toList();
+                .map(FormEntity::toDto)
+                .toList();
     }
+
     public Optional<FormDto> fetchForm(@NotNull UUID formId) {
-        return formRepository.findById(formId)
-            .map(FormEntity::toDto);
+        return formRepository.findById(formId).map(FormEntity::toDto);
     }
 
     public void createForm(@NotNull final FormDto formDto) {
@@ -52,11 +58,6 @@ public class FormDao {
         return saved.toDto();
     }
 
-    //According to convention
-    FormEntity fetchFormEntity(UUID formId) {
-        return formRepository.findById(formId).orElseThrow(FORM_NOT_FOUND_EXCEPTION_SUPPLIER);
-    }
-
     private void save(FormEntity entity) {
         formRepository.save(entity);
     }
@@ -64,9 +65,9 @@ public class FormDao {
     private EventEntity getEventEntity(@NotNull final FormDto formDto, @NotNull final FormEntity oldForm) {
         EventEntity event = null;
         if (!oldForm.getEvent().getId().equals(formDto.eventId())) {
-            return eventService.fetchEventEntity(formDto.eventId())
-                .orElseThrow(EVENT_NOT_FOUND_EXCEPTION_SUPPLIER);
+            return eventService.fetchEventEntity(formDto.eventId()).orElseThrow(EVENT_NOT_FOUND_EXCEPTION_SUPPLIER);
         }
         return oldForm.getEvent();
     }
+
 }

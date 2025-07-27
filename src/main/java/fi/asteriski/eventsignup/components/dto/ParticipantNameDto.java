@@ -1,3 +1,3 @@
 package fi.asteriski.eventsignup.components.dto;
 
-public record ParticipantNameDto(String name) { }
+public record ParticipantNameDto(String name) {}

@@ -60,8 +60,7 @@ public final class ParticipantEntity {
         return Objects.equals(userEmail, other.userEmail) && Objects.equals(answers, other.answers);
     }
 
-
-    //Consider moving this toDto mapper to a seperate mapper as it bloats the file
+    // Consider moving this toDto mapper to a seperate mapper as it bloats the file
     public ParticipantDto toDto() {
         UUID formId = null;
         if (form != null) {

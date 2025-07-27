@@ -10,10 +10,9 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.Builder;
-
 import java.util.List;
 import java.util.UUID;
+import lombok.Builder;
 
 @Builder
 public record ParticipantDto(
@@ -24,14 +23,14 @@ public record ParticipantDto(
                 String userEmail,
         @Size(min = 1, message = "{validation.signup.answers.size}") List<Answer> answers) {
 
-    //Move to mapper if things get too confusing
+    // Move to mapper if things get too confusing
     public ParticipantEntity toEntity(FormEntity form) {
         return ParticipantEntity.builder()
-            .id(id)
-            .name(name)
-            .userEmail(userEmail)
-            .answers(answers)
-            .form(form)
-            .build();
+                .id(id)
+                .name(name)
+                .userEmail(userEmail)
+                .answers(answers)
+                .form(form)
+                .build();
     }
 }

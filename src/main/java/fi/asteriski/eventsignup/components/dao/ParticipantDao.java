@@ -4,36 +4,33 @@ Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
  */
 package fi.asteriski.eventsignup.components.dao;
 
-import fi.asteriski.eventsignup.components.entity.FormEntity;
-import fi.asteriski.eventsignup.components.entity.ParticipantEntity;
 import fi.asteriski.eventsignup.components.dao.repository.ParticipantRepository;
 import fi.asteriski.eventsignup.components.dto.ParticipantDto;
+import fi.asteriski.eventsignup.components.entity.FormEntity;
+import fi.asteriski.eventsignup.components.entity.ParticipantEntity;
 import fi.asteriski.eventsignup.components.service.FormService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
+import jakarta.validation.constraints.NotNull;
 import java.util.List;
 import java.util.UUID;
-import jakarta.validation.constraints.NotNull;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
 public class ParticipantDao {
 
     private final ParticipantRepository participantRepository;
-    private final FormService formService; //TODO käytä dao servisen sijaan
     private final FormDao formDao;
 
     public List<ParticipantDto> findAllByFormId(@NotNull UUID formId) {
-        return participantRepository
-            .findAllByFormId(formId)
-            .stream()
-            .map(ParticipantEntity::toDto)
-            .toList();
+        return participantRepository.findAllByFormId(formId).stream()
+                .map(ParticipantEntity::toDto)
+                .toList();
     }
 
     public ParticipantDto save(ParticipantDto dto) {
         // 1. retrieve the form from DB (or get a JPA proxy)
-        FormEntity form = formService.fetchForm(dto.formId()).toEntity();
+        FormEntity form = formDao.fetchFormEntity(dto.formId());
 
         // 2. convert DTO → Entity
         ParticipantEntity entity = dto.toEntity(form);

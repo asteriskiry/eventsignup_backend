@@ -4,24 +4,23 @@ Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
  */
 package fi.asteriski.eventsignup.components.service;
 
+import static fi.asteriski.eventsignup.supporting.utils.Constants.EVENT_NOT_FOUND_EXCEPTION_SUPPLIER;
+import static fi.asteriski.eventsignup.supporting.utils.Utils.getUserName;
+
 import fi.asteriski.eventsignup.components.dao.EventDao;
+import fi.asteriski.eventsignup.components.dto.*;
 import fi.asteriski.eventsignup.components.entity.EventEntity;
 import fi.asteriski.eventsignup.components.entity.FormEntity;
-import fi.asteriski.eventsignup.components.dto.*;
 import fi.asteriski.eventsignup.components.entity.ParticipantEntity;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.UUID;
-import java.util.stream.Collectors;
-
-import static fi.asteriski.eventsignup.supporting.utils.Constants.EVENT_NOT_FOUND_EXCEPTION_SUPPLIER;
-import static fi.asteriski.eventsignup.supporting.utils.Utils.getUserName;
 
 @Log4j2
 @AllArgsConstructor
@@ -37,9 +36,8 @@ public class EventService {
         EventEntity savedEvent = eventDao.createNewEvent(requestData);
 
         EventDto eventDto = savedEvent.toDto();
-        List<FormDto> formDtos = savedEvent.getForms().stream()
-            .map(FormEntity::toDto)
-            .collect(Collectors.toList());
+        List<FormDto> formDtos =
+                savedEvent.getForms().stream().map(FormEntity::toDto).collect(Collectors.toList());
 
         return new EventWithFormsDto(eventDto, formDtos);
     }
@@ -54,18 +52,20 @@ public class EventService {
                 .pastEvents(pastEvents.stream().map(EventEntity::toDto).toList())
                 .build();
 
-        //Eventtilistoja vastaavat formit
-        var newForms = newEvents.stream().flatMap(event -> event.getForms().stream()).toList();
-        var upcomingForms = upcomingEvents.stream().flatMap(event -> event.getForms().stream()).toList();
-        var pastForms = pastEvents.stream().flatMap(event -> event.getForms().stream()).toList();
+        // Eventtilistoja vastaavat formit
+        var newForms =
+                newEvents.stream().flatMap(event -> event.getForms().stream()).toList();
+        var upcomingForms = upcomingEvents.stream()
+                .flatMap(event -> event.getForms().stream())
+                .toList();
+        var pastForms =
+                pastEvents.stream().flatMap(event -> event.getForms().stream()).toList();
         var forms = MyForms.builder()
-                .newEventsForms(
-                    newEvents.stream()
-                        .flatMap(event -> event.getForms().stream())  // Stream<FormEntity>
-                        .map(FormEntity::toDto)                       // Stream<FormDto>
-                        .toList())                                      // List<FormDto>
-                .upcomingEventsForms(
-                    upcomingEvents.stream()
+                .newEventsForms(newEvents.stream()
+                        .flatMap(event -> event.getForms().stream()) // Stream<FormEntity>
+                        .map(FormEntity::toDto) // Stream<FormDto>
+                        .toList()) // List<FormDto>
+                .upcomingEventsForms(upcomingEvents.stream()
                         .flatMap(event -> event.getForms().stream())
                         .map(FormEntity::toDto)
                         .toList())
@@ -75,22 +75,30 @@ public class EventService {
                         .toList())
                 .build();
 
-        //Formeja vastaavat participantit
+        // Formeja vastaavat participantit
         var newParticipants = newForms.stream()
-            .flatMap(form -> form.getParticipants().stream())
-            .map(ParticipantEntity::toDto).toList();
+                .flatMap(form -> form.getParticipants().stream())
+                .map(ParticipantEntity::toDto)
+                .toList();
         var upcomingParticipants = upcomingForms.stream()
-            .flatMap(form -> form.getParticipants().stream())
-            .map(ParticipantEntity::toDto).toList();
+                .flatMap(form -> form.getParticipants().stream())
+                .map(ParticipantEntity::toDto)
+                .toList();
         var pastParticipants = pastForms.stream()
-            .flatMap(form -> form.getParticipants().stream())
-            .map(ParticipantEntity::toDto).toList();
+                .flatMap(form -> form.getParticipants().stream())
+                .map(ParticipantEntity::toDto)
+                .toList();
         var participants = MyParticipants.builder()
-            .newParticipants(newParticipants)
-            .upcomingParticipants(upcomingParticipants)
-            .pastParticipants(pastParticipants).build();
+                .newParticipants(newParticipants)
+                .upcomingParticipants(upcomingParticipants)
+                .pastParticipants(pastParticipants)
+                .build();
 
-        return EventsDto.builder().myEvents(events).myForms(forms).myParticipants(participants).build();
+        return EventsDto.builder()
+                .myEvents(events)
+                .myForms(forms)
+                .myParticipants(participants)
+                .build();
     }
 
     @Transactional
@@ -98,31 +106,29 @@ public class EventService {
         return eventDao.updateEvent(eventDto);
     }
 
-//    public UsersEvents fetchUsersEventsNForms() {
-//        var events = eventDao.fetchUsersEvents(getUserName());
-//        return UsersEvents.builder()
-//                .myEvents(events)
-//                .myForms(
-//                        formService.fetchForms(events.stream().map(EventDto::id).toList()))
-//                .build();
-//    }
+    //    public UsersEvents fetchUsersEventsNForms() {
+    //        var events = eventDao.fetchUsersEvents(getUserName());
+    //        return UsersEvents.builder()
+    //                .myEvents(events)
+    //                .myForms(
+    //                        formService.fetchForms(events.stream().map(EventDto::id).toList()))
+    //                .build();
+    //    }
 
     public UsersEvents fetchUsersEventsNForms() {
-        //String user = auth.getCurrentUsername();
+        // String user = auth.getCurrentUsername();
         String user = getUserName();
         List<EventDto> events = eventDao.fetchUsersEvents(user);
 
-//        // extract all the event IDs
-//        List<UUID> ids = events.stream()
-//            .map(EventDto::id)
-//            .toList();
+        //        // extract all the event IDs
+        //        List<UUID> ids = events.stream()
+        //            .map(EventDto::id)
+        //            .toList();
 
-        List<FormDto> forms = formService.fetchFormsByEventIds(events.stream().map(EventDto::id).toList());
+        List<FormDto> forms = formService.fetchFormsByEventIds(
+                events.stream().map(EventDto::id).toList());
 
-        return UsersEvents.builder()
-            .myEvents(events)
-            .myForms(forms)
-            .build();
+        return UsersEvents.builder().myEvents(events).myForms(forms).build();
     }
 
     public EventDto fetchEventById(@NotNull final UUID eventId) {

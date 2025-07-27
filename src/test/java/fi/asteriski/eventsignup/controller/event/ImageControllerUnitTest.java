@@ -6,9 +6,9 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import fi.asteriski.eventsignup.components.controller.image.ImageController;
+import fi.asteriski.eventsignup.components.service.ImageServiceImpl;
 import fi.asteriski.eventsignup.supporting.exception.ImageNotFoundException;
 import fi.asteriski.eventsignup.supporting.model.event.BannerImageUploadSuccessResponse;
-import fi.asteriski.eventsignup.components.service.ImageServiceImpl;
 import java.io.IOException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

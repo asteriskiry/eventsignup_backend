@@ -5,22 +5,22 @@ Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
 
 package fi.asteriski.eventsignup.components.dao;
 
-import fi.asteriski.eventsignup.components.entity.EventEntity;
+import static fi.asteriski.eventsignup.supporting.utils.Constants.*;
+
 import fi.asteriski.eventsignup.components.dao.repository.EventRepository;
 import fi.asteriski.eventsignup.components.dto.EventDto;
 import fi.asteriski.eventsignup.components.dto.NewEventAndFormRequest;
+import fi.asteriski.eventsignup.components.entity.EventEntity;
 import fi.asteriski.eventsignup.supporting.utils.Utils;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import org.springframework.data.domain.Sort;
-import org.springframework.stereotype.Component;
-import static fi.asteriski.eventsignup.supporting.utils.Constants.*;
-
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Component;
 
 @Component
 @AllArgsConstructor
@@ -58,15 +58,14 @@ public class EventDao {
     public List<EventEntity> fetchPastEvents() {
         var now = ZonedDateTime.now();
         return eventRepository.findAllByEndDateBetween(
-            now.minusDays(360).toLocalDateTime(), now.toLocalDateTime(), SORT_BY_END_DATE_DESC, MAX_FETCHED_EVENTS);
+                now.minusDays(360).toLocalDateTime(), now.toLocalDateTime(), SORT_BY_END_DATE_DESC, MAX_FETCHED_EVENTS);
     }
 
     public EventDto updateEvent(@NotNull EventDto eventDto) {
-        var existing = fetchEventEntity(eventDto.id())
-            .orElseThrow(EVENT_NOT_FOUND_EXCEPTION_SUPPLIER);
+        var existing = fetchEventEntity(eventDto.id()).orElseThrow(EVENT_NOT_FOUND_EXCEPTION_SUPPLIER);
         existing.update(eventDto);
         var saved = eventRepository.save(existing);
-        return saved.toDto();           // ← map the truly updated entity
+        return saved.toDto(); // ← map the truly updated entity
     }
 
     public List<EventDto> fetchUsersEvents(@NotNull final String userName) {

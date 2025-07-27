@@ -4,6 +4,7 @@ Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
  */
 package fi.asteriski.eventsignup.supporting.config;
 
+import static fi.asteriski.eventsignup.supporting.utils.Constants.*;
 import static org.springframework.http.HttpHeaders.*;
 
 import java.util.List;
@@ -22,7 +23,6 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import static fi.asteriski.eventsignup.supporting.utils.Constants.*;
 
 @Configuration
 @EnableWebSecurity

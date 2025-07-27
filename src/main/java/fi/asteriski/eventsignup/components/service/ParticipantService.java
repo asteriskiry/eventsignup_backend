@@ -1,15 +1,14 @@
 package fi.asteriski.eventsignup.components.service;
 
 import fi.asteriski.eventsignup.components.dao.ParticipantDao;
-import fi.asteriski.eventsignup.components.entity.ParticipantEntity;
 import fi.asteriski.eventsignup.components.dao.repository.ParticipantRepository;
 import fi.asteriski.eventsignup.components.dto.ParticipantDto;
+import fi.asteriski.eventsignup.components.entity.ParticipantEntity;
+import java.util.List;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.UUID;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -31,10 +30,9 @@ public class ParticipantService {
     }
 
     public List<ParticipantDto> getAllByFormId(UUID formId) {
-        return participantRepository.findAllByFormId(formId)
-            .stream()
-            .map(ParticipantEntity::toDto)
-            .toList();
+        return participantRepository.findAllByFormId(formId).stream()
+                .map(ParticipantEntity::toDto)
+                .toList();
     }
 
     @Transactional
