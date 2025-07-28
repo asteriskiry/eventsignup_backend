@@ -17,7 +17,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.AllArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.view.RedirectView;
 
 @AllArgsConstructor
 @RestController
@@ -25,23 +24,6 @@ import org.springframework.web.servlet.view.RedirectView;
 public class ImageController {
 
     private ImageService imageService;
-
-    @Operation(
-            summary = "Get file path for the uploaded banner image.",
-            parameters = {@Parameter(name = "fileName", description = "Filename generated when saving an image.")})
-    @ApiResponses(
-            @ApiResponse(
-                    responseCode = "200",
-                    description = "Final path of the uploaded image file wrapped in json.",
-                    content = {
-                        @Content(
-                                mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                schema = @Schema(implementation = BannerImageUploadSuccessResponse.class))
-                    }))
-    @GetMapping("banner/{fileName}")
-    public BannerImageUploadSuccessResponse getBannerImagePath(@PathVariable String fileName) {
-        return BannerImageUploadSuccessResponse.builder().fileName(fileName).build();
-    }
 
     @Operation(
             summary = "Get a banner image.",
@@ -63,14 +45,21 @@ public class ImageController {
             parameters = {@Parameter(name = "file", description = "Raw bytes of the image being uploaded.")})
     @ApiResponses(
             value = {
-                @ApiResponse(responseCode = "303", description = "Redirect to /api/event/banner/{fileName}."),
+                @ApiResponse(
+                        responseCode = "200",
+                        description = "Obfuscated file name and path.",
+                        content = {
+                            @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(implementation = BannerImageUploadSuccessResponse.class))
+                        }),
                 @ApiResponse(responseCode = "401", description = "Unauthenticated"),
                 @ApiResponse(responseCode = "406", description = "Invalid image file/file not an image."),
                 @ApiResponse(responseCode = "500", description = "Target directory creation failed.")
             })
     @PostMapping("banner/add")
-    public RedirectView addBannerImg(@RequestBody byte[] file) {
-        String filePath = imageService.addBannerImage(file);
-        return new RedirectView("%s/banner/%s".formatted(API_PATH_EVENT, filePath));
+    public BannerImageUploadSuccessResponse addBannerImg(@RequestBody byte[] file) {
+        var fileName = imageService.addBannerImage(file);
+        return BannerImageUploadSuccessResponse.builder().fileName(fileName).build();
     }
 }
