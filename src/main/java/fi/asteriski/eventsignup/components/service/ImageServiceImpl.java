@@ -9,12 +9,6 @@ import fi.asteriski.eventsignup.supporting.exception.ImageDirectoryCreationFaile
 import fi.asteriski.eventsignup.supporting.exception.ImageNotFoundException;
 import fi.asteriski.eventsignup.supporting.exception.InvalidImageFileException;
 import fi.asteriski.eventsignup.supporting.utils.Utils;
-import java.awt.image.BufferedImage;
-import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import javax.imageio.ImageIO;
-import javax.imageio.stream.ImageOutputStream;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -23,13 +17,19 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import javax.imageio.ImageIO;
+import javax.imageio.stream.ImageOutputStream;
+import java.awt.image.BufferedImage;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+
 @Log4j2
 @Service
 @AllArgsConstructor
 @NoArgsConstructor
 public class ImageServiceImpl implements ImageService {
 
-    private static final String LOG_PREFIX = "[ImageServiceImpl]";
     private static final String FILE_PATH_TEMPLATE = "%s/%s";
 
     @Value("${fi.asteriski.config.event.root-path-bannerimg}")
@@ -61,7 +61,7 @@ public class ImageServiceImpl implements ImageService {
         var authentication = SecurityContextHolder.getContext().getAuthentication();
         var userName = authentication.getName();
         if (isInputFileNonValidImage(file)) {
-            log.info(String.format("%s %s", LOG_PREFIX, "Input file is not a valid image. Throwing exception."));
+            log.info("Input file is not a valid image. Throwing exception.");
             throw new InvalidImageFileException("Provided file is not a valid image file.");
         }
         File targetDirectory = new File(String.format("%s/%s/", rootPath, userName));
@@ -70,7 +70,7 @@ public class ImageServiceImpl implements ImageService {
                 Files.createDirectories(targetDirectory.toPath());
             } catch (IOException ioException) {
                 var errorMessage = String.format("Target directory <%s> creation failed.", targetDirectory);
-                log.info(String.format("%s Throwing exception.", errorMessage));
+                log.info(errorMessage);
                 throw new ImageDirectoryCreationFailedException(errorMessage, ioException);
             }
         }
@@ -84,7 +84,7 @@ public class ImageServiceImpl implements ImageService {
         try (ImageOutputStream imageOutputStream = ImageIO.createImageOutputStream(finalFile)) {
             imageOutputStream.write(file);
         } catch (IOException e) {
-            log.info(String.format("IOException occurred: %s", e.getMessage()));
+            log.info("IOException occurred: {}", e.getMessage());
         }
         return String.format("%s_%s", userName, fileName);
     }
