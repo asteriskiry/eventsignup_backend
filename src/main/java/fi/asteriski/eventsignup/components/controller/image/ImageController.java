@@ -37,7 +37,7 @@ public class ImageController {
             value = "banner/get/{fileName}",
             produces = {MediaType.IMAGE_PNG_VALUE, MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_GIF_VALUE})
     public byte[] getBannerImage(@PathVariable String fileName) {
-        return imageService.getBannerImage(fileName.replace('_', '/'));
+        return imageService.getBannerImage(fileName);
     }
 
     @Operation(

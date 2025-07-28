@@ -40,17 +40,18 @@ public class ImageServiceImpl implements ImageService {
         if (fileName.contains("..") || fileName.contains("/") || fileName.contains("\\")) {
             throw new ImageNotFoundException("Invalid filename");
         }
-        File filePath = new File(String.format(FILE_PATH_TEMPLATE, rootPath, fileName));
+        var finalFileName = fileName.replace("_", "/");
+        File filePath = new File(String.format(FILE_PATH_TEMPLATE, rootPath, finalFileName));
         if (!filePath.canRead()) {
-            log.info(String.format("%s Requested file %s doesn't exist and/or cannot be read.", LOG_PREFIX, fileName));
-            throw new ImageNotFoundException(fileName.substring(fileName.lastIndexOf("/") + 1));
+            log.info("Requested file '{}' doesn't exist and/or cannot be read.", finalFileName);
+            throw new ImageNotFoundException(finalFileName.substring(finalFileName.lastIndexOf("/") + 1));
         }
         byte[] returnValue;
         try (InputStream inputStream = new FileInputStream(filePath.toString())) {
             returnValue = IOUtils.toByteArray(inputStream);
         } catch (IOException | IllegalArgumentException ioException) {
-            log.error(String.format("%s IOError while reading file <%s>", LOG_PREFIX, fileName));
-            throw new ImageNotFoundException(fileName.substring(fileName.lastIndexOf("/") + 1), ioException);
+            log.error("IOError while reading file <{}>", finalFileName);
+            throw new ImageNotFoundException(finalFileName.substring(finalFileName.lastIndexOf("/") + 1), ioException);
         }
         return returnValue;
     }
