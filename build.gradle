@@ -34,9 +34,9 @@ node {
 }
 
 openApi {
-    apiDocsUrl.set("http://localhost:8080/v1/api-docs")
+    apiDocsUrl.set("http://localhost:20200/v1/api-docs")
     customBootRun {
-        args = ["--spring.profiles.active=special"]
+        args = ["--spring.profiles.active=special", "--server.port=20200"]
     }
 }
 
