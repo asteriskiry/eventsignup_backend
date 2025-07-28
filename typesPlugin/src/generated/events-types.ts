@@ -3,1467 +3,1330 @@
  * Do not make direct changes to the file.
  */
 
-
 export interface paths {
-  "/api/v1/event/edit": {
-    /** Edit an existing event. */
-    put: operations["editEvent"];
-  };
-  "/api/v1/archive/event": {
-    /** Archive an event. Admin user only. */
-    put: operations["archiveEvent"];
-  };
-  "/api/v1/signup/{eventId}/add": {
-    /** Signup for an event (i.e. add a participant). */
-    post: operations["addParticipantToEvent"];
-  };
-  "/api/v1/event/create": {
-    /** Create a new event. */
-    post: operations["createEvent"];
-  };
-  "/api/v1/event/banner/add": {
-    /** Upload a new banner image. */
-    post: operations["addBannerImg"];
-  };
-  "/api/v1/signup/{eventId}": {
-    /** Get an event for signup purposes. */
-    get: operations["getEventForSignup"];
-  };
-  "/api/v1/signup/upcomingEvents/{days}": {
-    /** Get a list of upcoming events at to selected days. */
-    get: operations["getUpcomingEvents"];
-  };
-  "/api/v1/event/participants/{eventId}": {
-    /** Get participants for an event by event's id. */
-    get: operations["getParticipants"];
-  };
-  "/api/v1/event/get/{eventId}": {
-    /** Get an event by its id. */
-    get: operations["getEvent"];
-  };
-  "/api/v1/event/banner/{fileName}": {
-    /** Get file path for the uploaded banner image. */
-    get: operations["getBannerImagePath"];
-  };
-  "/api/v1/event/banner/get/{fileName}": {
-    /** Get a banner image. */
-    get: operations["getBannerImage"];
-  };
-  "/api/v1/event/all/{user}": {
-    /** Get all events for a user. */
-    get: operations["getAllEventsForUser"];
-  };
-  "/api/v1/archive/get/{userId}": {
-    /** Get all archived events for a specific user sorted by date archived (desc). Admin user only. */
-    get: operations["getAllArchivedEventsForUser"];
-  };
-  "/api/v1/archive/get/all": {
-    /** Get all archived events. Admin user only. */
-    get: operations["getAllArchiveEvents"];
-  };
-  "/api/v1/admin/participants/{eventId}": {
-    /** Gets all participants for a specific event. */
-    get: operations["getAllParticipantsForEvent"];
-  };
-  "/api/v1/admin/participants/all": {
-    /** Gets all participants for admin view. */
-    get: operations["getAllParticipants"];
-  };
-  "/api/v1/admin/event/{userId}": {
-    /** Get all events of a specific user to admin view. */
-    get: operations["getAllEventsForUser_1"];
-  };
-  "/api/v1/admin/event/all": {
-    /** Gets all events for admin view. */
-    get: operations["getAllEvents"];
-  };
-  "/api/v1/signup/cancel/{eventId}/{participantId}": {
-    /** Cancel participation to an event. */
-    delete: operations["removeParticipantFromEvent"];
-  };
-  "/api/v1/event/remove/{eventId}": {
-    /** Delete an event. */
-    delete: operations["removeEvent"];
-  };
-  "/api/v1/archive/remove": {
-    /** Remove a single archived event. Admin user only. */
-    delete: operations["removeArchivedEvent"];
-  };
-  "/api/v1/archive/remove/all": {
-    /** Delete archived events older than set date. Admin user only. */
-    delete: operations["removeArchivedEvents"];
-  };
+    "/update": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put: operations["updateForm"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/event/update": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Update an existing event. */
+        put: operations["updateEvent"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/create": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["createForm"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/form/{formId}/signup": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Add a participant to a form */
+        post: operations["add"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/event/create": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Create a new event. */
+        post: operations["createNewEvent"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/event/banner/add": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Upload a new banner image. */
+        post: operations["addBannerImg"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/wipe-db": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["wipeDatabase"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/{formId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get an event's form for signup purposes. */
+        get: operations["fetchForm"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/signup/{formId}/participants": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["fetchFormParticipants"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/signup/{eventId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get an event for signup purposes. */
+        get: operations["fetchSignupEvent"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/form/{formId}/participants": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get all participant data on participants who have signed up on a form */
+        get: operations["fetchForm_1"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/form/{formId}/participants/names": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["fetchParticipantNames"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/event/users-events": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get logged in user's events and their forms. */
+        get: operations["fetchUsersEvents"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/event/events": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get latest, upcoming and past events with their forms and participants. */
+        get: operations["fetchEvents"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/event/banner/get/{fileName}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get a banner image. */
+        get: operations["getBannerImage"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
-
 export type webhooks = Record<string, never>;
-
 export interface components {
-  schemas: {
-    EventDto: {
-      id?: string;
-      name: string;
-      /** Format: date-time */
-      startDate: string;
-      place: string;
-      description: string;
-      form: components["schemas"]["Form"];
-      owner?: string;
-      /** Format: date-time */
-      endDate?: string;
-      /** Format: int32 */
-      minParticipants?: number;
-      /** Format: int32 */
-      maxParticipants?: number;
-      /** Format: date-time */
-      signupStarts?: string;
-      /** Format: date-time */
-      signupEnds?: string;
-      quotas?: components["schemas"]["Quota"][];
-      /** Format: double */
-      price?: number;
-      bannerImg?: string;
-      otherData?: {
-        [key: string]: Record<string, never>;
-      };
-      metaData?: {
-        [key: string]: Record<string, never>;
-      };
-    };
-    Form: {
-      /** Format: date-time */
-      dateCreated?: string;
-      /** @description generated by formGenerator */
-      formData: {
-        [key: string]: Record<string, never>;
-      };
-      userCreated?: string;
-    };
-    Quota: {
-      group?: string;
-      quota?: string;
-    };
-    ArchiveEventRequest: {
-      archivedEventId?: string;
-    };
-    ParticipantDto: {
-      id?: string;
-      name?: string;
-      email?: string;
-      event?: string;
-      /** @enum {string} */
-      gender?: "M" | "F" | "X";
-      /** @enum {string} */
-      mealChoice?: "MEAT" | "VEGETARIAN";
-      drinkChoice?: {
-        [key: string]: string;
-      };
-      belongsToQuota?: string;
-      isMember?: boolean;
-      hasPaid?: boolean;
-      /** Format: date-time */
-      signupTime?: string;
-      otherData?: {
-        [key: string]: Record<string, never>;
-      };
-      metaData?: {
-        [key: string]: Record<string, never>;
-      };
-    };
-    ApplicationContext: {
-      parent?: components["schemas"]["ApplicationContext"];
-      id?: string;
-      displayName?: string;
-      autowireCapableBeanFactory?: components["schemas"]["AutowireCapableBeanFactory"];
-      applicationName?: string;
-      /** Format: int64 */
-      startupDate?: number;
-      environment?: components["schemas"]["Environment"];
-      /** Format: int32 */
-      beanDefinitionCount?: number;
-      beanDefinitionNames?: string[];
-      parentBeanFactory?: components["schemas"]["BeanFactory"];
-      classLoader?: {
-        name?: string;
-        registeredAsParallelCapable?: boolean;
-        parent?: {
-          name?: string;
-          registeredAsParallelCapable?: boolean;
-          unnamedModule?: {
-            name?: string;
-            classLoader?: {
-              name?: string;
-              registeredAsParallelCapable?: boolean;
-              definedPackages?: {
-                  name?: string;
-                  annotations?: Record<string, never>[];
-                  declaredAnnotations?: Record<string, never>[];
-                  sealed?: boolean;
-                  specificationTitle?: string;
-                  specificationVersion?: string;
-                  specificationVendor?: string;
-                  implementationTitle?: string;
-                  implementationVersion?: string;
-                  implementationVendor?: string;
-                }[];
-              defaultAssertionStatus?: boolean;
-            };
-            descriptor?: {
-              open?: boolean;
-              automatic?: boolean;
-            };
-            named?: boolean;
-            annotations?: Record<string, never>[];
-            declaredAnnotations?: Record<string, never>[];
-            packages?: string[];
-            nativeAccessEnabled?: boolean;
-            layer?: Record<string, never>;
-          };
-          definedPackages?: {
-              name?: string;
-              annotations?: Record<string, never>[];
-              declaredAnnotations?: Record<string, never>[];
-              sealed?: boolean;
-              specificationTitle?: string;
-              specificationVersion?: string;
-              specificationVendor?: string;
-              implementationTitle?: string;
-              implementationVersion?: string;
-              implementationVendor?: string;
-            }[];
-          defaultAssertionStatus?: boolean;
+    schemas: {
+        Answer: {
+            /** Format: int32 */
+            order?: number;
+            label?: string;
+            value?: string[];
         };
-        unnamedModule?: {
-          name?: string;
-          classLoader?: {
-            name?: string;
-            registeredAsParallelCapable?: boolean;
-            definedPackages?: {
-                name?: string;
-                annotations?: Record<string, never>[];
-                declaredAnnotations?: Record<string, never>[];
-                sealed?: boolean;
-                specificationTitle?: string;
-                specificationVersion?: string;
-                specificationVendor?: string;
-                implementationTitle?: string;
-                implementationVersion?: string;
-                implementationVendor?: string;
-              }[];
-            defaultAssertionStatus?: boolean;
-          };
-          descriptor?: {
-            open?: boolean;
-            automatic?: boolean;
-          };
-          named?: boolean;
-          annotations?: Record<string, never>[];
-          declaredAnnotations?: Record<string, never>[];
-          packages?: string[];
-          nativeAccessEnabled?: boolean;
-          layer?: Record<string, never>;
+        FormDto: {
+            /** Format: uuid */
+            id?: string;
+            /** Format: uuid */
+            eventId?: string;
+            fields?: components["schemas"]["FormField"][];
+            participants?: components["schemas"]["ParticipantDto"][];
         };
-        definedPackages?: {
+        FormField: {
+            /** Format: int32 */
+            order?: number;
+            label?: string;
+            type?: string;
+            value?: string[];
+        };
+        ParticipantDto: {
+            /** Format: uuid */
+            id?: string;
+            /** Format: uuid */
+            formId: string;
+            name: string;
+            userEmail: string;
+            answers?: components["schemas"]["Answer"][];
+        };
+        EventDto: {
+            /** Format: uuid */
+            id?: string;
+            name: string;
+            description: string;
+            place: string;
+            /** Format: date-time */
+            startDate: string;
+            /** Format: date-time */
+            endDate?: string;
+            /** Format: int32 */
+            minParticipants?: number;
+            /** Format: int32 */
+            maxParticipants?: number;
+            /** Format: date-time */
+            signupStarts: string;
+            /** Format: date-time */
+            signupEnds?: string;
+            /** Format: double */
+            price?: number;
+            bannerImg?: string;
+            metaData?: {
+                [key: string]: Record<string, never>;
+            };
+            /** Format: date-time */
+            createdAt?: string;
+            /** Format: date-time */
+            updatedAt?: string;
+            form?: components["schemas"]["FormDto"][];
+        };
+        NewEventAndFormRequest: {
+            event?: components["schemas"]["EventDto"];
+            form?: components["schemas"]["FormDto"];
+        };
+        EventWithFormsDto: {
+            event?: components["schemas"]["EventDto"];
+            forms?: components["schemas"]["FormDto"][];
+        };
+        BannerImageUploadSuccessResponse: {
+            fileName?: string;
+        };
+        ParticipantNameDto: {
             name?: string;
-            annotations?: Record<string, never>[];
-            declaredAnnotations?: Record<string, never>[];
-            sealed?: boolean;
-            specificationTitle?: string;
-            specificationVersion?: string;
-            specificationVendor?: string;
-            implementationTitle?: string;
-            implementationVersion?: string;
-            implementationVendor?: string;
-          }[];
-        defaultAssertionStatus?: boolean;
-      };
+        };
+        UsersEvents: {
+            myEvents?: components["schemas"]["EventDto"][];
+            myForms?: components["schemas"]["FormDto"][];
+        };
+        MyEvents: {
+            newEvents?: components["schemas"]["EventDto"][];
+            upcomingEvents?: components["schemas"]["EventDto"][];
+            pastEvents?: components["schemas"]["EventDto"][];
+        };
     };
-    AutowireCapableBeanFactory: Record<string, never>;
-    BeanFactory: Record<string, never>;
-    Environment: {
-      activeProfiles?: string[];
-      defaultProfiles?: string[];
+    responses: {
+        /** @description OK */
+        200: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content?: never;
+        };
+        /** @description Bad Request */
+        400: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content?: never;
+        };
+        /** @description Unauthorized */
+        401: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content?: never;
+        };
+        /** @description Not Found */
+        404: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content?: never;
+        };
+        /** @description Not Acceptable */
+        406: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content?: never;
+        };
+        /** @description Internal Server Error */
+        500: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content?: never;
+        };
+        /** @description Insufficient Storage */
+        507: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content?: never;
+        };
     };
-    FilterRegistration: {
-      servletNameMappings?: string[];
-      urlPatternMappings?: string[];
-      initParameters?: {
-        [key: string]: string;
-      };
-      name?: string;
-      className?: string;
-    };
-    HttpStatusCode: {
-      is4xxClientError?: boolean;
-      is5xxServerError?: boolean;
-      is1xxInformational?: boolean;
-      is2xxSuccessful?: boolean;
-      is3xxRedirection?: boolean;
-      error?: boolean;
-    };
-    JspConfigDescriptor: {
-      taglibs?: components["schemas"]["TaglibDescriptor"][];
-      jspPropertyGroups?: components["schemas"]["JspPropertyGroupDescriptor"][];
-    };
-    JspPropertyGroupDescriptor: {
-      deferredSyntaxAllowedAsLiteral?: string;
-      elIgnored?: string;
-      pageEncoding?: string;
-      isXml?: string;
-      includePreludes?: string[];
-      includeCodas?: string[];
-      trimDirectiveWhitespaces?: string;
-      errorOnUndeclaredNamespace?: string;
-      defaultContentType?: string;
-      errorOnELNotFound?: string;
-      urlPatterns?: string[];
-      scriptingInvalid?: string;
-      buffer?: string;
-    };
-    RedirectView: {
-      applicationContext?: components["schemas"]["ApplicationContext"];
-      servletContext?: components["schemas"]["ServletContext"];
-      contentType?: string;
-      requestContextAttribute?: string;
-      staticAttributes?: {
-        [key: string]: Record<string, never>;
-      };
-      exposePathVariables?: boolean;
-      exposeContextBeansAsAttributes?: boolean;
-      exposedContextBeanNames?: string[];
-      beanName?: string;
-      url?: string;
-      contextRelative?: boolean;
-      http10Compatible?: boolean;
-      exposeModelAttributes?: boolean;
-      encodingScheme?: string;
-      statusCode?: components["schemas"]["HttpStatusCode"];
-      expandUriTemplateVariables?: boolean;
-      propagateQueryParams?: boolean;
-      hosts?: string[];
-      redirectView?: boolean;
-      propagateQueryProperties?: boolean;
-      attributesMap?: {
-        [key: string]: Record<string, never>;
-      };
-      attributesCSV?: string;
-      attributes?: {
-        [key: string]: string;
-      };
-    };
-    ServletContext: {
-      contextPath?: string;
-      servletRegistrations?: {
-        [key: string]: components["schemas"]["ServletRegistration"];
-      };
-      initParameterNames?: Record<string, never>;
-      /** Format: int32 */
-      effectiveMajorVersion?: number;
-      /** Format: int32 */
-      effectiveMinorVersion?: number;
-      serverInfo?: string;
-      servletContextName?: string;
-      filterRegistrations?: {
-        [key: string]: components["schemas"]["FilterRegistration"];
-      };
-      sessionCookieConfig?: components["schemas"]["SessionCookieConfig"];
-      sessionTrackingModes?: ("COOKIE" | "URL" | "SSL")[];
-      defaultSessionTrackingModes?: ("COOKIE" | "URL" | "SSL")[];
-      effectiveSessionTrackingModes?: ("COOKIE" | "URL" | "SSL")[];
-      jspConfigDescriptor?: components["schemas"]["JspConfigDescriptor"];
-      virtualServerName?: string;
-      /** Format: int32 */
-      sessionTimeout?: number;
-      requestCharacterEncoding?: string;
-      responseCharacterEncoding?: string;
-      classLoader?: {
-        name?: string;
-        registeredAsParallelCapable?: boolean;
-        definedPackages?: {
-            name?: string;
-            annotations?: Record<string, never>[];
-            declaredAnnotations?: Record<string, never>[];
-            sealed?: boolean;
-            specificationTitle?: string;
-            specificationVersion?: string;
-            specificationVendor?: string;
-            implementationTitle?: string;
-            implementationVersion?: string;
-            implementationVendor?: string;
-          }[];
-        defaultAssertionStatus?: boolean;
-      };
-      /** Format: int32 */
-      majorVersion?: number;
-      /** Format: int32 */
-      minorVersion?: number;
-      attributeNames?: Record<string, never>;
-    };
-    ServletRegistration: {
-      mappings?: string[];
-      runAsRole?: string;
-      initParameters?: {
-        [key: string]: string;
-      };
-      name?: string;
-      className?: string;
-    };
-    SessionCookieConfig: {
-      /** Format: int32 */
-      maxAge?: number;
-      httpOnly?: boolean;
-      path?: string;
-      secure?: boolean;
-      domain?: string;
-      name?: string;
-      attributes?: {
-        [key: string]: string;
-      };
-      /** @deprecated */
-      comment?: string;
-    };
-    TaglibDescriptor: {
-      taglibURI?: string;
-      taglibLocation?: string;
-    };
-    SignupEvent: {
-      id?: string;
-      name?: string;
-      /** Format: date-time */
-      startDate?: string;
-      place?: string;
-      description?: string;
-      form?: components["schemas"]["Form"];
-      /** Format: date-time */
-      endDate?: string;
-      /** Format: double */
-      price?: number;
-      bannerImg?: string;
-    };
-    BannerImageUploadSuccessResponse: {
-      fileName?: string;
-    };
-    ArchivedEventDto: {
-      id?: string;
-      originalEvent?: components["schemas"]["EventDto"];
-      /** Format: date-time */
-      dateArchived?: string;
-      /** Format: int64 */
-      numberOfParticipants?: number;
-      originalOwner?: string;
-      bannerImage?: string;
-    };
-    ArchivedEventResponse: {
-      eventOwner?: string;
-      events?: components["schemas"]["ArchivedEventDto"][];
-    };
-    RemoveArchivedEventsRequest: {
-      /** Format: date-time */
-      dateLimit?: string;
-    };
-  };
-  responses: never;
-  parameters: never;
-  requestBodies: never;
-  headers: never;
-  pathItems: never;
+    parameters: never;
+    requestBodies: never;
+    headers: never;
+    pathItems: never;
 }
-
 export type $defs = Record<string, never>;
-
-export type external = Record<string, never>;
-
 export interface operations {
-
-  /** Edit an existing event. */
-  editEvent: {
-    parameters: {
-      query?: {
-        /** @description Automatically inserted based on request headers. */
-        usersLocale?: string;
-        /** @description Automatically inserted based on request headers. */
-        userTimeZone?: string;
-      };
+    updateForm: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["FormDto"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["FormDto"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": string;
+                };
+            };
+            /** @description Not Acceptable */
+            406: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": string;
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": string;
+                };
+            };
+            /** @description Internal Server Error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": string;
+                };
+            };
+        };
     };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["EventDto"];
-      };
+    updateEvent: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EventDto"];
+            };
+        };
+        responses: {
+            /** @description Event updated successfully. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["EventDto"];
+                };
+            };
+            /** @description Unauthorized. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["EventDto"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": string;
+                };
+            };
+            /** @description Not Acceptable */
+            406: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": string;
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": string;
+                };
+            };
+            /** @description Internal Server Error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": string;
+                };
+            };
+        };
     };
-    responses: {
-      /** @description Event editing successful. */
-      200: {
-        content: never;
-      };
-      /** @description Unauthorized. */
-      401: {
-        content: never;
-      };
-      /** @description Unable to edit. Old event not found. */
-      404: {
-        content: {
-          "*/*": string;
+    createForm: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
-      };
-      /** @description Not Acceptable */
-      406: {
-        content: {
-          "*/*": string;
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["FormDto"];
+            };
         };
-      };
-      /** @description Conflict */
-      409: {
-        content: {
-          "*/*": string;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": string;
+                };
+            };
+            /** @description Not Acceptable */
+            406: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": string;
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": string;
+                };
+            };
+            /** @description Internal Server Error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": string;
+                };
+            };
         };
-      };
-      /** @description Internal Server Error */
-      500: {
-        content: {
-          "*/*": string;
-        };
-      };
     };
-  };
-  /** Archive an event. Admin user only. */
-  archiveEvent: {
-    parameters: {
-      query?: {
-        /** @description Not required. Automatically added currently logged in user. */
-        loggedInUser?: string;
-      };
+    add: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Form's id */
+                formId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ParticipantDto"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ParticipantDto"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": string;
+                };
+            };
+            /** @description Not Acceptable */
+            406: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": string;
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": string;
+                };
+            };
+            /** @description Internal Server Error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": string;
+                };
+            };
+        };
     };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["ArchiveEventRequest"];
-      };
+    createNewEvent: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["NewEventAndFormRequest"];
+            };
+        };
+        responses: {
+            /** @description Event creation successful. */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EventWithFormsDto"];
+                };
+            };
+            /** @description Unauthorized. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["EventWithFormsDto"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": string;
+                };
+            };
+            /** @description Not Acceptable */
+            406: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": string;
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": string;
+                };
+            };
+            /** @description Internal Server Error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": string;
+                };
+            };
+        };
     };
-    responses: {
-      /** @description Event archiving successful. */
-      200: {
-        content: never;
-      };
-      /** @description Unauthorized. */
-      401: {
-        content: never;
-      };
-      /** @description Unable to archive event. Event was not found. */
-      404: {
-        content: {
-          "*/*": string;
+    addBannerImg: {
+        parameters: {
+            query?: {
+                /** @description Raw bytes of the image being uploaded. */
+                file?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
-      };
-      /** @description Not Acceptable */
-      406: {
-        content: {
-          "*/*": string;
+        requestBody: {
+            content: {
+                "application/json": string[];
+            };
         };
-      };
-      /** @description Conflict */
-      409: {
-        content: {
-          "*/*": string;
+        responses: {
+            /** @description Obfuscated file name and path. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BannerImageUploadSuccessResponse"];
+                };
+            };
+            /** @description Unauthenticated */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["BannerImageUploadSuccessResponse"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": string;
+                };
+            };
+            /** @description Invalid image file/file not an image. */
+            406: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": string;
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": string;
+                };
+            };
+            /** @description Target directory creation failed. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": string;
+                };
+            };
         };
-      };
-      /** @description Internal Server Error */
-      500: {
-        content: {
-          "*/*": string;
-        };
-      };
     };
-  };
-  /** Signup for an event (i.e. add a participant). */
-  addParticipantToEvent: {
-    parameters: {
-      query?: {
-        /** @description Automatically inserted based on request headers. */
-        usersLocale?: string;
-        /** @description Automatically inserted based on request headers. */
-        userTimeZone?: string;
-      };
-      path: {
-        eventId: string;
-      };
+    wipeDatabase: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": string;
+                };
+            };
+            /** @description Not Acceptable */
+            406: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": string;
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": string;
+                };
+            };
+            /** @description Internal Server Error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": string;
+                };
+            };
+        };
     };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["ParticipantDto"];
-      };
+    fetchForm: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Form's id */
+                formId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The form requested. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormDto"];
+                };
+            };
+            /** @description Form not found. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": string;
+                };
+            };
+            /** @description Not Acceptable */
+            406: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": string;
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": string;
+                };
+            };
+            /** @description Internal Server Error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": string;
+                };
+            };
+        };
     };
-    responses: {
-      /** @description Signup successful. */
-      200: {
-        content: never;
-      };
-      /** @description Event not found. */
-      404: {
-        content: {
-          "*/*": string;
+    fetchFormParticipants: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                formId: string;
+            };
+            cookie?: never;
         };
-      };
-      /** @description Not Acceptable */
-      406: {
-        content: {
-          "*/*": string;
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ParticipantDto"][];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": string;
+                };
+            };
+            /** @description Not Acceptable */
+            406: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": string;
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": string;
+                };
+            };
+            /** @description Internal Server Error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": string;
+                };
+            };
         };
-      };
-      /** @description Conflict */
-      409: {
-        content: {
-          "*/*": string;
-        };
-      };
-      /** @description Internal Server Error */
-      500: {
-        content: {
-          "*/*": string;
-        };
-      };
     };
-  };
-  /** Create a new event. */
-  createEvent: {
-    parameters: {
-      query?: {
-        /** @description Automatically inserted based on request headers. */
-        usersLocale?: string;
-        /** @description Automatically inserted based on request headers. */
-        userTimeZone?: string;
-      };
+    fetchSignupEvent: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Event's id */
+                eventId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The event requested. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EventDto"];
+                };
+            };
+            /** @description Event was already held. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": string;
+                };
+            };
+            /** @description Not Acceptable */
+            406: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": string;
+                };
+            };
+            /** @description Signup not started/signup already ended/event full. See the message in response for details. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": string;
+                };
+            };
+            /** @description Internal Server Error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": string;
+                };
+            };
+        };
     };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["EventDto"];
-      };
+    fetchForm_1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Form's id */
+                formId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The full participant data requested. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ParticipantDto"];
+                };
+            };
+            /** @description Form not found. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": string;
+                };
+            };
+            /** @description Not Acceptable */
+            406: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": string;
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": string;
+                };
+            };
+            /** @description Internal Server Error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": string;
+                };
+            };
+        };
     };
-    responses: {
-      /** @description Event creation successful. */
-      200: {
-        content: never;
-      };
-      /** @description Unauthorized. */
-      401: {
-        content: never;
-      };
-      /** @description Not Found */
-      404: {
-        content: {
-          "*/*": string;
+    fetchParticipantNames: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                formId: string;
+            };
+            cookie?: never;
         };
-      };
-      /** @description Not Acceptable */
-      406: {
-        content: {
-          "*/*": string;
+        requestBody?: never;
+        responses: {
+            /** @description List of participant names. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ParticipantNameDto"];
+                };
+            };
+            /** @description Form not found. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": string;
+                };
+            };
+            /** @description Not Acceptable */
+            406: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": string;
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": string;
+                };
+            };
+            /** @description Internal Server Error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": string;
+                };
+            };
         };
-      };
-      /** @description Conflict */
-      409: {
-        content: {
-          "*/*": string;
-        };
-      };
-      /** @description Internal Server Error */
-      500: {
-        content: {
-          "*/*": string;
-        };
-      };
     };
-  };
-  /** Upload a new banner image. */
-  addBannerImg: {
-    parameters: {
-      query?: {
-        /** @description Raw bytes of the image being uploaded. */
-        file?: string;
-      };
+    fetchUsersEvents: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Requested data. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UsersEvents"];
+                };
+            };
+            /** @description Unauthorized. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["UsersEvents"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": string;
+                };
+            };
+            /** @description Not Acceptable */
+            406: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": string;
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": string;
+                };
+            };
+            /** @description Internal Server Error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": string;
+                };
+            };
+        };
     };
-    requestBody: {
-      content: {
-        "application/json": string[];
-      };
+    fetchEvents: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Requested data. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MyEvents"];
+                };
+            };
+            /** @description Unauthorized. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["MyEvents"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": string;
+                };
+            };
+            /** @description Not Acceptable */
+            406: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": string;
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": string;
+                };
+            };
+            /** @description Internal Server Error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": string;
+                };
+            };
+        };
     };
-    responses: {
-      /** @description Redirect to /api/event/banner/{fileName}. */
-      303: {
-        content: {
-          "*/*": components["schemas"]["RedirectView"];
+    getBannerImage: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description File's name we want. */
+                fileName: string;
+            };
+            cookie?: never;
         };
-      };
-      /** @description Unauthenticated */
-      401: {
-        content: {
-          "*/*": components["schemas"]["RedirectView"];
+        requestBody?: never;
+        responses: {
+            /** @description The file requested. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "image/png": string[];
+                    "image/jpeg": string[];
+                    "image/gif": string[];
+                };
+            };
+            /** @description File not found. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": string;
+                };
+            };
+            /** @description Not Acceptable */
+            406: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": string;
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": string;
+                };
+            };
+            /** @description Internal Server Error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": string;
+                };
+            };
         };
-      };
-      /** @description Not Found */
-      404: {
-        content: {
-          "*/*": string;
-        };
-      };
-      /** @description Invalid image file/file not an image. */
-      406: {
-        content: {
-          "*/*": string;
-        };
-      };
-      /** @description Conflict */
-      409: {
-        content: {
-          "*/*": string;
-        };
-      };
-      /** @description Target directory creation failed. */
-      500: {
-        content: {
-          "*/*": string;
-        };
-      };
     };
-  };
-  /** Get an event for signup purposes. */
-  getEventForSignup: {
-    parameters: {
-      query?: {
-        /** @description Automatically inserted based on request headers. */
-        usersLocale?: string;
-        /** @description Automatically inserted based on request headers. */
-        userTimeZone?: string;
-      };
-      path: {
-        /** @description Event's id */
-        eventId: string;
-      };
-    };
-    responses: {
-      /** @description The event requested. */
-      200: {
-        content: {
-          "application/json": components["schemas"]["SignupEvent"];
-        };
-      };
-      /** @description Event was already held. */
-      404: {
-        content: {
-          "*/*": string;
-        };
-      };
-      /** @description Not Acceptable */
-      406: {
-        content: {
-          "*/*": string;
-        };
-      };
-      /** @description Signup not started/signup already ended/event full. See the message in response for details. */
-      409: {
-        content: {
-          "*/*": string;
-        };
-      };
-      /** @description Internal Server Error */
-      500: {
-        content: {
-          "*/*": string;
-        };
-      };
-    };
-  };
-  /** Get a list of upcoming events at to selected days. */
-  getUpcomingEvents: {
-    parameters: {
-      path: {
-        /** @description How many days into the future events are wanted. */
-        days: string;
-      };
-    };
-    responses: {
-      /** @description The events requested. */
-      200: {
-        content: {
-          "application/json": components["schemas"]["SignupEvent"];
-        };
-      };
-      /** @description Not Found */
-      404: {
-        content: {
-          "*/*": string;
-        };
-      };
-      /** @description Not Acceptable */
-      406: {
-        content: {
-          "*/*": string;
-        };
-      };
-      /** @description Conflict */
-      409: {
-        content: {
-          "*/*": string;
-        };
-      };
-      /** @description Internal Server Error */
-      500: {
-        content: {
-          "*/*": string;
-        };
-      };
-    };
-  };
-  /** Get participants for an event by event's id. */
-  getParticipants: {
-    parameters: {
-      query?: {
-        /** @description Not required. Automatically added currently logged in user. */
-        loggedInUser?: string;
-      };
-      path: {
-        /** @description Event's id. */
-        eventId: string;
-      };
-    };
-    responses: {
-      /** @description Participants of the requested event. List can be empty. */
-      200: {
-        content: {
-          "application/json": components["schemas"]["ParticipantDto"];
-        };
-      };
-      /** @description Unauthorized. */
-      401: {
-        content: {
-          "*/*": components["schemas"]["ParticipantDto"][];
-        };
-      };
-      /** @description Not Found */
-      404: {
-        content: {
-          "*/*": string;
-        };
-      };
-      /** @description Not Acceptable */
-      406: {
-        content: {
-          "*/*": string;
-        };
-      };
-      /** @description Conflict */
-      409: {
-        content: {
-          "*/*": string;
-        };
-      };
-      /** @description Internal Server Error */
-      500: {
-        content: {
-          "*/*": string;
-        };
-      };
-    };
-  };
-  /** Get an event by its id. */
-  getEvent: {
-    parameters: {
-      query?: {
-        /** @description Not required. Automatically added currently logged in user. */
-        loggedInUser?: string;
-      };
-      path: {
-        /** @description Requested events id. */
-        eventId: string;
-      };
-    };
-    responses: {
-      /** @description Requested event. */
-      200: {
-        content: {
-          "application/json": components["schemas"]["EventDto"];
-        };
-      };
-      /** @description Unauthorized. */
-      401: {
-        content: {
-          "*/*": components["schemas"]["EventDto"];
-        };
-      };
-      /** @description Event not found. */
-      404: {
-        content: {
-          "*/*": string;
-        };
-      };
-      /** @description Not Acceptable */
-      406: {
-        content: {
-          "*/*": string;
-        };
-      };
-      /** @description Conflict */
-      409: {
-        content: {
-          "*/*": string;
-        };
-      };
-      /** @description Internal Server Error */
-      500: {
-        content: {
-          "*/*": string;
-        };
-      };
-    };
-  };
-  /** Get file path for the uploaded banner image. */
-  getBannerImagePath: {
-    parameters: {
-      path: {
-        /** @description Filename generated when saving an image. */
-        fileName: string;
-      };
-    };
-    responses: {
-      /** @description Final path of the uploaded image file wrapped in json. */
-      200: {
-        content: {
-          "application/json": components["schemas"]["BannerImageUploadSuccessResponse"];
-        };
-      };
-      /** @description Not Found */
-      404: {
-        content: {
-          "*/*": string;
-        };
-      };
-      /** @description Not Acceptable */
-      406: {
-        content: {
-          "*/*": string;
-        };
-      };
-      /** @description Conflict */
-      409: {
-        content: {
-          "*/*": string;
-        };
-      };
-      /** @description Internal Server Error */
-      500: {
-        content: {
-          "*/*": string;
-        };
-      };
-    };
-  };
-  /** Get a banner image. */
-  getBannerImage: {
-    parameters: {
-      path: {
-        /** @description File's name we want. */
-        fileName: string;
-      };
-    };
-    responses: {
-      /** @description The file requested. */
-      200: {
-        content: {
-          "image/png": string[];
-          "image/jpeg": string[];
-          "image/gif": string[];
-        };
-      };
-      /** @description File not found. */
-      404: {
-        content: {
-          "*/*": string;
-        };
-      };
-      /** @description Not Acceptable */
-      406: {
-        content: {
-          "*/*": string;
-        };
-      };
-      /** @description Conflict */
-      409: {
-        content: {
-          "*/*": string;
-        };
-      };
-      /** @description Internal Server Error */
-      500: {
-        content: {
-          "*/*": string;
-        };
-      };
-    };
-  };
-  /** Get all events for a user. */
-  getAllEventsForUser: {
-    parameters: {
-      query?: {
-        /** @description User's id. */
-        undefined?: string;
-        /** @description Not required. Automatically added currently logged in user. */
-        loggedInUser?: string;
-      };
-      path: {
-        user: string;
-      };
-    };
-    responses: {
-      /** @description All events of the user. List can be empty. */
-      200: {
-        content: {
-          "application/json": components["schemas"]["EventDto"];
-        };
-      };
-      /** @description Unauthorized. */
-      401: {
-        content: {
-          "*/*": components["schemas"]["EventDto"][];
-        };
-      };
-      /** @description Not Found */
-      404: {
-        content: {
-          "*/*": string;
-        };
-      };
-      /** @description Not Acceptable */
-      406: {
-        content: {
-          "*/*": string;
-        };
-      };
-      /** @description Conflict */
-      409: {
-        content: {
-          "*/*": string;
-        };
-      };
-      /** @description Internal Server Error */
-      500: {
-        content: {
-          "*/*": string;
-        };
-      };
-    };
-  };
-  /** Get all archived events for a specific user sorted by date archived (desc). Admin user only. */
-  getAllArchivedEventsForUser: {
-    parameters: {
-      path: {
-        /** @description User's id whose data is wanted. */
-        userId: string;
-      };
-    };
-    responses: {
-      /** @description All archived events for the requested user. List can be empty. */
-      200: {
-        content: {
-          "application/json": components["schemas"]["ArchivedEventDto"];
-        };
-      };
-      /** @description Unauthorized */
-      401: {
-        content: {
-          "*/*": components["schemas"]["ArchivedEventDto"][];
-        };
-      };
-      /** @description Not Found */
-      404: {
-        content: {
-          "*/*": string;
-        };
-      };
-      /** @description Not Acceptable */
-      406: {
-        content: {
-          "*/*": string;
-        };
-      };
-      /** @description Conflict */
-      409: {
-        content: {
-          "*/*": string;
-        };
-      };
-      /** @description Internal Server Error */
-      500: {
-        content: {
-          "*/*": string;
-        };
-      };
-    };
-  };
-  /** Get all archived events. Admin user only. */
-  getAllArchiveEvents: {
-    responses: {
-      /** @description All archived events. List can be empty. */
-      200: {
-        content: {
-          "application/json": components["schemas"]["ArchivedEventResponse"];
-        };
-      };
-      /** @description Unauthorized. */
-      401: {
-        content: {
-          "*/*": components["schemas"]["ArchivedEventResponse"][];
-        };
-      };
-      /** @description Not Found */
-      404: {
-        content: {
-          "*/*": string;
-        };
-      };
-      /** @description Not Acceptable */
-      406: {
-        content: {
-          "*/*": string;
-        };
-      };
-      /** @description Conflict */
-      409: {
-        content: {
-          "*/*": string;
-        };
-      };
-      /** @description Internal Server Error */
-      500: {
-        content: {
-          "*/*": string;
-        };
-      };
-    };
-  };
-  /** Gets all participants for a specific event. */
-  getAllParticipantsForEvent: {
-    parameters: {
-      path: {
-        /** @description Event's id. */
-        eventId: string;
-      };
-    };
-    responses: {
-      /** @description All participants in the specific event. */
-      200: {
-        content: {
-          "application/json": components["schemas"]["ParticipantDto"];
-        };
-      };
-      /** @description Not Found */
-      404: {
-        content: {
-          "*/*": string;
-        };
-      };
-      /** @description Not Acceptable */
-      406: {
-        content: {
-          "*/*": string;
-        };
-      };
-      /** @description Conflict */
-      409: {
-        content: {
-          "*/*": string;
-        };
-      };
-      /** @description Internal Server Error */
-      500: {
-        content: {
-          "*/*": string;
-        };
-      };
-    };
-  };
-  /** Gets all participants for admin view. */
-  getAllParticipants: {
-    responses: {
-      /** @description All participants in all events. */
-      200: {
-        content: {
-          "application/json": components["schemas"]["ParticipantDto"];
-        };
-      };
-      /** @description Not Found */
-      404: {
-        content: {
-          "*/*": string;
-        };
-      };
-      /** @description Not Acceptable */
-      406: {
-        content: {
-          "*/*": string;
-        };
-      };
-      /** @description Conflict */
-      409: {
-        content: {
-          "*/*": string;
-        };
-      };
-      /** @description Internal Server Error */
-      500: {
-        content: {
-          "*/*": string;
-        };
-      };
-    };
-  };
-  /** Get all events of a specific user to admin view. */
-  getAllEventsForUser_1: {
-    parameters: {
-      path: {
-        userId: string;
-      };
-    };
-    responses: {
-      /** @description All events for the specific user. */
-      200: {
-        content: {
-          "application/json": components["schemas"]["EventDto"];
-        };
-      };
-      /** @description Not Found */
-      404: {
-        content: {
-          "*/*": string;
-        };
-      };
-      /** @description Not Acceptable */
-      406: {
-        content: {
-          "*/*": string;
-        };
-      };
-      /** @description Conflict */
-      409: {
-        content: {
-          "*/*": string;
-        };
-      };
-      /** @description Internal Server Error */
-      500: {
-        content: {
-          "*/*": string;
-        };
-      };
-    };
-  };
-  /** Gets all events for admin view. */
-  getAllEvents: {
-    responses: {
-      /** @description All events. */
-      200: {
-        content: {
-          "application/json": components["schemas"]["EventDto"];
-        };
-      };
-      /** @description Not Found */
-      404: {
-        content: {
-          "*/*": string;
-        };
-      };
-      /** @description Not Acceptable */
-      406: {
-        content: {
-          "*/*": string;
-        };
-      };
-      /** @description Conflict */
-      409: {
-        content: {
-          "*/*": string;
-        };
-      };
-      /** @description Internal Server Error */
-      500: {
-        content: {
-          "*/*": string;
-        };
-      };
-    };
-  };
-  /** Cancel participation to an event. */
-  removeParticipantFromEvent: {
-    parameters: {
-      query?: {
-        /** @description Automatically inserted based on request headers. */
-        usersLocale?: string;
-        /** @description Automatically inserted based on request headers. */
-        userTimeZone?: string;
-      };
-      path: {
-        /** @description Event's id where to cancel from. */
-        eventId: string;
-        /** @description Participant's id (who's cancelling). */
-        participantId: string;
-      };
-    };
-    responses: {
-      /** @description Cancellation successful. */
-      200: {
-        content: never;
-      };
-      /** @description Event not found */
-      404: {
-        content: {
-          "*/*": string;
-        };
-      };
-      /** @description Not Acceptable */
-      406: {
-        content: {
-          "*/*": string;
-        };
-      };
-      /** @description Conflict */
-      409: {
-        content: {
-          "*/*": string;
-        };
-      };
-      /** @description Internal Server Error */
-      500: {
-        content: {
-          "*/*": string;
-        };
-      };
-    };
-  };
-  /** Delete an event. */
-  removeEvent: {
-    parameters: {
-      query?: {
-        /** @description Not required. Automatically added currently logged in user. */
-        loggedInUser?: string;
-      };
-      path: {
-        /** @description Event's id. */
-        eventId: string;
-      };
-    };
-    responses: {
-      /** @description Event deleted successfully. */
-      200: {
-        content: never;
-      };
-      /** @description Unauthorized. */
-      401: {
-        content: never;
-      };
-      /** @description Not Found */
-      404: {
-        content: {
-          "*/*": string;
-        };
-      };
-      /** @description Not Acceptable */
-      406: {
-        content: {
-          "*/*": string;
-        };
-      };
-      /** @description Conflict */
-      409: {
-        content: {
-          "*/*": string;
-        };
-      };
-      /** @description Internal Server Error */
-      500: {
-        content: {
-          "*/*": string;
-        };
-      };
-    };
-  };
-  /** Remove a single archived event. Admin user only. */
-  removeArchivedEvent: {
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["ArchiveEventRequest"];
-      };
-    };
-    responses: {
-      /** @description Delete was successful. */
-      200: {
-        content: never;
-      };
-      /** @description Unauthorized */
-      401: {
-        content: never;
-      };
-      /** @description Not Found */
-      404: {
-        content: {
-          "*/*": string;
-        };
-      };
-      /** @description Not Acceptable */
-      406: {
-        content: {
-          "*/*": string;
-        };
-      };
-      /** @description Conflict */
-      409: {
-        content: {
-          "*/*": string;
-        };
-      };
-      /** @description Internal Server Error */
-      500: {
-        content: {
-          "*/*": string;
-        };
-      };
-    };
-  };
-  /** Delete archived events older than set date. Admin user only. */
-  removeArchivedEvents: {
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["RemoveArchivedEventsRequest"];
-      };
-    };
-    responses: {
-      /** @description Delete was successful. */
-      200: {
-        content: never;
-      };
-      /** @description Unauthorized */
-      401: {
-        content: never;
-      };
-      /** @description Not Found */
-      404: {
-        content: {
-          "*/*": string;
-        };
-      };
-      /** @description Not Acceptable */
-      406: {
-        content: {
-          "*/*": string;
-        };
-      };
-      /** @description Conflict */
-      409: {
-        content: {
-          "*/*": string;
-        };
-      };
-      /** @description Internal Server Error */
-      500: {
-        content: {
-          "*/*": string;
-        };
-      };
-    };
-  };
 }
