@@ -2,6 +2,7 @@ package fi.asteriski.eventsignup.components.controller.participant;
 
 import static fi.asteriski.eventsignup.supporting.utils.Constants.API_PATH_PARTICIPANT;
 
+import fi.asteriski.eventsignup.components.dto.EventWithFormsDto;
 import fi.asteriski.eventsignup.components.dto.ParticipantDto;
 import fi.asteriski.eventsignup.components.dto.ParticipantNameDto;
 import fi.asteriski.eventsignup.components.service.ParticipantService;
@@ -17,6 +18,7 @@ import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @AllArgsConstructor
@@ -76,5 +78,32 @@ public class ParticipantController {
     @GetMapping("/{formId}/participants")
     public List<ParticipantDto> fetchForm(@PathVariable final UUID formId) {
         return participantService.getAllByFormId(formId);
+    }
+
+    @Operation(
+            summary = "Update participants.",
+            requestBody =
+                    @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                            content = {
+                                @Content(
+                                        mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                        schema = @Schema(implementation = ParticipantDto.class))
+                            }))
+    @ApiResponses(
+            value = {
+                @ApiResponse(
+                        responseCode = "201",
+                        description = "Update successful.",
+                        content =
+                                @Content(
+                                        mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                        schema = @Schema(implementation = EventWithFormsDto.class))),
+                @ApiResponse(responseCode = "401", description = "Unauthorized.")
+            })
+    @PutMapping("/update")
+    public ResponseEntity<Void> updateParticipants(@RequestBody final List<ParticipantDto> participants) {
+        participantService.update(participants);
+
+        return ResponseEntity.status(201).build();
     }
 }

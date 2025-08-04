@@ -8,7 +8,11 @@ import fi.asteriski.eventsignup.components.dao.repository.ParticipantRepository;
 import fi.asteriski.eventsignup.components.dto.ParticipantDto;
 import fi.asteriski.eventsignup.components.entity.FormEntity;
 import fi.asteriski.eventsignup.components.entity.ParticipantEntity;
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -40,5 +44,16 @@ public class ParticipantDao {
         // 3. persist and return DTO
         ParticipantEntity saved = participantRepository.save(entity);
         return saved.toDto();
+    }
+
+    public void update(final List<ParticipantDto> participantsToUpdate) {
+        Map<UUID, ParticipantDto> participants = participantsToUpdate.stream()
+                .collect(Collectors.toUnmodifiableMap(ParticipantDto::id, Function.identity()));
+
+        var entities = participantRepository.findAllById(participants.keySet()).stream()
+                .map(entity -> entity.update(participants.get(entity.getId())))
+                .toList();
+
+        participantRepository.saveAll(entities);
     }
 }

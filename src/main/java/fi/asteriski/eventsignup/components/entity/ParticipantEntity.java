@@ -68,4 +68,12 @@ public final class ParticipantEntity {
                 .answers(answers)
                 .build();
     }
+
+    public ParticipantEntity update(ParticipantDto participantDto) {
+        userEmail = participantDto.userEmail();
+        name = participantDto.name();
+        answers = participantDto.answers();
+
+        return this;
+    }
 }

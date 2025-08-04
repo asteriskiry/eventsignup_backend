@@ -94,6 +94,8 @@ public class SpringSecurityConfig {
                             .permitAll()
                             .requestMatchers(HttpMethod.DELETE, API_PATH_SIGNUP + "/**")
                             .permitAll()
+                            .requestMatchers(HttpMethod.PUT, API_PATH_SIGNUP + "/update")
+                            .hasAnyRole(ROLE_ADMIN, ROLE_USER)
                             .requestMatchers(HttpMethod.GET, "/swagger-ui/**")
                             .hasRole(ROLE_ADMIN)
                             .requestMatchers(HttpMethod.GET, "/api-docs/**")

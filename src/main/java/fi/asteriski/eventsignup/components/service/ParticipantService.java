@@ -39,4 +39,8 @@ public class ParticipantService {
     public void save(ParticipantDto participant) {
         participantDao.save(participant);
     }
+
+    public void update(final List<ParticipantDto> participants) {
+        participantDao.update(participants);
+    }
 }
