@@ -1,35 +1,64 @@
-version: "3.3"
+
 services:
   app:
-    image: event
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile  # optional if your Dockerfile is named Dockerfile
+    image: eventsignup-backend-img
+    container_name: eventsignup-backend
     ports:
       - "8080:8080"
-    depends_on:
-      - db
-      - keycloak
+    networks:
+      - asteriski-net
     env_file:
       - .env-dev
     environment:
       - DB_HOST=db
       - KEYCLOAK_URL=http://keycloak:9090
+    depends_on:
+      - db
+      - keycloak
   db:
     image: postgres:17.0
+    container_name: postgres17
     restart: always
+    networks:
+      - asteriski-net
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: eventsignup
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 1234
     volumes:
-      - db_data:/data/db
+      - db_data:/var/lib/postgresql/data
   keycloak:
     image: quay.io/keycloak/keycloak:26.3.1
-    environment:
-      KEYCLOAK_ADMIN: admin
-      KEYCLOAK_ADMIN_PASSWORD: admin
+    container_name: keycloak
+    restart: always
+    networks:
+      - asteriski-net
     ports:
       - "9090:8080"
+    environment:
+      KC_BOOTSTRAP_ADMIN_USERNAME: admin
+      KC_BOOTSTRAP_ADMIN_PASSWORD: admin
+      KC_DB: postgres
+      KC_DB_URL_HOST: db
+      KC_DB_URL_PORT: 5432
+      KC_DB_URL_DATABASE: eventsignup
+      KC_DB_USERNAME: postgres
+      KC_DB_PASSWORD: 1234
+      KC_HOSTNAME: localhost
     volumes:
       - ./keycloak/realm:/opt/keycloak/data/import
       - ./keycloak/themes:/opt/keycloak/themes
-    command: 'start-dev --import-realm'
+    command: >
+      start-dev --import-realm --hostname-strict=false
 
 volumes:
   db_data:
     driver: local
+networks:
+  asteriski-net:
+    driver: bridge

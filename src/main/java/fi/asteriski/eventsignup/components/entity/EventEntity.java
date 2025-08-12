@@ -43,6 +43,10 @@ public final class EventEntity {
     @EqualsAndHashCode.Include
     private UUID id;
 
+    @NonNull
+    @Column(name = "name", nullable = false)
+    private String name;
+
     @OneToMany(mappedBy = "event", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private Set<FormEntity> forms = new LinkedHashSet<>();
@@ -55,10 +59,6 @@ public final class EventEntity {
     public void removeForm(FormEntity form) {
         form.setEvent(null);
     }
-
-    @NonNull
-    @Column(nullable = false)
-    private String name;
 
     @NonNull
     @Column(nullable = false)
@@ -105,6 +105,7 @@ public final class EventEntity {
         name = eventDto.name();
         place = eventDto.place();
         description = eventDto.description();
+        owner = eventDto.owner();
         startDate = eventDto.startDate();
         endDate = eventDto.endDate();
         price = eventDto.price();
@@ -122,6 +123,7 @@ public final class EventEntity {
                 .name(name)
                 .place(place)
                 .description(description)
+                .owner(owner)
                 .startDate(startDate)
                 .endDate(endDate)
                 .price(price)
@@ -133,7 +135,7 @@ public final class EventEntity {
                 .createdAt(createdAt)
                 .updatedAt(updatedAt)
                 .metaData(metaData)
-                .form(forms.stream().map(FormEntity::toDto).toList())
+                .forms(forms.stream().map(FormEntity::toDto).toList())
                 .build();
     }
 }

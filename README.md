@@ -107,6 +107,16 @@ Note: Never use these commands in production!
 
 TODO complete docker instructions.
 
+Running backend container and DB trough the dockerfile in Windows:
+
+docker run -d --name postgres17 --network asteriski-net -e POSTGRES_DB=eventsignup -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=1234 -p 5432:5432 postgres:latest
+
+docker build --no-cache -t eventsignup-backend-img .
+docker run -d --name eventsignup-backend --network asteriski-net --env-file .env-dev -p 8080:8080 eventsignup-backend-img
+
+The alternative is to run ./gradlew BootRunDev in the project root,
+this way restarting the program is much faster after code changes
+
 After initial run described above with podman the whole eventsignup system pod can be controlled like this `podman pod start|stop|restart eventsignup`.
 
 #### Troubleshooting

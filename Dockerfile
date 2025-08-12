@@ -7,6 +7,9 @@ COPY build.gradle .
 COPY settings.gradle .
 COPY src src
 
+RUN apt-get update && apt-get install -y dos2unix
+RUN dos2unix gradlew
+RUN chmod +x gradlew
 RUN ./gradlew bootJar
 
 FROM eclipse-temurin:21

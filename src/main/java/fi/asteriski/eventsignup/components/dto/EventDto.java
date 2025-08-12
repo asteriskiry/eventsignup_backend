@@ -22,6 +22,7 @@ public record EventDto(
         @NotBlank(message = "{validation.event.name.notBlank}") String name,
         @NotBlank(message = "{validation.event.description.notBlank}") String description,
         @NotBlank(message = "{validation.event.place.notBlank}") String place,
+        @NotNull(message = "{validation.event.startDate.notNull}") String owner,
         @NotNull(message = "{validation.event.startDate.notNull}")
                 @Future(message = "{validation.event.date.inTheFuture}")
                 LocalDateTime startDate,
@@ -35,7 +36,7 @@ public record EventDto(
         Map<String, Object> metaData,
         LocalDateTime createdAt,
         LocalDateTime updatedAt,
-        List<FormDto> form) {
+        List<FormDto> forms) {
 
     public EventEntity toEntity(FormDto form, String user) {
         var formEntity = form.toEntity();
