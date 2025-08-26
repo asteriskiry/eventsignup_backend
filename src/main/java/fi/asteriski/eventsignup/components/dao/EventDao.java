@@ -5,24 +5,23 @@ Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
 
 package fi.asteriski.eventsignup.components.dao;
 
-import static fi.asteriski.eventsignup.supporting.utils.Constants.EVENT_NOT_FOUND_EXCEPTION_SUPPLIER;
-import static fi.asteriski.eventsignup.supporting.utils.Constants.MAX_FETCHED_EVENTS;
-import static fi.asteriski.eventsignup.supporting.utils.Constants.SORT_BY_CREATED_AT_DESC;
-
 import fi.asteriski.eventsignup.components.dao.repository.EventRepository;
 import fi.asteriski.eventsignup.components.dto.EventDto;
-import fi.asteriski.eventsignup.components.dto.NewEventAndFormRequest;
 import fi.asteriski.eventsignup.components.entity.EventEntity;
 import fi.asteriski.eventsignup.supporting.utils.Utils;
-import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Component;
+
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import lombok.AllArgsConstructor;
-import org.springframework.data.domain.Sort;
-import org.springframework.stereotype.Component;
+
+import static fi.asteriski.eventsignup.supporting.utils.Constants.EVENT_NOT_FOUND_EXCEPTION_SUPPLIER;
+import static fi.asteriski.eventsignup.supporting.utils.Constants.MAX_FETCHED_EVENTS;
+import static fi.asteriski.eventsignup.supporting.utils.Constants.SORT_BY_CREATED_AT_DESC;
 
 @Component
 @AllArgsConstructor
@@ -32,9 +31,9 @@ public class EventDao {
 
     private final EventRepository eventRepository;
 
-    public EventEntity createNewEvent(final @Valid NewEventAndFormRequest requestEnF) {
+    public EventDto createNewEvent(final EventDto requestEnF) {
         var user = Utils.getUserName();
-        return save(requestEnF.event().toEntity(requestEnF.form(), user));
+        return save(requestEnF.toEntity(requestEnF.form().getFirst(), user)).toDto();
     }
 
     public Optional<EventDto> fetchEventById(@NotNull final UUID eventId) {
