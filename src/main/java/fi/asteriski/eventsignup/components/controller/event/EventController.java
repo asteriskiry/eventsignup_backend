@@ -4,9 +4,9 @@ Licenced under EUROPEAN UNION PUBLIC LICENCE v. 1.2.
  */
 package fi.asteriski.eventsignup.components.controller.event;
 
-import static fi.asteriski.eventsignup.supporting.utils.Constants.API_PATH_EVENT;
-
-import fi.asteriski.eventsignup.components.dto.*;
+import fi.asteriski.eventsignup.components.dto.EventDto;
+import fi.asteriski.eventsignup.components.dto.MyEvents;
+import fi.asteriski.eventsignup.components.dto.UsersEvents;
 import fi.asteriski.eventsignup.components.service.EventService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -19,6 +19,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import static fi.asteriski.eventsignup.supporting.utils.Constants.API_PATH_EVENT;
 
 @AllArgsConstructor
 @RestController
@@ -34,7 +36,7 @@ public class EventController {
                             content = {
                                 @Content(
                                         mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                        schema = @Schema(implementation = NewEventAndFormRequest.class))
+                                    schema = @Schema(implementation = EventDto.class))
                             }))
     @ApiResponses(
             value = {
@@ -44,11 +46,11 @@ public class EventController {
                         content =
                                 @Content(
                                         mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                        schema = @Schema(implementation = EventWithFormsDto.class))),
+                                    schema = @Schema(implementation = EventDto.class))),
                 @ApiResponse(responseCode = "401", description = "Unauthorized.")
             })
     @PostMapping("/create")
-    public ResponseEntity<EventWithFormsDto> createNewEvent(@Valid @RequestBody final NewEventAndFormRequest eventDto) {
+    public ResponseEntity<EventDto> createNewEvent(@Valid @RequestBody final EventDto eventDto) {
         return ResponseEntity.status(HttpStatus.CREATED.value()).body(eventService.createNewEvent(eventDto));
     }
 
