@@ -56,6 +56,13 @@ services:
     command: >
       start-dev --import-realm --hostname-strict=false
 
+#      - ./keycloak/init-and-start.sh:/opt/keycloak/init-and-start.sh
+#    command: ["/opt/keycloak/init-and-start.sh"]
+
+#     command: >
+#      start-dev --import-realm --hostname-strict=false
+
+
 volumes:
   db_data:
     driver: local

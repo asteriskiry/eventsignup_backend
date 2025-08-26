@@ -96,7 +96,7 @@ jobs:
           password: ${{ secrets.gh_token }}
 
       - name: Build keycloak image
-        run: docker build --file keycloak/Dockerfile.ci --tag ghcr.io/asteriskiry/keycloak:latest keycloak
+        run: docker build --file keycloak/Dockerfile --tag ghcr.io/asteriskiry/keycloak:latest keycloak
 
       - name: Push keycloak image to container registry
         run: docker push ghcr.io/asteriskiry/keycloak:latest
