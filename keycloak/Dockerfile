@@ -20,14 +20,17 @@ FROM quay.io/keycloak/keycloak:26.3.1
 
 # Set environment variables for dev container and use dev temp database
 ENV KC_BOOTSTRAP_ADMIN_USERNAME=admin \
-    KC_BOOTSTRAP_ADMIN_PASSWORD=admin
-#     KC_DB=postgres \
-#     KC_DB_URL_HOST=db \
-#     KC_DB_URL_PORT=5432 \
-#     KC_DB_URL_DATABASE=eventsignup \
-#     KC_DB_USERNAME=postgres \
-#     KC_DB_PASSWORD=1234 \
-#     KC_HOSTNAME=localhost
+    KC_BOOTSTRAP_ADMIN_PASSWORD=admin \
+    #Tasta alaspain voi kommentoida KC_DB alkuiset sanat pois jos haluaa kayttaa kc omaa databasee
+    #Tasta alaspain: oman tietokannan speksit jotta keycloak voi kayttaa sita
+    #Muista myös poistaa yksi ylempi kenoviiva \
+    KC_DB=postgres \
+    KC_DB_URL_HOST=postgres \
+    KC_DB_URL_PORT=5432 \
+    KC_DB_URL_DATABASE=eventsignup \
+    KC_DB_USERNAME=postgres \
+    KC_DB_PASSWORD=1234 \
+    KC_HOSTNAME=localhost
 
 # Copy sanitized script
 COPY --from=builder /init-and-start.sh /opt/keycloak/init-and-start.sh

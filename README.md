@@ -112,13 +112,14 @@ After initial run described above with podman the whole eventsignup system pod c
 Running the whole system:
 docker-compose up -d
 NOTE: docker-compose.yml ei vielä ota huomioon realm.json filun uudelleenimporttausta käynnistysten välillä
+realm määrittely jää elämään keycloakin valitseman DB:n volumen sisällä, keycloak dockerfile toimii eri lailla
 
 Running backend container and DB through the dockerfile in Windows:
 
 First run database since the backend depends on the DB
 
 DB:
-docker run -d --name postgres17 --network asteriski-net -e POSTGRES_DB=eventsignup -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=1234 -p 5432:5432 postgres:latest
+docker run -d --name postgres --network asteriski-net -e POSTGRES_DB=eventsignup -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=1234 -p 5432:5432 postgres:latest
 
 Backend:
 docker build --no-cache -t eventsignup-backend-img .
@@ -127,9 +128,13 @@ docker run -d --name eventsignup-backend --network asteriski-net --env-file .env
 The alternative is to run ./gradlew BootRunDev in the project root,
 this way restarting the program is much faster after code changes
 
-Keycloack, self-contained mode, good for testing
-docker build -t my-keycloak-img:latest .
+Keycloack:
+Run the following commands within the keycloak dockerfile folder:
+docker build -t my-keycloak-img .
 docker run -d --name my-keycloak --network asteriski-net -p 9090:8080 my-keycloak-img
+
+The keycloak part can be run both with and without an external database, see it's dockerfile.
+Leaving the non-credential DB properties out of the dockerfile(comment #), makes keycloak use its own internal database
 
 Note that most of keycloak realm.json files addresses are hardcoded,
 and need to be changed to valid client urls(Asteriski domain for ilmo) before production
